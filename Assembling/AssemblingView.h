@@ -45,6 +45,8 @@ protected:
 // Generated message map functions
 protected:
 	DECLARE_MESSAGE_MAP()
+public:
+	afx_msg void OnBnClickedButton1();
 };
 
 #ifndef _DEBUG  // debug version in AssemblingView.cpp

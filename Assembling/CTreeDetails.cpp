@@ -47,6 +47,7 @@ void CTreeDetails::FillTree()
 	tree.SetCheck(m_hScrew, m_pDoc->m_bScrew);
 	tree.SetCheck(m_hPuck, m_pDoc->m_bPuck);
 }
+
 void CTreeDetails::AssertValid() const
 {
 	CTreeView::AssertValid();

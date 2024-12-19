@@ -18,6 +18,7 @@
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
+#include "Assembler.h"
 
 // CAssemblingDoc
 
@@ -27,7 +28,7 @@ BEGIN_MESSAGE_MAP(CAssemblingDoc, CDocument)
 END_MESSAGE_MAP()
 
 // CAssemblingDoc construction/destruction
-
+class Assembler;
 CAssemblingDoc::CAssemblingDoc() noexcept
 {
 	// TODO: add one-time construction code here
@@ -46,6 +47,7 @@ BOOL CAssemblingDoc::OnNewDocument()
 
 	m_pTree->m_pDoc = this;
 	m_pTree->FillTree();
+	auto t = Assembler();
 
 	return TRUE;
 }

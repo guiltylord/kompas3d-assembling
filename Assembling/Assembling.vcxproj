@@ -183,6 +183,7 @@
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Assembler.h" />
     <ClInclude Include="Assembling.h" />
     <ClInclude Include="AssemblingDoc.h" />
     <ClInclude Include="AssemblingView.h" />
@@ -195,6 +196,7 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Assembler.cpp" />
     <ClCompile Include="Assembling.cpp" />
     <ClCompile Include="AssemblingDoc.cpp" />
     <ClCompile Include="AssemblingView.cpp" />
