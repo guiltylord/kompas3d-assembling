@@ -17,7 +17,7 @@ protected: // create from serialization only
 
 // Attributes
 public:
-	bool m_bClients, m_bOrders, m_bTours;
+	bool m_bAssembling, m_bSeal, m_bScrew, m_bPuck;
 
 	CTreeDetails* m_pTree;
 	CAssemblingView* m_pView;

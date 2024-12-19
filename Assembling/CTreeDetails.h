@@ -13,7 +13,7 @@ protected:
 
 public:
 	CAssemblingDoc* m_pDoc;
-	HTREEITEM m_hClients, m_hOrders, m_hTours;
+	HTREEITEM m_hAssembling, m_hSeal, m_hScrew, m_hPuck;
 
 	void FillTree();
 #ifdef _DEBUG

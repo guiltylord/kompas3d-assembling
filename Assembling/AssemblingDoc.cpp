@@ -42,7 +42,7 @@ BOOL CAssemblingDoc::OnNewDocument()
 {
 	if (!CDocument::OnNewDocument())
 		return FALSE;
-	m_bClients = m_bOrders = m_bTours = false;
+	m_bAssembling = m_bSeal = m_bScrew = m_bPuck = false;
 
 	m_pTree->m_pDoc = this;
 	m_pTree->FillTree();

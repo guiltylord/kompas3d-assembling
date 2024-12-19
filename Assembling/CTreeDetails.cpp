@@ -34,13 +34,18 @@ void CTreeDetails::FillTree()
 
 	tree.DeleteAllItems();
 
-	m_hClients = tree.InsertItem(L"Clients", -1, -1, NULL, TVI_ROOT);
-	m_hOrders = tree.InsertItem(L"Orders", -1, -1, NULL, TVI_ROOT);
-	m_hTours = tree.InsertItem(L"Tours", -1, -1, NULL, TVI_ROOT);
+	m_hAssembling = tree.InsertItem(L"Objects", -1, -1, NULL, TVI_FIRST);
 
-	tree.SetCheck(m_hClients, m_pDoc->m_bClients);
-	tree.SetCheck(m_hOrders, m_pDoc->m_bOrders);
-	tree.SetCheck(m_hTours, m_pDoc->m_bTours);
+	m_hSeal = tree.InsertItem(L"Seal", -1, -1, m_hAssembling, TVI_ROOT);
+	m_hScrew = tree.InsertItem(L"Screw", -1, -1, m_hAssembling, TVI_ROOT);
+	m_hPuck = tree.InsertItem(L"Puck", -1, -1, m_hAssembling, TVI_ROOT);
+
+	tree.Expand(m_hAssembling, TVE_EXPAND);
+
+	tree.SetCheck(m_hAssembling, m_pDoc->m_bSeal);
+	tree.SetCheck(m_hSeal, m_pDoc->m_bSeal);
+	tree.SetCheck(m_hScrew, m_pDoc->m_bScrew);
+	tree.SetCheck(m_hPuck, m_pDoc->m_bPuck);
 }
 void CTreeDetails::AssertValid() const
 {
@@ -61,6 +66,11 @@ void CTreeDetails::Dump(CDumpContext& dc) const
 
 int CTreeDetails::OnCreate(LPCREATESTRUCT lpCreateStruct)
 {
+	lpCreateStruct->style |= TVS_HASLINES
+		| TVS_HASBUTTONS
+		| TVS_LINESATROOT
+		| TVS_SHOWSELALWAYS;
+
 	if (CTreeView::OnCreate(lpCreateStruct) == -1)
 		return -1;
 
