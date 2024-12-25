@@ -12,6 +12,7 @@
 
 #include "AssemblingDoc.h"
 #include "AssemblingView.h"
+#include "Assembler.h"
 
 #include "C:\Program Files\ASCON\KOMPAS-3D v22 Study\SDK\Include\ksConstants.h"
 #include "C:\Program Files\ASCON\KOMPAS-3D v22 Study\SDK\Include\ksConstants3D.h"
@@ -49,7 +50,39 @@ CAssemblingView::~CAssemblingView()
 void CAssemblingView::DoDataExchange(CDataExchange* pDX)
 {
 	CFormView::DoDataExchange(pDX);
+	DDX_Control(pDX, ID_SKETCH1, m_sketchPic);
 }
+
+void CAssemblingView::ConfigurePictures(int detail)
+{
+	CImage img = CImage();
+
+	switch (detail) {
+	case SEAL: {
+		img.Load(L"C:\\Users\\desxz\\source\\repos\\kompas3d-assembling\\kompas3d-assembling\\res\\1.bmp");
+		break;
+	}
+	case SCREW: {
+		break;
+	}
+	case PUCK: {
+		break;
+	}
+	case ASSEMBLING: {
+		img.Load(L"C:\\Users\\desxz\\Pictures\\Screenshots\\1.bmp");
+		break;
+	}
+	}
+
+	if (img == nullptr) {
+		return;
+	}
+
+	HBITMAP bitmap = img.Detach();
+	m_sketchPic.SetBitmap(bitmap);
+}
+
+
 
 BOOL CAssemblingView::PreCreateWindow(CREATESTRUCT& cs)
 {
@@ -93,28 +126,8 @@ CAssemblingDoc* CAssemblingView::GetDocument() const // non-debug version is inl
 
 void CAssemblingView::OnBnClickedButton1()
 {
-	KompasObjectPtr kompas;
-
-	kompas.CreateInstance(L"Kompas.Application.5");
-	kompas->Visible = true;
-
-	ksDocument3DPtr doc;
-	doc = kompas->Document3D();
-	doc->Create(false, true);
-	doc = kompas->ActiveDocument3D();
-	ksPartPtr part = doc->GetPart(pTop_Part);
-
-	//эскиз под вращение:
-	ksEntityPtr sketch = part->NewEntity(o3d_sketch);
-	ksSketchDefinitionPtr sketchDef = sketch->GetDefinition();
-	sketchDef->SetPlane(part->GetDefaultEntity(o3d_planeXOY));
-	sketch->Create();
-	ksDocument2DPtr doc2D = sketchDef->BeginEdit();
-	doc2D->ksLineSeg(0, 0, 0, 10, 1);
-	sketchDef->EndEdit();
-
-	//операция сохранения детали
-	CString name = L"Штифт";
-	doc->fileName = _bstr_t(name);
-	doc->SaveAs(L"C:\\Users\\desxz\\source\\repos\\Assembling\\Assembling");
+	auto pDoc = GetDocument();
+	if (pDoc->m_bSeal) {
+		m_pAssembler->CreateSeal();
+	}
 }

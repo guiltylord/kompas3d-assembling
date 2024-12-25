@@ -4,6 +4,7 @@
 #include "pch.h"
 #include "Assembling.h"
 #include "CTreeDetails.h"
+#include "AssemblingView.h"
 
 
 // CTreeDetails
@@ -42,7 +43,7 @@ void CTreeDetails::FillTree()
 
 	tree.Expand(m_hAssembling, TVE_EXPAND);
 
-	tree.SetCheck(m_hAssembling, m_pDoc->m_bSeal);
+	tree.SetCheck(m_hAssembling, m_pDoc->m_bAssembling);
 	tree.SetCheck(m_hSeal, m_pDoc->m_bSeal);
 	tree.SetCheck(m_hScrew, m_pDoc->m_bScrew);
 	tree.SetCheck(m_hPuck, m_pDoc->m_bPuck);
@@ -86,4 +87,28 @@ void CTreeDetails::OnLButtonDown(UINT nFlags, CPoint point)
 	// TODO: Add your message handler code here and/or call default
 
 	CTreeView::OnLButtonDown(nFlags, point);
+	CTreeCtrl& tree = GetTreeCtrl();
+
+	auto selTreeItem = tree.GetSelectedItem();
+	if (selTreeItem == nullptr) {
+		return;
+	}
+	auto selTable = tree.GetItemText(selTreeItem);
+
+	if (selTreeItem==m_hAssembling) {
+		m_pDoc->m_bAssembling = tree.GetCheck(m_hAssembling);
+		m_pDoc->m_pView->ConfigurePictures(ASSEMBLING);
+	}
+	if (selTreeItem==m_hSeal) {
+		m_pDoc->m_bSeal = true; 
+		m_pDoc->m_pView->ConfigurePictures(SEAL);
+	}
+	if (selTreeItem==m_hScrew) {
+		m_pDoc->m_bScrew = tree.GetCheck(m_hScrew);
+		m_pDoc->m_pView->ConfigurePictures(SCREW);
+	}
+	if (selTreeItem == m_hPuck) {
+		m_pDoc->m_bPuck = tree.GetCheck(m_hPuck);
+		m_pDoc->m_pView->ConfigurePictures(PUCK);
+	}
 }

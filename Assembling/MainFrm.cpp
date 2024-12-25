@@ -85,6 +85,7 @@ BOOL CMainFrame::OnCreateClient(LPCREATESTRUCT /*lpcs*/,
 
 	pDoc->m_pTree = (CTreeDetails*)m_wndSplitter.GetPane(0, 0);
 	pDoc->m_pView = (CAssemblingView*)m_wndSplitter.GetPane(0, 1);
+
 	return TRUE;
 }
 

@@ -11,6 +11,7 @@
 #endif
 
 #include "AssemblingDoc.h"
+#include "AssemblingView.h"
 #include "CTreeDetails.h"
 
 #include <propkey.h>
@@ -29,6 +30,7 @@ END_MESSAGE_MAP()
 
 // CAssemblingDoc construction/destruction
 class Assembler;
+class CAssemblingView;
 CAssemblingDoc::CAssemblingDoc() noexcept
 {
 	// TODO: add one-time construction code here
@@ -47,7 +49,7 @@ BOOL CAssemblingDoc::OnNewDocument()
 
 	m_pTree->m_pDoc = this;
 	m_pTree->FillTree();
-	auto t = Assembler();
+	m_pView->m_pAssembler = new Assembler();
 
 	return TRUE;
 }

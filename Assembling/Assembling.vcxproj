@@ -217,8 +217,10 @@
     <None Include="res\Assembling.rc2" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="..\..\..\..\Pictures\Screenshots\1.bmp" />
     <Image Include="res\Assembling.ico" />
     <Image Include="res\AssemblingDoc.ico" />
+    <Image Include="res\bitmap1.bmp" />
     <Image Include="res\Toolbar.bmp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

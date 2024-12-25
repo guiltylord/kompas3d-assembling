@@ -5,7 +5,16 @@
 #pragma once
 
 #include "AssemblingDoc.h"
+#include "Assembler.h"
 #include "CTreeDetails.h"
+
+#define SEAL 1 
+#define SCREW 2 
+#define PUCK 3 
+#define ASSEMBLING 0
+
+
+
 
 class CAssemblingView : public CFormView
 {
@@ -21,9 +30,11 @@ public:
 // Attributes
 public:
 	CAssemblingDoc* GetDocument() const;
+	Assembler* m_pAssembler;
 
 // Operations
 public:
+	void ConfigurePictures(int detail);
 
 // Overrides
 public:
@@ -47,6 +58,7 @@ protected:
 	DECLARE_MESSAGE_MAP()
 public:
 	afx_msg void OnBnClickedButton1();
+	CStatic m_sketchPic;
 };
 
 #ifndef _DEBUG  // debug version in AssemblingView.cpp
