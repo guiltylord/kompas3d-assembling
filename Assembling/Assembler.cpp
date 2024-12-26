@@ -266,7 +266,10 @@ void Assembler::CreateSeal()
 	pAxialHoleCutExtrude2->Create();
 
 	//операци€ сохранени€ детали
-	CString name = L"√нездо сальника.m3d";
-	pDoc->fileName = _bstr_t(name);
-	pDoc->SaveAs(L"C:\\Users\\desxz\\source\\repos\\Assembling\\√нездо.m3d");
+	string path = "C:\\Users\\desxz\\source\\repos\\Assembling\\Details\\";
+	string name = "√нездо сальника";
+	path += name+".m3d";
+
+	pDoc->fileName = _bstr_t(CString(name.c_str()));
+	pDoc->SaveAs(_bstr_t(CString(path.c_str())));
 }
