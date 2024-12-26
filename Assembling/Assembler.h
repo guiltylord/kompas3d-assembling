@@ -1,20 +1,20 @@
 #pragma once
 
 struct SealData {
-	float hexagon_bottom_depth;
-	float hexagon_bottom_radius;
-	float hexagon_bottom_angle_big;
-	float hexagon_bottom_angle_small;
+	float HBDepth;
+	float HBRad;
+	float HBAngleBig;
+	float HBAngleSmall;
 	
-	float hexagon_top_radius;
-	float hexagon_top_depth;
+	float HTRad;
+	float HTDepth;
 	
-	float hole_X;
-	float hole_radius_big;
-	float hole_radius_small;
+	float X_Pin;
+	float PinRad;
+	float GrooveRad;
 
-	float hole_axial_big;
-	float hole_axial_small;
+	float AxHole;
+	float AxHoleThru;
 };
 
 

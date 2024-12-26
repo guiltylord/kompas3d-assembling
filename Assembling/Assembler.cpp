@@ -7,10 +7,6 @@
 #include "afxdialogex.h"
 #include <atlsafe.h>
 
-
-
-
-
 #include "framework.h"
 
 #include <string>
@@ -35,23 +31,23 @@ Assembler::~Assembler()
 
 SealData Assembler::GetSeal(int type)
 {
-	SealData seal = SealData();
+	auto seal = SealData();
 	switch (type) {
 	case 1:
-		seal.hexagon_bottom_radius = 23;
-		seal.hexagon_bottom_angle_big = 65 * M_PI / 180;
-		seal.hexagon_bottom_angle_small = 55 * M_PI / 180;
-		seal.hexagon_bottom_depth = 3;
+		seal.HBRad = 23;
+		seal.HBAngleBig = 65 * M_PI / 180;
+		seal.HBAngleSmall = 55 * M_PI / 180;
+		seal.HBDepth = 3;
 		
-		seal.hexagon_top_radius = 21.9 / 2;
-		seal.hexagon_top_depth = 15;
+		seal.HTRad = 21.9 / 2;
+		seal.HTDepth = 15;
 
-		seal.hole_X = 34/2;
-		seal.hole_radius_big = 8 / 2;
-		seal.hole_radius_small = 4.5 / 2;
+		seal.X_Pin = 34/2;
+		seal.GrooveRad = 8 / 2;
+		seal.PinRad = 4.5 / 2;
 
-		seal.hole_axial_big = 16 / 2;
-		seal.hole_axial_small = 8 / 2;
+		seal.AxHole = 16 / 2;
+		seal.AxHoleThru = 8 / 2;
 	}
 
 	return seal;
@@ -100,174 +96,174 @@ void Assembler::CreateSeal()
 	pDoc->Create(false, true);
 	pDoc = pKompasApp5->ActiveDocument3D();
 	ksPartPtr pPart = pDoc->GetPart(pTop_Part);
+	ksDocument2DPtr p2DDoc;
 
-	//эскиз дно
-	ksEntityPtr sketchHex = pPart->NewEntity(o3d_sketch);
-	ksSketchDefinitionPtr sketchDef = sketchHex->GetDefinition();
-	sketchDef->SetPlane(pPart->GetDefaultEntity(o3d_planeXOY));
-	sketchHex->Create();
-	ksDocument2DPtr doc2D = sketchDef->BeginEdit();
+	//эскиз дно Hexaagon Bottom
+	ksEntityPtr pHBSketch = pPart->NewEntity(o3d_sketch);
+	ksSketchDefinitionPtr pHBSketchDef = pHBSketch->GetDefinition();
+	pHBSketchDef->SetPlane(pPart->GetDefaultEntity(o3d_planeXOY));
+	pHBSketch->Create();
+	p2DDoc = pHBSketchDef->BeginEdit();
 
-	auto Seal = GetSeal(1);
+	SealData Seal = GetSeal(1);
 
-	auto cosBig = cos(Seal.hexagon_bottom_angle_big);
-	auto sinBig = sin(Seal.hexagon_bottom_angle_big);
-	auto cosSmall = cos(Seal.hexagon_bottom_angle_small);
-	auto sinSmall = sin(Seal.hexagon_bottom_angle_small);
+	auto cosBig = cos(Seal.HBAngleBig);
+	auto sinBig = sin(Seal.HBAngleBig);
+	auto cosSmall = cos(Seal.HBAngleSmall);
+	auto sinSmall = sin(Seal.HBAngleSmall);
 
-	auto X1 = Seal.hexagon_bottom_radius * cosBig;
-	auto Y1 = Seal.hexagon_bottom_radius * sinBig;
-	auto X2 = Seal.hexagon_bottom_radius * cosSmall;
-	auto Y2 = Seal.hexagon_bottom_radius * sinSmall;
-	auto X3 = Seal.hexagon_bottom_radius * cos(Seal.hexagon_bottom_angle_small+120*M_PI/180);
-	auto Y3 = Seal.hexagon_bottom_radius * sin(Seal.hexagon_bottom_angle_small+120*M_PI/180);
+	auto X1 = Seal.HBRad * cosBig;
+	auto Y1 = Seal.HBRad * sinBig;
+	auto X2 = Seal.HBRad * cosSmall;
+	auto Y2 = Seal.HBRad * sinSmall;
+	auto X3 = Seal.HBRad * cos(Seal.HBAngleSmall+120*M_PI/180);
+	auto Y3 = Seal.HBRad * sin(Seal.HBAngleSmall+120*M_PI/180);
 
-	doc2D->ksLineSeg(X1, Y1, X2, Y2, 1);
-	doc2D->ksLineSeg(X2, Y2, X2, -Y2, 1);
-	doc2D->ksLineSeg(X2, -Y2, X1, -Y1, 1);
-	doc2D->ksLineSeg(X1, -Y1, X3, -Y3, 1);
-	doc2D->ksLineSeg(X3, -Y3, X3, Y3, 1);
-	doc2D->ksLineSeg(X3, Y3, X1, Y1, 1);
+	p2DDoc->ksLineSeg(X1, Y1, X2, Y2, 1);
+	p2DDoc->ksLineSeg(X2, Y2, X2, -Y2, 1);
+	p2DDoc->ksLineSeg(X2, -Y2, X1, -Y1, 1);
+	p2DDoc->ksLineSeg(X1, -Y1, X3, -Y3, 1);
+	p2DDoc->ksLineSeg(X3, -Y3, X3, Y3, 1);
+	p2DDoc->ksLineSeg(X3, Y3, X1, Y1, 1);
 
-	sketchDef->EndEdit();
+	pHBSketchDef->EndEdit();
 
-	//выдавливание hexagon
-	ksEntityPtr pExtrude1 = pPart->NewEntity(o3d_bossExtrusion);
-	ksBossExtrusionDefinitionPtr PEP = pExtrude1->GetDefinition();
-	PEP->directionType = dtNormal;
-	PEP->SetSketch(sketchHex);
-	PEP->SetSideParam(true, 0, Seal.hexagon_bottom_depth, 0, false);
-	pExtrude1->Create();
+	//выдавливание HB
+	ksEntityPtr pHBExtrude = pPart->NewEntity(o3d_bossExtrusion);
+	ksBossExtrusionDefinitionPtr pHBBossExtrusionDef = pHBExtrude->GetDefinition();
+	pHBBossExtrusionDef->directionType = dtNormal;
+	pHBBossExtrusionDef->SetSketch(pHBSketch);
+	pHBBossExtrusionDef->SetSideParam(true, 0, Seal.HBDepth, 0, false);
+	pHBExtrude->Create();
 
 	//смещенная плоскость
-	ksEntityPtr pPlane1 = pPart->NewEntity(o3d_planeOffset);
-	ksPlaneOffsetDefinitionPtr pSketch3 = pPlane1->GetDefinition();
-	pSketch3->direction = true;
-	pSketch3->offset = 3;
-	pSketch3->SetPlane(pPart->GetDefaultEntity(o3d_planeXOY));
-	pPlane1->Create();
+	ksEntityPtr pHBPlane = pPart->NewEntity(o3d_planeOffset);
+	ksPlaneOffsetDefinitionPtr pHBOffsetPlane = pHBPlane->GetDefinition();
+	pHBOffsetPlane->direction = true;
+	pHBOffsetPlane->offset = 3;
+	pHBOffsetPlane->SetPlane(pPart->GetDefaultEntity(o3d_planeXOY));
+	pHBPlane->Create();
 
-	//эскиз hexagon2
-	ksEntityPtr sketchHex2 = pPart->NewEntity(o3d_sketch);
-	ksSketchDefinitionPtr sketchDef1 = sketchHex2->GetDefinition();
-	sketchDef1->SetPlane(pPlane1);
-	sketchHex2->Create();
+	//эскиз Hexagon Top
+	ksEntityPtr pHTSketch = pPart->NewEntity(o3d_sketch);
+	ksSketchDefinitionPtr pHTSketchDef = pHTSketch->GetDefinition();
+	pHTSketchDef->SetPlane(pHBPlane);
+	pHTSketch->Create();
 
-	auto X_hex2 = Seal.hexagon_top_radius * cos(30*M_PI/180);
-	auto Y_hex2 = Seal.hexagon_top_radius / 2;
+	auto X_hex2 = Seal.HTRad * cos(30*M_PI/180);
+	auto Y_hex2 = Seal.HTRad / 2;
 
-	doc2D = sketchDef1->BeginEdit();
-	doc2D->ksLineSeg(0, Seal.hexagon_top_radius, X_hex2, Y_hex2, 1);
-	doc2D->ksLineSeg(X_hex2, Y_hex2, X_hex2, -Y_hex2, 1);
-	doc2D->ksLineSeg(X_hex2, -Y_hex2, 0, -Seal.hexagon_top_radius, 1);
-	doc2D->ksLineSeg(0, -Seal.hexagon_top_radius, -X_hex2, -Y_hex2, 1);
-	doc2D->ksLineSeg(-X_hex2, -Y_hex2, -X_hex2, Y_hex2, 1);
-	doc2D->ksLineSeg(-X_hex2, Y_hex2, 0, Seal.hexagon_top_radius, 1);
+	p2DDoc = pHTSketchDef->BeginEdit();
+	p2DDoc->ksLineSeg(0, Seal.HTRad, X_hex2, Y_hex2, 1);
+	p2DDoc->ksLineSeg(X_hex2, Y_hex2, X_hex2, -Y_hex2, 1);
+	p2DDoc->ksLineSeg(X_hex2, -Y_hex2, 0, -Seal.HTRad, 1);
+	p2DDoc->ksLineSeg(0, -Seal.HTRad, -X_hex2, -Y_hex2, 1);
+	p2DDoc->ksLineSeg(-X_hex2, -Y_hex2, -X_hex2, Y_hex2, 1);
+	p2DDoc->ksLineSeg(-X_hex2, Y_hex2, 0, Seal.HTRad, 1);
 
-	sketchDef1->EndEdit();
+	pHTSketchDef->EndEdit();
 
-	//эскиз отверстие 1
-	ksEntityPtr sketchHole = pPart->NewEntity(o3d_sketch);
-	ksSketchDefinitionPtr sketchDefHole = sketchHole->GetDefinition();
-	sketchDefHole->SetPlane(pPlane1);
-	sketchHole->Create();
+	//эскиз отверстия несквозного Groove
+	ksEntityPtr pGrooveSketch = pPart->NewEntity(o3d_sketch);
+	ksSketchDefinitionPtr pGrooveSketchDef = pGrooveSketch->GetDefinition();
+	pGrooveSketchDef->SetPlane(pHBPlane);
+	pGrooveSketch->Create();
 
-	doc2D = sketchDefHole->BeginEdit();
-	doc2D->ksCircle(-Seal.hole_X, 0, Seal.hole_radius_big, 1);
+	p2DDoc = pGrooveSketchDef->BeginEdit();
+	p2DDoc->ksCircle(-Seal.X_Pin, 0, Seal.GrooveRad, 1);
 
-	sketchDefHole->EndEdit();
+	pGrooveSketchDef->EndEdit();
 
-	//эскиз отверстие 2
-	ksEntityPtr sketchHole2 = pPart->NewEntity(o3d_sketch);
-	ksSketchDefinitionPtr sketchDefHole2 = sketchHole2->GetDefinition();
-	sketchDefHole2->SetPlane(pPlane1);
-	sketchHole2->Create();
+	//эскиз отверстие сквозного Pin
+	ksEntityPtr pPinSketch = pPart->NewEntity(o3d_sketch);
+	ksSketchDefinitionPtr pPinSketchDef = pPinSketch->GetDefinition();
+	pPinSketchDef->SetPlane(pHBPlane);
+	pPinSketch->Create();
 
-	doc2D = sketchDefHole2->BeginEdit();
-	doc2D->ksCircle(-Seal.hole_X, 0, Seal.hole_radius_small, 1);
+	p2DDoc = pPinSketchDef->BeginEdit();
+	p2DDoc->ksCircle(-Seal.X_Pin, 0, Seal.PinRad, 1);
 
-	sketchDefHole2->EndEdit();
+	pPinSketchDef->EndEdit();
 
-	//выдавливание hexagon2
-	ksEntityPtr pExtrude2 = pPart->NewEntity(o3d_bossExtrusion);
-	PEP = pExtrude2->GetDefinition();
-	PEP->directionType = dtNormal;
-	PEP->SetSketch(sketchHex2);
-	PEP->SetSideParam(true, 0, Seal.hexagon_top_depth, 0, false);
-	pExtrude2->Create();
+	//выдавливание HT
+	ksEntityPtr pTopExtrude = pPart->NewEntity(o3d_bossExtrusion);
+	ksBossExtrusionDefinitionPtr pTopBossExtrusionDef = pTopExtrude->GetDefinition();
+	pTopBossExtrusionDef->directionType = dtNormal;
+	pTopBossExtrusionDef->SetSketch(pHTSketch);
+	pTopBossExtrusionDef->SetSideParam(true, 0, Seal.HTDepth, 0, false);
+	pTopExtrude->Create();
 
-	//вырезание hole big
-	ksEntityPtr pCutExtrude1 = pPart->NewEntity(o3d_cutExtrusion);
-	ksCutExtrusionDefinitionPtr BED = pCutExtrude1->GetDefinition();
-	BED->directionType = dtNormal;
-	BED->SetSketch(sketchDefHole);
-	BED->SetSideParam(true, etBlind, 2, 0, false);
-	pCutExtrude1->Create();
+	//вырезание Groove
+	ksEntityPtr pGrooveCutExtrude = pPart->NewEntity(o3d_cutExtrusion);
+	ksCutExtrusionDefinitionPtr pGrooveCutExtrudeDef = pGrooveCutExtrude->GetDefinition();
+	pGrooveCutExtrudeDef->directionType = dtNormal;
+	pGrooveCutExtrudeDef->SetSketch(pGrooveSketchDef);
+	pGrooveCutExtrudeDef->SetSideParam(true, etBlind, 2, 0, false);
+	pGrooveCutExtrude->Create();
 
-	//вырезание hole small
-	ksEntityPtr pCutExtrude2 = pPart->NewEntity(o3d_cutExtrusion);
-	ksCutExtrusionDefinitionPtr BED2 = pCutExtrude2->GetDefinition();
-	BED2->directionType = dtNormal;
-	BED2->SetSketch(sketchDefHole2);
-	BED2->SetSideParam(true, etThroughAll, 0, 0, false);
-	pCutExtrude2->Create();
+	//вырезание Pin
+	ksEntityPtr pPinCutExtrude = pPart->NewEntity(o3d_cutExtrusion);
+	ksCutExtrusionDefinitionPtr pPinCutExtrudeDef = pPinCutExtrude->GetDefinition();
+	pPinCutExtrudeDef->directionType = dtNormal;
+	pPinCutExtrudeDef->SetSketch(pPinSketchDef);
+	pPinCutExtrudeDef->SetSideParam(true, etThroughAll, 0, 0, false);
+	pPinCutExtrude->Create();
 
-	//массив hole
-	ksEntityPtr pCircCopy2 = pPart->NewEntity(o3d_circularCopy); // Получаем интерфейс объекта операции
-	ksCircularCopyDefinitionPtr pCircDef = pCircCopy2->GetDefinition(); // Получаем интерфейс параметров операции
+	//массив Groove+Pin
+	ksEntityPtr pCircCopy = pPart->NewEntity(o3d_circularCopy); 
+	ksCircularCopyDefinitionPtr pCircCopyDef = pCircCopy->GetDefinition();
 
-	pCircDef->Putcount2(3); // Количество копий
-	pCircDef->SetAxis(pPart->GetDefaultEntity(o3d_axisOZ)); // Установка оси
+	pCircCopyDef->Putcount2(3);
+	pCircCopyDef->SetAxis(pPart->GetDefaultEntity(o3d_axisOZ)); 
 
-	ksEntityCollectionPtr fl1 = pCircDef->GetOperationArray();
-	fl1->Clear();
-	fl1->Add(pCutExtrude1);
-	fl1->Add(pCutExtrude2);
+	ksEntityCollectionPtr pEntColl = pCircCopyDef->GetOperationArray();
+	pEntColl->Clear();
+	pEntColl->Add(pGrooveCutExtrude);
+	pEntColl->Add(pPinCutExtrude);
 
-	pCircCopy2->Create();
+	pCircCopy->Create();
 
 	//смещенная плоскость для осевого отверстия
-	ksEntityPtr pPlane24 = pPart->NewEntity(o3d_planeOffset);
-	ksPlaneOffsetDefinitionPtr pSketch12 = pPlane24->GetDefinition();
-	pSketch12->direction = true;
-	auto t = Seal.hexagon_bottom_depth + Seal.hexagon_top_depth;
-	pSketch12->offset = t;
-	pSketch12->SetPlane(pPart->GetDefaultEntity(o3d_planeXOY));
-	pPlane24->Create();
+	ksEntityPtr pTopPlane = pPart->NewEntity(o3d_planeOffset);
+	ksPlaneOffsetDefinitionPtr pTopPlaneDef = pTopPlane->GetDefinition();
+	pTopPlaneDef->direction = true;
+	pTopPlaneDef->offset = Seal.HBDepth + Seal.HTDepth;
+	pTopPlaneDef->SetPlane(pPart->GetDefaultEntity(o3d_planeXOY));
+	pTopPlane->Create();
 
 	//эскиз осевого отверстия 
-	ksEntityPtr sketchAxialHole = pPart->NewEntity(o3d_sketch);
-	ksSketchDefinitionPtr sketchDefAxialHole = sketchAxialHole->GetDefinition();
-	sketchDefAxialHole->SetPlane(pPlane24);
-	sketchAxialHole->Create();
-	doc2D = sketchDefAxialHole->BeginEdit();
-	doc2D->ksCircle(0, 0, Seal.hole_axial_big, 1);
-	sketchDefAxialHole->EndEdit();
+	ksEntityPtr pAxialHoleSketch = pPart->NewEntity(o3d_sketch);
+	ksSketchDefinitionPtr pAxialHoleSketchDef = pAxialHoleSketch->GetDefinition();
+	pAxialHoleSketchDef->SetPlane(pTopPlane);
+	pAxialHoleSketch->Create();
+	p2DDoc = pAxialHoleSketchDef->BeginEdit();
+	p2DDoc->ksCircle(0, 0, Seal.AxHole, 1);
+	pAxialHoleSketchDef->EndEdit();
 
 	//вырезание осевого отверстия
-	ksEntityPtr pCutExtrude3 = pPart->NewEntity(o3d_cutExtrusion);
-	ksCutExtrusionDefinitionPtr BED3 = pCutExtrude3->GetDefinition();
-	BED3->directionType = dtNormal;
-	BED3->SetSketch(sketchDefAxialHole);
-	BED3->SetSideParam(true, etBlind, Seal.hexagon_top_depth, 0, false);
-	pCutExtrude3->Create();
+	ksEntityPtr pAxialHoleCutExtrude = pPart->NewEntity(o3d_cutExtrusion);
+	ksCutExtrusionDefinitionPtr pAxialHoleCutExtrudeDef = pAxialHoleCutExtrude->GetDefinition();
+	pAxialHoleCutExtrudeDef->directionType = dtNormal;
+	pAxialHoleCutExtrudeDef->SetSketch(pAxialHoleSketchDef);
+	pAxialHoleCutExtrudeDef->SetSideParam(true, etBlind, Seal.HTDepth, 0, false);
+	pAxialHoleCutExtrude->Create();
 
 	//эскиз осевого отверстия малого
-	ksEntityPtr sketchAxialHole2 = pPart->NewEntity(o3d_sketch);
-	ksSketchDefinitionPtr sketchDefAxialHole2 = sketchAxialHole2->GetDefinition();
-	sketchDefAxialHole2->SetPlane(pPart->GetDefaultEntity(o3d_planeXOY));
-	sketchAxialHole2->Create();
-	doc2D = sketchDefAxialHole2->BeginEdit();
-	doc2D->ksCircle(0, 0, Seal.hole_axial_small, 1);
-	sketchDefAxialHole2->EndEdit();
+	ksEntityPtr pAxialHoleSketch2 = pPart->NewEntity(o3d_sketch);
+	ksSketchDefinitionPtr pAxialHoleSketchDef2 = pAxialHoleSketch2->GetDefinition();
+	pAxialHoleSketchDef2->SetPlane(pPart->GetDefaultEntity(o3d_planeXOY));
+	pAxialHoleSketch2->Create();
+	p2DDoc = pAxialHoleSketchDef2->BeginEdit();
+	p2DDoc->ksCircle(0, 0, Seal.AxHoleThru, 1);
+	pAxialHoleSketchDef2->EndEdit();
 
 	//вырезание осевого отверстия
-	ksEntityPtr pCutExtrude4 = pPart->NewEntity(o3d_cutExtrusion);
-	ksCutExtrusionDefinitionPtr BED4 = pCutExtrude4->GetDefinition();
-	BED4->directionType = dtReverse;
-	BED4->SetSketch(sketchDefAxialHole2);
-	BED4->SetSideParam(true, etBlind, Seal.hexagon_bottom_depth, 0, false);
-	pCutExtrude4->Create();
+	ksEntityPtr pAxialHoleCutExtrude2 = pPart->NewEntity(o3d_cutExtrusion);
+	ksCutExtrusionDefinitionPtr pAxialHoleCutExtrudeDef2 = pAxialHoleCutExtrude2->GetDefinition();
+	pAxialHoleCutExtrudeDef2->directionType = dtReverse;
+	pAxialHoleCutExtrudeDef2->SetSketch(pAxialHoleSketchDef2);
+	pAxialHoleCutExtrudeDef2->SetSideParam(true, etBlind, Seal.HBDepth, 0, false);
+	pAxialHoleCutExtrude2->Create();
 
 	//операция сохранения детали
 	CString name = L"Гнездо сальника.m3d";
