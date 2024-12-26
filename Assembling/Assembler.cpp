@@ -83,7 +83,7 @@ void Assembler::CreateSeal()
 		}
 	}
 
-	//kompas->Visible = true;
+	pKompasApp5->Visible = true;
 
 	pDoc = pKompasApp5->Document3D();
 	pDoc->Create(false, true);
@@ -116,6 +116,7 @@ void Assembler::CreateSeal()
 	doc2D->ksLineSeg(X2, -Y2, X1, -Y1, 1);
 	doc2D->ksLineSeg(X1, -Y1, X3, -Y3, 1);
 	doc2D->ksLineSeg(X3, -Y3, X3, Y3, 1);
+	doc2D->ksLineSeg(X3, Y3, X1, Y1, 1);
 
 	sketchDef->EndEdit();
 
