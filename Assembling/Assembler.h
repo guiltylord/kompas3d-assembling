@@ -1,9 +1,9 @@
 #pragma once
 
 struct SealData {
-	float bottom_radius;
-	float bottom_angle_big;
-	float bottom_angle_small;
+	float hexagon_radius;
+	float hexagon_angle_big;
+	float hexagon_angle_small;
 
 };
 
