@@ -13,10 +13,22 @@ struct SealData {
 	float PinRad;
 	float GrooveRad;
 
-	float AxHole;
-	float AxHoleThru;
+	float AxHoleRad;
+	float AxHoleThruRad;
 };
 
+struct ScrewData {
+	float LegHeight;
+	float LegThick;
+
+	float HexDepth;
+	float HexRad;
+
+	float AxHoleRad;
+
+	float GasketHeight;
+	float GasketWidth;
+};
 
 class Assembler
 {
@@ -25,9 +37,10 @@ public:
 	~Assembler();
 	
 	SealData GetSeal(int type);
-
+	ScrewData GetScrew(int type);
 
 	void CreateSeal();
+	void CreateScrew();
 
 };
 

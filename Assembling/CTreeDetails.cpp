@@ -104,7 +104,7 @@ void CTreeDetails::OnLButtonDown(UINT nFlags, CPoint point)
 		m_pDoc->m_pView->ConfigurePictures(SEAL);
 	}
 	if (selTreeItem==m_hScrew) {
-		m_pDoc->m_bScrew = tree.GetCheck(m_hScrew);
+		m_pDoc->m_bScrew = true;
 		m_pDoc->m_pView->ConfigurePictures(SCREW);
 	}
 	if (selTreeItem == m_hPuck) {

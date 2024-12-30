@@ -19,7 +19,6 @@ using namespace std;
 
 
 KompasObjectPtr pKompasApp5;
-ksDocument3DPtr pDoc;
 
 Assembler::Assembler()
 {
@@ -46,19 +45,38 @@ SealData Assembler::GetSeal(int type)
 		seal.GrooveRad = 8 / 2;
 		seal.PinRad = 4.5 / 2;
 
-		seal.AxHole = 16 / 2;
-		seal.AxHoleThru = 8 / 2;
+		seal.AxHoleRad = 16 / 2;
+		seal.AxHoleThruRad = 8 / 2;
 	}
 
 	return seal;
 }
 
+ScrewData Assembler::GetScrew(int type)
+{
+	auto screw = ScrewData();
+	switch (type) {
+	case 1:
+		screw.LegHeight = 15;
+		screw.LegThick = 3;
+
+		screw.HexDepth = 3;
+		screw.HexRad = 21.9 / 2;
+
+		screw.AxHoleRad = 5;
+
+		screw.GasketHeight = 3 / 2;
+		screw.GasketWidth = 3 / 2;
+	}
+
+	return screw;
+}
+
 void Assembler::CreateSeal()
 {
-	//CCmdTarget::BeginWaitCursor();
-	//kompas.CreateInstance(L"Kompas.Application.5");
-
+	ksDocument3DPtr p3DDoc;
 	CComPtr<IUnknown> pKompasAppUnk = nullptr;
+
 	if (!pKompasApp5)
 	{
 		// Получаем CLSID для Компас
@@ -92,13 +110,13 @@ void Assembler::CreateSeal()
 
 	pKompasApp5->Visible = true;
 
-	pDoc = pKompasApp5->Document3D();
-	pDoc->Create(false, true);
-	pDoc = pKompasApp5->ActiveDocument3D();
-	ksPartPtr pPart = pDoc->GetPart(pTop_Part);
+	p3DDoc = pKompasApp5->Document3D();
+	p3DDoc->Create(false, true);
+	p3DDoc = pKompasApp5->ActiveDocument3D();
+	ksPartPtr pPart = p3DDoc->GetPart(pTop_Part);
 	ksDocument2DPtr p2DDoc;
 
-	//эскиз дно Hexaagon Bottom
+	//эскиз дно Hexagon Bottom
 	ksEntityPtr pHBSketch = pPart->NewEntity(o3d_sketch);
 	ksSketchDefinitionPtr pHBSketchDef = pHBSketch->GetDefinition();
 	pHBSketchDef->SetPlane(pPart->GetDefaultEntity(o3d_planeXOY));
@@ -237,7 +255,7 @@ void Assembler::CreateSeal()
 	pAxialHoleSketchDef->SetPlane(pTopPlane);
 	pAxialHoleSketch->Create();
 	p2DDoc = pAxialHoleSketchDef->BeginEdit();
-	p2DDoc->ksCircle(0, 0, Seal.AxHole, 1);
+	p2DDoc->ksCircle(0, 0, Seal.AxHoleRad, 1);
 	pAxialHoleSketchDef->EndEdit();
 
 	//вырезание осевого отверстия
@@ -254,7 +272,7 @@ void Assembler::CreateSeal()
 	pAxialHoleSketchDef2->SetPlane(pPart->GetDefaultEntity(o3d_planeXOY));
 	pAxialHoleSketch2->Create();
 	p2DDoc = pAxialHoleSketchDef2->BeginEdit();
-	p2DDoc->ksCircle(0, 0, Seal.AxHoleThru, 1);
+	p2DDoc->ksCircle(0, 0, Seal.AxHoleThruRad, 1);
 	pAxialHoleSketchDef2->EndEdit();
 
 	//вырезание осевого отверстия
@@ -265,11 +283,122 @@ void Assembler::CreateSeal()
 	pAxialHoleCutExtrudeDef2->SetSideParam(true, etBlind, Seal.HBDepth, 0, false);
 	pAxialHoleCutExtrude2->Create();
 
+	//p3DDoc->hideAllPlanes=true;
+	
+	//p3DDoc->hideInComponentsMode; //doesnt work
+	
 	//операция сохранения детали
 	string path = "C:\\Users\\desxz\\source\\repos\\Assembling\\Details\\";
 	string name = "Гнездо сальника";
 	path += name+".m3d";
 
-	pDoc->fileName = _bstr_t(CString(name.c_str()));
-	pDoc->SaveAs(_bstr_t(CString(path.c_str())));
+	p3DDoc->fileName = _bstr_t(CString(name.c_str()));
+	p3DDoc->SaveAs(_bstr_t(CString(path.c_str())));
+}
+
+void Assembler::CreateScrew()
+{
+	ksDocument3DPtr p3DDoc;
+	CComPtr<IUnknown> pKompasAppUnk = nullptr;
+
+	if (!pKompasApp5)
+	{
+		// Получаем CLSID для Компас
+		CLSID InvAppClsid;
+		HRESULT hRes = CLSIDFromProgID(L"Kompas.Application.5", &InvAppClsid);
+		if (FAILED(hRes)) {
+			pKompasApp5 = nullptr;
+			return;
+		}
+
+		// Проверяем есть ли запущенный экземпляр Компас
+		//если есть получаем IUnknown
+		hRes = ::GetActiveObject(InvAppClsid, NULL, &pKompasAppUnk);
+		if (FAILED(hRes)) {
+			// Приходится запускать Компас самим так как работающего нет
+			// Также получаем IUnknown для только что запущенного приложения Компас
+			TRACE(L"Could not get hold of an active Inventor, will start a new session\n");
+			hRes = CoCreateInstance(InvAppClsid, NULL, CLSCTX_LOCAL_SERVER, __uuidof(IUnknown), (void**)&pKompasAppUnk);
+			if (FAILED(hRes)) {
+				pKompasApp5 = nullptr;
+				return;
+			}
+		}
+
+		// Получаем интерфейс приложения Компас
+		hRes = pKompasAppUnk->QueryInterface(__uuidof(KompasObject), (void**)&pKompasApp5);
+		if (FAILED(hRes)) {
+			return;
+		}
+	}
+
+	pKompasApp5->Visible = true;
+
+	p3DDoc = pKompasApp5->Document3D();
+	p3DDoc->Create(false, true);
+	p3DDoc = pKompasApp5->ActiveDocument3D();
+	ksPartPtr pPart = p3DDoc->GetPart(pTop_Part);
+	ksDocument2DPtr p2DDoc;
+
+	//эскиз дно Hexagon
+	ksEntityPtr pHexSketch = pPart->NewEntity(o3d_sketch);
+	ksSketchDefinitionPtr pHexSketchDef = pHexSketch->GetDefinition();
+	pHexSketchDef->SetPlane(pPart->GetDefaultEntity(o3d_planeXOY));
+	pHexSketch->Create();
+	
+	ScrewData Screw = GetScrew(1);
+	//описание вар
+	auto X_hex = Screw.HexRad * cos(30 * M_PI / 180);
+	auto Y_hex = Screw.HexRad / 2;
+
+	p2DDoc = pHexSketchDef->BeginEdit();
+	p2DDoc->ksLineSeg(0, Screw.HexRad, X_hex, Y_hex, 1);
+	p2DDoc->ksLineSeg(X_hex, Y_hex, X_hex, -Y_hex, 1);
+	p2DDoc->ksLineSeg(X_hex, -Y_hex, 0, -Screw.HexRad, 1);
+	p2DDoc->ksLineSeg(0, -Screw.HexRad, -X_hex, -Y_hex, 1);
+	p2DDoc->ksLineSeg(-X_hex, -Y_hex, -X_hex, Y_hex, 1);
+	p2DDoc->ksLineSeg(-X_hex, Y_hex, 0, Screw.HexRad, 1);
+
+	pHexSketchDef->EndEdit();
+
+	//выдавливание Hexagon
+	ksEntityPtr pHBExtrude = pPart->NewEntity(o3d_bossExtrusion);
+	ksBossExtrusionDefinitionPtr pHBBossExtrusionDef = pHBExtrude->GetDefinition();
+	pHBBossExtrusionDef->directionType = dtNormal;
+	pHBBossExtrusionDef->SetSketch(pHexSketch);
+	pHBBossExtrusionDef->SetSideParam(true, 0, Screw.HexDepth, 0, false);
+	pHBExtrude->Create();
+
+	//эскиз Leg
+	ksEntityPtr pLegSketch = pPart->NewEntity(o3d_sketch);
+	ksSketchDefinitionPtr pLegSketchDef = pLegSketch->GetDefinition();
+	pLegSketchDef->SetPlane(pPart->GetDefaultEntity(o3d_planeXOZ));
+	pLegSketchDef->SetLoftPoint(0, 10);
+	pLegSketch->Create();
+
+	auto X_ax = -(Screw.AxHoleRad);
+	auto Y1_ax = -(Screw.HexDepth);
+	auto Y2_ax = -(Screw.LegHeight);
+	auto X_out = (X_ax - Screw.LegThick);
+	auto Y1_out = (Y1_ax - Screw.GasketHeight);
+	auto X_in = (X_ax - Screw.GasketWidth);
+
+	p2DDoc = pLegSketchDef->BeginEdit();
+	p2DDoc->ksLineSeg(X_ax, Y1_ax, X_ax, Y2_ax, 1);
+	p2DDoc->ksLineSeg(X_ax, Y2_ax, X_out, Y2_ax, 1);
+	p2DDoc->ksLineSeg(X_out, Y2_ax, X_out, Y1_out, 1);
+	p2DDoc->ksLineSeg(X_out, Y1_out, X_in, Y1_out, 1);
+	p2DDoc->ksLineSeg(X_in, Y1_out, X_in, Y1_ax, 1);
+	p2DDoc->ksLineSeg(X_in, Y1_ax, X_ax, Y1_ax, 1);
+
+
+	pLegSketchDef->EndEdit();
+
+
+	string path = "C:\\Users\\desxz\\source\\repos\\Assembling\\Details\\";
+	string name = "Гайка нажимная";
+	path += name + ".m3d";
+
+	p3DDoc->fileName = _bstr_t(CString(name.c_str()));
+	p3DDoc->SaveAs(_bstr_t(CString(path.c_str())));
 }

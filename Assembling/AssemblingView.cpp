@@ -130,4 +130,7 @@ void CAssemblingView::OnBnClickedButton1()
 	if (pDoc->m_bSeal) {
 		m_pAssembler->CreateSeal();
 	}
+	if (pDoc->m_bScrew) {
+		m_pAssembler->CreateScrew();
+	}
 }
