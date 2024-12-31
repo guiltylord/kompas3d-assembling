@@ -305,6 +305,11 @@ void Assembler::CreateSeal()
 	string name = "Гнездо сальника";
 	path += name+".m3d";
 
+
+	pPart->SetAdvancedColor(RGB(150, 0, 0), 1, 1, 1, 1, 1, 0.5);
+	pPart->Update();
+
+
 	p3DDoc->fileName = _bstr_t(CString(name.c_str()));
 	p3DDoc->SaveAs(_bstr_t(CString(path.c_str())));
 }
@@ -462,6 +467,11 @@ void Assembler::CreateScrew()
 	//pChamfer->Create();
 	//fl->Clear();
 
+
+	pPart->SetAdvancedColor(RGB(0, 150, 0), 1, 1, 1, 1, 1, 0.5);
+	pPart->Update();
+
+
 	string path = "C:\\Users\\desxz\\source\\repos\\Assembling\\Details\\";
 	string name = "Гайка нажимная";
 	path += name + ".m3d";
@@ -543,6 +553,9 @@ void Assembler::CreatePuck()
 	pRotDef->SetSideParam(FALSE, 360);
 	pRot->Create();
 
+	pPart->SetAdvancedColor(RGB(200, 150, 30), 1, 1, 1, 1, 1, 0.5);
+	pPart->SetMaterial(L"СКФ-26 ГОСТ 18376-79", 1.83); //фторкаучук
+	pPart->Update();
 
 	string path = "C:\\Users\\desxz\\source\\repos\\Assembling\\Details\\";
 	string name = "Шайба";
