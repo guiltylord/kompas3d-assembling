@@ -133,4 +133,7 @@ void CAssemblingView::OnBnClickedButton1()
 	if (pDoc->m_bScrew) {
 		m_pAssembler->CreateScrew();
 	}
+	if (pDoc->m_bPuck) {
+		m_pAssembler->CreatePuck();
+	}
 }

@@ -108,7 +108,8 @@ void CTreeDetails::OnLButtonDown(UINT nFlags, CPoint point)
 		m_pDoc->m_pView->ConfigurePictures(SCREW);
 	}
 	if (selTreeItem == m_hPuck) {
-		m_pDoc->m_bPuck = tree.GetCheck(m_hPuck);
+		m_pDoc->m_bPuck = true;
+		//m_pDoc->m_bPuck = tree.GetCheck(m_hPuck);
 		m_pDoc->m_pView->ConfigurePictures(PUCK);
 	}
 }

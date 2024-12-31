@@ -30,6 +30,12 @@ struct ScrewData {
 	float GasketWidth;
 };
 
+struct PuckData {
+	float Rad;
+	float Height;
+	float Width;
+};
+
 class Assembler
 {
 public:
@@ -38,9 +44,11 @@ public:
 	
 	SealData GetSeal(int type);
 	ScrewData GetScrew(int type);
+	PuckData GetPuck(int type);
 
 	void CreateSeal();
 	void CreateScrew();
+	void CreatePuck();
 
 };
 

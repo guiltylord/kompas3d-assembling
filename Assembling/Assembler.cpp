@@ -72,6 +72,19 @@ ScrewData Assembler::GetScrew(int type)
 	return screw;
 }
 
+PuckData Assembler::GetPuck(int type)
+{
+	auto puck = PuckData();
+	switch (type) {
+	case 1:
+		puck.Rad = 5;
+		puck.Height = 1;
+		puck.Width = 2.05;
+	}
+
+	return puck;
+}
+
 void Assembler::CreateSeal()
 {
 	ksDocument3DPtr p3DDoc;
@@ -451,6 +464,88 @@ void Assembler::CreateScrew()
 
 	string path = "C:\\Users\\desxz\\source\\repos\\Assembling\\Details\\";
 	string name = "Гайка нажимная";
+	path += name + ".m3d";
+
+	p3DDoc->fileName = _bstr_t(CString(name.c_str()));
+	p3DDoc->SaveAs(_bstr_t(CString(path.c_str())));
+}
+
+void Assembler::CreatePuck()
+{
+	ksDocument3DPtr p3DDoc;
+	CComPtr<IUnknown> pKompasAppUnk = nullptr;
+
+	if (!pKompasApp5)
+	{
+		// Получаем CLSID для Компас
+		CLSID InvAppClsid;
+		HRESULT hRes = CLSIDFromProgID(L"Kompas.Application.5", &InvAppClsid);
+		if (FAILED(hRes)) {
+			pKompasApp5 = nullptr;
+			return;
+		}
+
+		// Проверяем есть ли запущенный экземпляр Компас
+		//если есть получаем IUnknown
+		hRes = ::GetActiveObject(InvAppClsid, NULL, &pKompasAppUnk);
+		if (FAILED(hRes)) {
+			// Приходится запускать Компас самим так как работающего нет
+			// Также получаем IUnknown для только что запущенного приложения Компас
+			TRACE(L"Could not get hold of an active Inventor, will start a new session\n");
+			hRes = CoCreateInstance(InvAppClsid, NULL, CLSCTX_LOCAL_SERVER, __uuidof(IUnknown), (void**)&pKompasAppUnk);
+			if (FAILED(hRes)) {
+				pKompasApp5 = nullptr;
+				return;
+			}
+		}
+
+		// Получаем интерфейс приложения Компас
+		hRes = pKompasAppUnk->QueryInterface(__uuidof(KompasObject), (void**)&pKompasApp5);
+		if (FAILED(hRes)) {
+			return;
+		}
+	}
+
+	pKompasApp5->Visible = true;
+
+	p3DDoc = pKompasApp5->Document3D();
+	p3DDoc->Create(false, true);
+	p3DDoc = pKompasApp5->ActiveDocument3D();
+	ksPartPtr pPart = p3DDoc->GetPart(pTop_Part);
+	ksDocument2DPtr p2DDoc;
+
+	auto Puck = GetPuck(1);
+
+	//эскиз
+	ksEntityPtr pSketch = pPart->NewEntity(o3d_sketch);
+	ksSketchDefinitionPtr pSketchDef = pSketch->GetDefinition();
+	pSketchDef->SetPlane(pPart->GetDefaultEntity(o3d_planeXOY));
+	pSketch->Create();
+
+	auto X1 = Puck.Rad;
+	auto X2 = Puck.Rad + Puck.Width;
+	auto Y = Puck.Height;
+
+	p2DDoc = pSketchDef->BeginEdit();
+	p2DDoc->ksLineSeg(X1, 0, X1, Y, 1);
+	p2DDoc->ksLineSeg(X1, Y, X2, Y, 1);
+	p2DDoc->ksLineSeg(X2, Y, X2, 0, 1);
+	p2DDoc->ksLineSeg(X2, 0, X1, 0, 1);
+
+	p2DDoc->ksLineSeg(0, 10, 0, 0, 3); //осевая для тела вращения((((
+
+	pSketchDef->EndEdit();
+
+	//вращение
+	ksEntityPtr pRot = pPart->NewEntity(o3d_bossRotated);
+	ksBossRotatedDefinitionPtr pRotDef = pRot->GetDefinition();
+	pRotDef->SetSketch(pSketch);
+	pRotDef->SetSideParam(FALSE, 360);
+	pRot->Create();
+
+
+	string path = "C:\\Users\\desxz\\source\\repos\\Assembling\\Details\\";
+	string name = "Шайба";
 	path += name + ".m3d";
 
 	p3DDoc->fileName = _bstr_t(CString(name.c_str()));
