@@ -33,20 +33,21 @@ SealData Assembler::GetSeal(int type)
 	auto seal = SealData();
 	switch (type) {
 	case 1:
-		seal.HBRad = 23;
-		seal.HBAngleBig = 65 * M_PI / 180;
-		seal.HBAngleSmall = 55 * M_PI / 180;
-		seal.HBDepth = 3;
+		seal.BaseRad = 23;
+		seal.BaseAngleBig = 65 * M_PI / 180;
+		seal.BaseAngleSmall = 55 * M_PI / 180;
+		seal.BaseDepth = 3;
 		
-		seal.HTRad = 21.9 / 2;
-		seal.HTDepth = 15;
-
-		seal.X_Pin = 34/2;
-		seal.GrooveRad = 8 / 2;
-		seal.PinRad = 4.5 / 2;
+		seal.HexRad = 21.9 / 2;
+		seal.HexDepth = 15;
 
 		seal.AxHoleRad = 16 / 2;
 		seal.AxHoleThruRad = 8 / 2;
+
+		seal.X_Pin = 34/2;
+		seal.GrooveRad = 8 / 2;
+		seal.GrooveDepth = 2;
+		seal.PinRad = 4.5 / 2;
 	}
 
 	return seal;
@@ -129,26 +130,26 @@ void Assembler::CreateSeal()
 	ksPartPtr pPart = p3DDoc->GetPart(pTop_Part);
 	ksDocument2DPtr p2DDoc;
 
-	//эскиз дно Hexagon Bottom
-	ksEntityPtr pHBSketch = pPart->NewEntity(o3d_sketch);
-	ksSketchDefinitionPtr pHBSketchDef = pHBSketch->GetDefinition();
-	pHBSketchDef->SetPlane(pPart->GetDefaultEntity(o3d_planeXOY));
-	pHBSketch->Create();
-	p2DDoc = pHBSketchDef->BeginEdit();
-
 	SealData Seal = GetSeal(1);
 
-	auto cosBig = cos(Seal.HBAngleBig);
-	auto sinBig = sin(Seal.HBAngleBig);
-	auto cosSmall = cos(Seal.HBAngleSmall);
-	auto sinSmall = sin(Seal.HBAngleSmall);
+	//эскиз дно Hexagon Bottom
+	ksEntityPtr pBaseSketch = pPart->NewEntity(o3d_sketch);
+	ksSketchDefinitionPtr pBaseSketchDef = pBaseSketch->GetDefinition();
+	pBaseSketchDef->SetPlane(pPart->GetDefaultEntity(o3d_planeXOY));
+	pBaseSketch->Create();
+	p2DDoc = pBaseSketchDef->BeginEdit();
 
-	auto X1 = Seal.HBRad * cosBig;
-	auto Y1 = Seal.HBRad * sinBig;
-	auto X2 = Seal.HBRad * cosSmall;
-	auto Y2 = Seal.HBRad * sinSmall;
-	auto X3 = Seal.HBRad * cos(Seal.HBAngleSmall+120*M_PI/180);
-	auto Y3 = Seal.HBRad * sin(Seal.HBAngleSmall+120*M_PI/180);
+	auto cosBig = cos(Seal.BaseAngleBig);
+	auto sinBig = sin(Seal.BaseAngleBig);
+	auto cosSmall = cos(Seal.BaseAngleSmall);
+	auto sinSmall = sin(Seal.BaseAngleSmall);
+
+	auto X1 = Seal.BaseRad * cosBig;
+	auto Y1 = Seal.BaseRad * sinBig;
+	auto X2 = Seal.BaseRad * cosSmall;
+	auto Y2 = Seal.BaseRad * sinSmall;
+	auto X3 = Seal.BaseRad * cos(Seal.BaseAngleSmall+120*M_PI/180);
+	auto Y3 = Seal.BaseRad * sin(Seal.BaseAngleSmall+120*M_PI/180);
 
 	p2DDoc->ksLineSeg(X1, Y1, X2, Y2, 1);
 	p2DDoc->ksLineSeg(X2, Y2, X2, -Y2, 1);
@@ -157,47 +158,47 @@ void Assembler::CreateSeal()
 	p2DDoc->ksLineSeg(X3, -Y3, X3, Y3, 1);
 	p2DDoc->ksLineSeg(X3, Y3, X1, Y1, 1);
 
-	pHBSketchDef->EndEdit();
+	pBaseSketchDef->EndEdit();
 
-	//выдавливание HB
-	ksEntityPtr pHBExtrude = pPart->NewEntity(o3d_bossExtrusion);
-	ksBossExtrusionDefinitionPtr pHBBossExtrusionDef = pHBExtrude->GetDefinition();
-	pHBBossExtrusionDef->directionType = dtNormal;
-	pHBBossExtrusionDef->SetSketch(pHBSketch);
-	pHBBossExtrusionDef->SetSideParam(true, 0, Seal.HBDepth, 0, false);
-	pHBExtrude->Create();
+	//выдавливание Base
+	ksEntityPtr pBaseExtrude = pPart->NewEntity(o3d_bossExtrusion);
+	ksBossExtrusionDefinitionPtr pBaseBossExtrusionDef = pBaseExtrude->GetDefinition();
+	pBaseBossExtrusionDef->directionType = dtNormal;
+	pBaseBossExtrusionDef->SetSketch(pBaseSketch);
+	pBaseBossExtrusionDef->SetSideParam(true, 0, Seal.BaseDepth, 0, false);
+	pBaseExtrude->Create();
 
 	//смещенная плоскость
-	ksEntityPtr pHBPlane = pPart->NewEntity(o3d_planeOffset);
-	ksPlaneOffsetDefinitionPtr pHBOffsetPlane = pHBPlane->GetDefinition();
-	pHBOffsetPlane->direction = true;
-	pHBOffsetPlane->offset = 3;
-	pHBOffsetPlane->SetPlane(pPart->GetDefaultEntity(o3d_planeXOY));
-	pHBPlane->Create();
+	ksEntityPtr pBasePlane = pPart->NewEntity(o3d_planeOffset);
+	ksPlaneOffsetDefinitionPtr pBaseOffsetPlane = pBasePlane->GetDefinition();
+	pBaseOffsetPlane->direction = true;
+	pBaseOffsetPlane->offset = Seal.BaseDepth;
+	pBaseOffsetPlane->SetPlane(pPart->GetDefaultEntity(o3d_planeXOY));
+	pBasePlane->Create();
 
 	//эскиз Hexagon Top
-	ksEntityPtr pHTSketch = pPart->NewEntity(o3d_sketch);
-	ksSketchDefinitionPtr pHTSketchDef = pHTSketch->GetDefinition();
-	pHTSketchDef->SetPlane(pHBPlane);
-	pHTSketch->Create();
+	ksEntityPtr pHexSketch = pPart->NewEntity(o3d_sketch);
+	ksSketchDefinitionPtr pHexSketchDef = pHexSketch->GetDefinition();
+	pHexSketchDef->SetPlane(pBasePlane);
+	pHexSketch->Create();
 
-	auto X_hex2 = Seal.HTRad * cos(30*M_PI/180);
-	auto Y_hex2 = Seal.HTRad / 2;
+	auto X_hex2 = Seal.HexRad * cos(30*M_PI/180);
+	auto Y_hex2 = Seal.HexRad / 2;
 
-	p2DDoc = pHTSketchDef->BeginEdit();
-	p2DDoc->ksLineSeg(0, Seal.HTRad, X_hex2, Y_hex2, 1);
+	p2DDoc = pHexSketchDef->BeginEdit();
+	p2DDoc->ksLineSeg(0, Seal.HexRad, X_hex2, Y_hex2, 1);
 	p2DDoc->ksLineSeg(X_hex2, Y_hex2, X_hex2, -Y_hex2, 1);
-	p2DDoc->ksLineSeg(X_hex2, -Y_hex2, 0, -Seal.HTRad, 1);
-	p2DDoc->ksLineSeg(0, -Seal.HTRad, -X_hex2, -Y_hex2, 1);
+	p2DDoc->ksLineSeg(X_hex2, -Y_hex2, 0, -Seal.HexRad, 1);
+	p2DDoc->ksLineSeg(0, -Seal.HexRad, -X_hex2, -Y_hex2, 1);
 	p2DDoc->ksLineSeg(-X_hex2, -Y_hex2, -X_hex2, Y_hex2, 1);
-	p2DDoc->ksLineSeg(-X_hex2, Y_hex2, 0, Seal.HTRad, 1);
+	p2DDoc->ksLineSeg(-X_hex2, Y_hex2, 0, Seal.HexRad, 1);
 
-	pHTSketchDef->EndEdit();
+	pHexSketchDef->EndEdit();
 
 	//эскиз отверстия несквозного Groove
 	ksEntityPtr pGrooveSketch = pPart->NewEntity(o3d_sketch);
 	ksSketchDefinitionPtr pGrooveSketchDef = pGrooveSketch->GetDefinition();
-	pGrooveSketchDef->SetPlane(pHBPlane);
+	pGrooveSketchDef->SetPlane(pBasePlane);
 	pGrooveSketch->Create();
 
 	p2DDoc = pGrooveSketchDef->BeginEdit();
@@ -208,7 +209,7 @@ void Assembler::CreateSeal()
 	//эскиз отверстие сквозного Pin
 	ksEntityPtr pPinSketch = pPart->NewEntity(o3d_sketch);
 	ksSketchDefinitionPtr pPinSketchDef = pPinSketch->GetDefinition();
-	pPinSketchDef->SetPlane(pHBPlane);
+	pPinSketchDef->SetPlane(pBasePlane);
 	pPinSketch->Create();
 
 	p2DDoc = pPinSketchDef->BeginEdit();
@@ -216,12 +217,12 @@ void Assembler::CreateSeal()
 
 	pPinSketchDef->EndEdit();
 
-	//выдавливание HT
+	//выдавливание Hex
 	ksEntityPtr pTopExtrude = pPart->NewEntity(o3d_bossExtrusion);
 	ksBossExtrusionDefinitionPtr pTopBossExtrusionDef = pTopExtrude->GetDefinition();
 	pTopBossExtrusionDef->directionType = dtNormal;
-	pTopBossExtrusionDef->SetSketch(pHTSketch);
-	pTopBossExtrusionDef->SetSideParam(true, 0, Seal.HTDepth, 0, false);
+	pTopBossExtrusionDef->SetSketch(pHexSketch);
+	pTopBossExtrusionDef->SetSideParam(true, 0, Seal.HexDepth, 0, false);
 	pTopExtrude->Create();
 
 	//вырезание Groove
@@ -229,7 +230,7 @@ void Assembler::CreateSeal()
 	ksCutExtrusionDefinitionPtr pGrooveCutExtrudeDef = pGrooveCutExtrude->GetDefinition();
 	pGrooveCutExtrudeDef->directionType = dtNormal;
 	pGrooveCutExtrudeDef->SetSketch(pGrooveSketchDef);
-	pGrooveCutExtrudeDef->SetSideParam(true, etBlind, 2, 0, false);
+	pGrooveCutExtrudeDef->SetSideParam(true, etBlind, Seal.GrooveDepth, 0, false);
 	pGrooveCutExtrude->Create();
 
 	//вырезание Pin
@@ -258,7 +259,7 @@ void Assembler::CreateSeal()
 	ksEntityPtr pTopPlane = pPart->NewEntity(o3d_planeOffset);
 	ksPlaneOffsetDefinitionPtr pTopPlaneDef = pTopPlane->GetDefinition();
 	pTopPlaneDef->direction = true;
-	pTopPlaneDef->offset = Seal.HBDepth + Seal.HTDepth;
+	pTopPlaneDef->offset = Seal.BaseDepth + Seal.HexDepth;
 	pTopPlaneDef->SetPlane(pPart->GetDefaultEntity(o3d_planeXOY));
 	pTopPlane->Create();
 
@@ -276,7 +277,7 @@ void Assembler::CreateSeal()
 	ksCutExtrusionDefinitionPtr pAxialHoleCutExtrudeDef = pAxialHoleCutExtrude->GetDefinition();
 	pAxialHoleCutExtrudeDef->directionType = dtNormal;
 	pAxialHoleCutExtrudeDef->SetSketch(pAxialHoleSketchDef);
-	pAxialHoleCutExtrudeDef->SetSideParam(true, etBlind, Seal.HTDepth, 0, false);
+	pAxialHoleCutExtrudeDef->SetSideParam(true, etBlind, Seal.HexDepth, 0, false);
 	pAxialHoleCutExtrude->Create();
 
 	//эскиз осевого отверстия малого
@@ -293,11 +294,10 @@ void Assembler::CreateSeal()
 	ksCutExtrusionDefinitionPtr pAxialHoleCutExtrudeDef2 = pAxialHoleCutExtrude2->GetDefinition();
 	pAxialHoleCutExtrudeDef2->directionType = dtReverse;
 	pAxialHoleCutExtrudeDef2->SetSketch(pAxialHoleSketchDef2);
-	pAxialHoleCutExtrudeDef2->SetSideParam(true, etBlind, Seal.HBDepth, 0, false);
+	pAxialHoleCutExtrudeDef2->SetSideParam(true, etBlind, Seal.BaseDepth, 0, false);
 	pAxialHoleCutExtrude2->Create();
 
-	//p3DDoc->hideAllPlanes=true;
-	
+	//p3DDoc->hideAllPlanes=true;	
 	//p3DDoc->hideInComponentsMode; //doesnt work
 	
 	//операция сохранения детали
@@ -380,12 +380,12 @@ void Assembler::CreateScrew()
 	pHexSketchDef->EndEdit();
 
 	//выдавливание Hexagon
-	ksEntityPtr pHBExtrude = pPart->NewEntity(o3d_bossExtrusion);
-	ksBossExtrusionDefinitionPtr pHBBossExtrusionDef = pHBExtrude->GetDefinition();
-	pHBBossExtrusionDef->directionType = dtNormal;
-	pHBBossExtrusionDef->SetSketch(pHexSketch);
-	pHBBossExtrusionDef->SetSideParam(true, 0, Screw.HexDepth, 0, false);
-	pHBExtrude->Create();
+	ksEntityPtr pBaseExtrude = pPart->NewEntity(o3d_bossExtrusion);
+	ksBossExtrusionDefinitionPtr pBaseBossExtrusionDef = pBaseExtrude->GetDefinition();
+	pBaseBossExtrusionDef->directionType = dtNormal;
+	pBaseBossExtrusionDef->SetSketch(pHexSketch);
+	pBaseBossExtrusionDef->SetSideParam(true, 0, Screw.HexDepth, 0, false);
+	pBaseExtrude->Create();
 
 	//в эттом эскизе потом сделать смену на втторрое исполнение. добавиь флаг так, чтобы выемки под сальникк не было и фаски тоже
 	//эскиз Leg
@@ -394,12 +394,12 @@ void Assembler::CreateScrew()
 	pLegSketchDef->SetPlane(pPart->GetDefaultEntity(o3d_planeXOY));
 	pLegSketch->Create();
 
-	auto X_ax = (Screw.AxHoleRad);
-	auto Y1_ax = (Screw.HexDepth);
-	auto Y2_ax = (Screw.LegHeight);
-	auto X_out = (X_ax + Screw.LegThick);
-	auto Y1_out = (Y1_ax + Screw.GasketHeight);
-	auto X_in = (X_ax + Screw.GasketWidth);
+	auto X_ax = Screw.AxHoleRad;
+	auto Y1_ax = Screw.HexDepth;
+	auto Y2_ax = Screw.LegHeight;
+	auto X_out = X_ax + Screw.LegThick;
+	auto Y1_out = Y1_ax + Screw.GasketHeight;
+	auto X_in = X_ax + Screw.GasketWidth;
 
 	p2DDoc = pLegSketchDef->BeginEdit();
 	p2DDoc->ksLineSeg(0, Y1_ax, 0, Y2_ax, 1);
@@ -410,12 +410,11 @@ void Assembler::CreateScrew()
 	p2DDoc->ksLineSeg(X_in, Y1_out, X_in, Y1_ax, 1);
 	p2DDoc->ksLineSeg(X_in, Y1_ax, 0, Y1_ax, 1);
 
-	p2DDoc->ksLineSeg(0, 10, 0, 0, 3); //осевая для тела вращения((((
+	p2DDoc->ksLineSeg(0, 10, 0, 0, 3);
 	
 	pLegSketchDef->EndEdit();
 
-
-	//вращение Leg а босс или бейс? в чем разница? мб два тела создатся????
+	//вращение Leg
 	ksEntityPtr pRotate = pPart->NewEntity(o3d_bossRotated);
 	ksBossRotatedDefinitionPtr pRotDef = pRotate->GetDefinition();
 	pRotDef->SetSketch(pLegSketch);
@@ -423,8 +422,7 @@ void Assembler::CreateScrew()
 	//ksEntityCollectionPtr fl = pRotDef->GetSketch(); //коллекция для фасок
 	pRotate->Create();
 
-	//эскиз дырки Leg //хз как удобнее провернутью. мб выше сделать ножку цельнной и потомм ее вырезать, \
-	а мб чтобю фаску наложить  удобнеевырезть чуть чуть. а мб ваще стоит выдавливаанием вырезть. надо попробовать с фаской чттоб поняь.
+	//эскиз дырки Leg
 	ksEntityPtr pLegSketch1 = pPart->NewEntity(o3d_sketch);
 	ksSketchDefinitionPtr pLegSketchDef1 = pLegSketch1->GetDefinition();
 	pLegSketchDef1->SetPlane(pPart->GetDefaultEntity(o3d_planeXOY));
@@ -436,7 +434,7 @@ void Assembler::CreateScrew()
 	p2DDoc->ksLineSeg(X_ax, 1, X_ax+1, 0, 1); //+1 для фасочки
 	p2DDoc->ksLineSeg(X_ax+1, 0, 0,0, 1);
 
-	p2DDoc->ksLineSeg(0, 10, 0, 0, 3); //осевая для тела вращения((((
+	p2DDoc->ksLineSeg(0, 10, 0, 0, 3); 
 
 	pLegSketchDef1->EndEdit();
 
@@ -445,10 +443,9 @@ void Assembler::CreateScrew()
 	ksCutRotatedDefinitionPtr pRotDef2 = pRotate2->GetDefinition();
 	pRotDef2->SetSketch(pLegSketch1);
 	pRotDef2->SetSideParam(FALSE, 360);
-	ksEntityCollectionPtr fl = pRotDef2->GetSketch(); //коллекция для фасок
 	pRotate2->Create();
 
-	//фасочки)))
+	//фасочки
 	//ksEntityPtr pChamfer = pPart->NewEntity(o3d_chamfer);
 	//ksChamferDefinitionPtr pChamferDef = pChamfer->GetDefinition();
 	//pChamferDef->SetChamferParam(true, 1, 1);
@@ -542,8 +539,7 @@ void Assembler::CreatePuck()
 	p2DDoc->ksLineSeg(X2, Y, X2, 0, 1);
 	p2DDoc->ksLineSeg(X2, 0, X1, 0, 1);
 
-	p2DDoc->ksLineSeg(0, 10, 0, 0, 3); //осевая для тела вращения((((
-
+	p2DDoc->ksLineSeg(0, 10, 0, 0, 3); 
 	pSketchDef->EndEdit();
 
 	//вращение

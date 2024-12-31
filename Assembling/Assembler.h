@@ -1,28 +1,29 @@
 #pragma once
 
 struct SealData {
-	float HBDepth;
-	float HBRad;
-	float HBAngleBig;
-	float HBAngleSmall;
+	float BaseDepth;
+	float BaseRad;
+	float BaseAngleBig;
+	float BaseAngleSmall;
 	
-	float HTRad;
-	float HTDepth;
-	
-	float X_Pin;
-	float PinRad;
-	float GrooveRad;
+	float HexRad;
+	float HexDepth;
 
 	float AxHoleRad;
 	float AxHoleThruRad;
+
+	float X_Pin;
+	float PinRad;
+	float GrooveRad;
+	float GrooveDepth;
 };
 
 struct ScrewData {
 	float LegHeight;
 	float LegThick;
 
-	float HexDepth;
 	float HexRad;
+	float HexDepth;
 
 	float AxHoleRad;
 
