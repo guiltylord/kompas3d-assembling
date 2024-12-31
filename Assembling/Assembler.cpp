@@ -11,12 +11,10 @@
 
 #include <string>
 
-
 # define M_PI           3.14159265358979323846  /* pi */
 
 using namespace Kompas6API5;
 using namespace std;
-
 
 KompasObjectPtr pKompasApp5;
 
@@ -176,7 +174,7 @@ void Assembler::CreateSeal()
 	pBaseOffsetPlane->SetPlane(pPart->GetDefaultEntity(o3d_planeXOY));
 	pBasePlane->Create();
 
-	//эскиз Hexagon Top
+	//эскиз Hex
 	ksEntityPtr pHexSketch = pPart->NewEntity(o3d_sketch);
 	ksSketchDefinitionPtr pHexSketchDef = pHexSketch->GetDefinition();
 	pHexSketchDef->SetPlane(pBasePlane);
@@ -218,12 +216,12 @@ void Assembler::CreateSeal()
 	pPinSketchDef->EndEdit();
 
 	//выдавливание Hex
-	ksEntityPtr pTopExtrude = pPart->NewEntity(o3d_bossExtrusion);
-	ksBossExtrusionDefinitionPtr pTopBossExtrusionDef = pTopExtrude->GetDefinition();
-	pTopBossExtrusionDef->directionType = dtNormal;
-	pTopBossExtrusionDef->SetSketch(pHexSketch);
-	pTopBossExtrusionDef->SetSideParam(true, 0, Seal.HexDepth, 0, false);
-	pTopExtrude->Create();
+	ksEntityPtr pHexExtrude = pPart->NewEntity(o3d_bossExtrusion);
+	ksBossExtrusionDefinitionPtr pHexBossExtrusionDef = pHexExtrude->GetDefinition();
+	pHexBossExtrusionDef->directionType = dtNormal;
+	pHexBossExtrusionDef->SetSketch(pHexSketch);
+	pHexBossExtrusionDef->SetSideParam(true, 0, Seal.HexDepth, 0, false);
+	pHexExtrude->Create();
 
 	//вырезание Groove
 	ksEntityPtr pGrooveCutExtrude = pPart->NewEntity(o3d_cutExtrusion);
@@ -300,6 +298,62 @@ void Assembler::CreateSeal()
 	//p3DDoc->hideAllPlanes=true;	
 	//p3DDoc->hideInComponentsMode; //doesnt work
 	
+
+	ksEntityCollectionPtr flFaces = pPart->EntityCollection(o3d_face);
+	auto t = 0;
+	for (int i = 0; i < flFaces->GetCount(); i++) {
+		ksEntityPtr face = flFaces->GetByIndex(i);
+		ksFaceDefinitionPtr def = face->GetDefinition();
+		if (def->GetOwnerEntity() == pAxialHoleCutExtrude2) {
+			if (def->IsCylinder()) {
+				double h, r;
+				def->GetCylinderParam(&h, &r);
+				if (r == Seal.AxHoleRad / 2) {
+					face->Putname("Cylinder4Assembly");
+					face->Update();
+				}
+			}
+
+
+		}
+		if (def->GetOwnerEntity() == pHexExtrude) {
+			if (def->IsPlanar()) {
+				ksEdgeCollectionPtr col = def->EdgeCollection();
+				for (int k = 0; k < col->GetCount(); k++) {
+
+					ksEdgeDefinitionPtr d = col->GetByIndex(k);
+					ksVertexDefinitionPtr p1 = d->GetVertex(true);
+					ksVertexDefinitionPtr p2 = d->GetVertex(false);
+
+
+					double x1, y1, z1;
+					p1->GetPoint(&x1, &y1, &z1);
+
+					double x2, y2, z2;
+					p2->GetPoint(&x2, &y2, &z2);
+
+					if (z1==(Seal.HexDepth+Seal.BaseDepth) && x1 == 0 && y1 == 10.95f) {
+						t++;
+						face->Putname("Face4Assembly0");
+						face->Update();
+						//break;
+					}
+				}
+			}
+		}
+	}
+
+
+
+
+
+
+
+
+
+
+
+
 	//операци€ сохранени€ детали
 	string path = "C:\\Users\\desxz\\source\\repos\\Assembling\\Details\\";
 	string name = "√нездо сальника";
