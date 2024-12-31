@@ -50,6 +50,7 @@ public:
 	void CreateSeal();
 	void CreateScrew();
 	void CreatePuck();
+	void ass();
 
 };
 

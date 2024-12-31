@@ -607,10 +607,113 @@ void Assembler::CreatePuck()
 	pPart->SetMaterial(L"СКФ-26 ГОСТ 18376-79", 1.83); //фторкаучук
 	pPart->Update();
 
+
+
+
+
+
+
+	ksEntityCollectionPtr flFaces = pPart->EntityCollection(o3d_face);
+	for (int i = 0; i < flFaces->GetCount(); i++) {
+		ksEntityPtr face = flFaces->GetByIndex(i);
+		ksFaceDefinitionPtr def = face->GetDefinition();
+		if (def->GetOwnerEntity() == pRot) {
+			if (def->IsPlanar()) {
+				face->Putname("Face4Assembly1");
+				face->Update();
+				//break;
+			}
+		}
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 	string path = "C:\\Users\\desxz\\source\\repos\\Assembling\\Details\\";
 	string name = "Шайба";
 	path += name + ".m3d";
 
 	p3DDoc->fileName = _bstr_t(CString(name.c_str()));
 	p3DDoc->SaveAs(_bstr_t(CString(path.c_str())));
+}
+
+void Assembler::ass()
+{
+	ksDocument3DPtr p3DDoc;
+	CComPtr<IUnknown> pKompasAppUnk = nullptr;
+
+	if (!pKompasApp5)
+	{
+		// Получаем CLSID для Компас
+		CLSID InvAppClsid;
+		HRESULT hRes = CLSIDFromProgID(L"Kompas.Application.5", &InvAppClsid);
+		if (FAILED(hRes)) {
+			pKompasApp5 = nullptr;
+			return;
+		}
+
+		// Проверяем есть ли запущенный экземпляр Компас
+		//если есть получаем IUnknown
+		hRes = ::GetActiveObject(InvAppClsid, NULL, &pKompasAppUnk);
+		if (FAILED(hRes)) {
+			// Приходится запускать Компас самим так как работающего нет
+			// Также получаем IUnknown для только что запущенного приложения Компас
+			TRACE(L"Could not get hold of an active Inventor, will start a new session\n");
+			hRes = CoCreateInstance(InvAppClsid, NULL, CLSCTX_LOCAL_SERVER, __uuidof(IUnknown), (void**)&pKompasAppUnk);
+			if (FAILED(hRes)) {
+				pKompasApp5 = nullptr;
+				return;
+			}
+		}
+
+		// Получаем интерфейс приложения Компас
+		hRes = pKompasAppUnk->QueryInterface(__uuidof(KompasObject), (void**)&pKompasApp5);
+		if (FAILED(hRes)) {
+			return;
+		}
+	}
+
+	pKompasApp5->Visible = true;
+
+	p3DDoc = pKompasApp5->Document3D();
+	p3DDoc->Create(false, true);
+	p3DDoc = pKompasApp5->ActiveDocument3D();
+	ksPartPtr pPart = p3DDoc->GetPart(pTop_Part);
+	ksDocument2DPtr p2DDoc;
+
+	ksPartPtr pBoss, pGear1, pGear2;
+	p3DDoc->SetPartFromFile("C:\\Users\\desxz\\source\\repos\\Assembling\\Details\\Гнездо сальника.m3d", pPart, true);
+	p3DDoc->SetPartFromFile("C:\\Users\\desxz\\source\\repos\\Assembling\\Details\\Шайба.m3d", pPart, true);
+	//p3DDoc->SetPartFromFile("D:\\KompasAssembly\\Gear.m3d", pPart, true);
+
+	pBoss = p3DDoc->GetPart(0);
+	pGear1 = p3DDoc->GetPart(1);
+
+
+	ksEntityCollectionPtr col = pBoss->EntityCollection(o3d_face);
+	ksEntityCollectionPtr col2 = pGear1->EntityCollection(o3d_face);
+
+	ksEntityPtr BossFace4Assemly0 = col->GetByName("Face4Assembly0", true, true);
+	ksEntityPtr BossFace4Assemly1 = col2->GetByName("Face4Assembly1", true, true);
+
+
+
+	p3DDoc->AddMateConstraint(mc_Coincidence, BossFace4Assemly0, BossFace4Assemly1, -1, 1, 0);
+
+	p3DDoc->RebuildDocument();
 }
