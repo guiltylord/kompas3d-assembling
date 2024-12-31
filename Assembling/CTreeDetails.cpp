@@ -96,20 +96,23 @@ void CTreeDetails::OnLButtonDown(UINT nFlags, CPoint point)
 	auto selTable = tree.GetItemText(selTreeItem);
 
 	if (selTreeItem==m_hAssembling) {
-		m_pDoc->m_bAssembling = tree.GetCheck(m_hAssembling);
+		m_pDoc->m_bAssembling = true;
+		m_pDoc->m_bSeal = m_pDoc->m_bScrew = m_pDoc->m_bPuck = false;
 		m_pDoc->m_pView->ConfigurePictures(ASSEMBLING);
 	}
 	if (selTreeItem==m_hSeal) {
 		m_pDoc->m_bSeal = true; 
+		m_pDoc->m_bAssembling = m_pDoc->m_bScrew = m_pDoc->m_bPuck  = false;
 		m_pDoc->m_pView->ConfigurePictures(SEAL);
 	}
 	if (selTreeItem==m_hScrew) {
 		m_pDoc->m_bScrew = true;
+		m_pDoc->m_bAssembling = m_pDoc->m_bSeal =  m_pDoc->m_bPuck = false;
 		m_pDoc->m_pView->ConfigurePictures(SCREW);
 	}
 	if (selTreeItem == m_hPuck) {
 		m_pDoc->m_bPuck = true;
-		//m_pDoc->m_bPuck = tree.GetCheck(m_hPuck);
+		m_pDoc->m_bAssembling = m_pDoc->m_bSeal = m_pDoc->m_bScrew = false;
 		m_pDoc->m_pView->ConfigurePictures(PUCK);
 	}
 }
