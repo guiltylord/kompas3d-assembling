@@ -343,7 +343,7 @@ void Assembler::CreateScrew()
 	//эскиз дно Hexagon
 	ksEntityPtr pHexSketch = pPart->NewEntity(o3d_sketch);
 	ksSketchDefinitionPtr pHexSketchDef = pHexSketch->GetDefinition();
-	pHexSketchDef->SetPlane(pPart->GetDefaultEntity(o3d_planeXOY));
+	pHexSketchDef->SetPlane(pPart->GetDefaultEntity(o3d_planeXOZ));
 	pHexSketch->Create();
 	
 	ScrewData Screw = GetScrew(1);
@@ -369,31 +369,85 @@ void Assembler::CreateScrew()
 	pHBBossExtrusionDef->SetSideParam(true, 0, Screw.HexDepth, 0, false);
 	pHBExtrude->Create();
 
+	//в эттом эскизе потом сделать смену на втторрое исполнение. добавиь флаг так, чтобы выемки под сальникк не было и фаски тоже
 	//эскиз Leg
 	ksEntityPtr pLegSketch = pPart->NewEntity(o3d_sketch);
 	ksSketchDefinitionPtr pLegSketchDef = pLegSketch->GetDefinition();
-	pLegSketchDef->SetPlane(pPart->GetDefaultEntity(o3d_planeXOZ));
-	pLegSketchDef->SetLoftPoint(0, 10);
+	pLegSketchDef->SetPlane(pPart->GetDefaultEntity(o3d_planeXOY));
 	pLegSketch->Create();
 
-	auto X_ax = -(Screw.AxHoleRad);
-	auto Y1_ax = -(Screw.HexDepth);
-	auto Y2_ax = -(Screw.LegHeight);
-	auto X_out = (X_ax - Screw.LegThick);
-	auto Y1_out = (Y1_ax - Screw.GasketHeight);
-	auto X_in = (X_ax - Screw.GasketWidth);
+	auto X_ax = (Screw.AxHoleRad);
+	auto Y1_ax = (Screw.HexDepth);
+	auto Y2_ax = (Screw.LegHeight);
+	auto X_out = (X_ax + Screw.LegThick);
+	auto Y1_out = (Y1_ax + Screw.GasketHeight);
+	auto X_in = (X_ax + Screw.GasketWidth);
 
 	p2DDoc = pLegSketchDef->BeginEdit();
-	p2DDoc->ksLineSeg(X_ax, Y1_ax, X_ax, Y2_ax, 1);
-	p2DDoc->ksLineSeg(X_ax, Y2_ax, X_out, Y2_ax, 1);
-	p2DDoc->ksLineSeg(X_out, Y2_ax, X_out, Y1_out, 1);
+	p2DDoc->ksLineSeg(0, Y1_ax, 0, Y2_ax, 1);
+	p2DDoc->ksLineSeg(0, Y2_ax, X_out-1, Y2_ax, 1); //-1 для фасочки
+	p2DDoc->ksLineSeg(X_out - 1, Y2_ax, X_out, Y2_ax-1, 1);
+	p2DDoc->ksLineSeg(X_out, Y2_ax-1, X_out, Y1_out, 1);
 	p2DDoc->ksLineSeg(X_out, Y1_out, X_in, Y1_out, 1);
 	p2DDoc->ksLineSeg(X_in, Y1_out, X_in, Y1_ax, 1);
-	p2DDoc->ksLineSeg(X_in, Y1_ax, X_ax, Y1_ax, 1);
+	p2DDoc->ksLineSeg(X_in, Y1_ax, 0, Y1_ax, 1);
 
-
+	p2DDoc->ksLineSeg(0, 10, 0, 0, 3); //осевая для тела вращения((((
+	
 	pLegSketchDef->EndEdit();
 
+
+	//вращение Leg а босс или бейс? в чем разница? мб два тела создатся????
+	ksEntityPtr pRotate = pPart->NewEntity(o3d_bossRotated);
+	ksBossRotatedDefinitionPtr pRotDef = pRotate->GetDefinition();
+	pRotDef->SetSketch(pLegSketch);
+	pRotDef->SetSideParam(FALSE, 360);
+	//ksEntityCollectionPtr fl = pRotDef->GetSketch(); //коллекция для фасок
+	pRotate->Create();
+
+	//эскиз дырки Leg //хз как удобнее провернутью. мб выше сделать ножку цельнной и потомм ее вырезать, \
+	а мб чтобю фаску наложить  удобнеевырезть чуть чуть. а мб ваще стоит выдавливаанием вырезть. надо попробовать с фаской чттоб поняь.
+	ksEntityPtr pLegSketch1 = pPart->NewEntity(o3d_sketch);
+	ksSketchDefinitionPtr pLegSketchDef1 = pLegSketch1->GetDefinition();
+	pLegSketchDef1->SetPlane(pPart->GetDefaultEntity(o3d_planeXOY));
+	pLegSketch1->Create();
+	p2DDoc = pLegSketchDef1->BeginEdit();
+	p2DDoc->ksLineSeg(0, 0, 0, Y2_ax, 1);
+	p2DDoc->ksLineSeg(0, Y2_ax, X_ax, Y2_ax, 1);
+	p2DDoc->ksLineSeg(X_ax, Y2_ax, X_ax, 1, 1);
+	p2DDoc->ksLineSeg(X_ax, 1, X_ax+1, 0, 1); //+1 для фасочки
+	p2DDoc->ksLineSeg(X_ax+1, 0, 0,0, 1);
+
+	p2DDoc->ksLineSeg(0, 10, 0, 0, 3); //осевая для тела вращения((((
+
+	pLegSketchDef1->EndEdit();
+
+	//вращение дырки 
+	ksEntityPtr pRotate2 = pPart->NewEntity(o3d_cutRotated);
+	ksCutRotatedDefinitionPtr pRotDef2 = pRotate2->GetDefinition();
+	pRotDef2->SetSketch(pLegSketch1);
+	pRotDef2->SetSideParam(FALSE, 360);
+	ksEntityCollectionPtr fl = pRotDef2->GetSketch(); //коллекция для фасок
+	pRotate2->Create();
+
+	//фасочки)))
+	//ksEntityPtr pChamfer = pPart->NewEntity(o3d_chamfer);
+	//ksChamferDefinitionPtr pChamferDef = pChamfer->GetDefinition();
+	//pChamferDef->SetChamferParam(true, 1, 1);
+	//fl = pChamferDef->array();
+	//fl->Clear();
+	//ksEntityCollectionPtr flEdges = pPart->EntityCollection(o3d_edge);
+	//for (int i = 0; i < flEdges->GetCount(); i++) {
+	//	ksEntityPtr ed = flEdges->GetByIndex(i);
+	//	ksEdgeDefinitionPtr def = ed->GetDefinition();
+	//	if (def->GetOwnerEntity() == pRotate2) { 
+	//		if (def->IsCircle()) {
+	//			fl->Add(ed);
+	//		}
+	//	}
+	//}
+	//pChamfer->Create();
+	//fl->Clear();
 
 	string path = "C:\\Users\\desxz\\source\\repos\\Assembling\\Details\\";
 	string name = "Гайка нажимная";
