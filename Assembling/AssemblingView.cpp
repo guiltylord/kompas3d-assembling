@@ -55,60 +55,23 @@ void CAssemblingView::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_BUTTON1, btn_Build);
 }
 
-void CAssemblingView::ConfigureButton(int detail)
+void CAssemblingView::ConfigureButton(CString btnText)
 {
 	auto width = GetSystemMetrics(SM_CXSCREEN);
 	auto height = GetSystemMetrics(SM_CYSCREEN);
 
 	btn_Build.MoveWindow(0, currImgHeight, 125, 30);
-	CString btnText;
-	switch (detail) {
-	case SEAL: {
-		btnText = L"Build seal";
-		//ConfigurePicture(SEAL);
-		break;
-	}
-	case SCREW: {
-		btnText = L"Build screw";
-		//ConfigurePicture(SCREW);
-		break;
-	}
-	case PUCK: {
-		btnText = L"Build puck";
-		break;
-	}
-	case ASSEMBLING: {
-		btnText = L"Made assembling";
-		break;
-	}
-	}
-	
 	btn_Build.SetWindowTextW(btnText);
 }
 
-void CAssemblingView::ConfigurePicture(int i)
+void CAssemblingView::ConfigurePicture(CString imgPath)
 {
 	CImage img = CImage();
 
-	switch (i) {
-	case SEAL: {
-		img.Load(L"C:\\Users\\desxz\\source\\repos\\kompas3d-assembling\\kompas3d-assembling\\res\\1.bmp");
-		break;
-	}
-	case SCREW: {
-		img.Load(L"C:\\Users\\desxz\\source\\repos\\Assembling\\Assembling\\res\\Toolbar.bmp");
-		break;
-	}
-	case PUCK: {
-		break;
-	}
-	case ASSEMBLING: {
-		img.Load(L"C:\\Users\\desxz\\Pictures\\Screenshots\\1.bmp");
-		break;
-	}
-	}
+	img.Load(imgPath);
 
 	if (img == nullptr) {
+		currImgHeight = 0;
 		return;
 	}
 
@@ -121,25 +84,26 @@ void CAssemblingView::ConfigurePicture(int i)
 
 void CAssemblingView::ConfigureWindow(const int detail)
 {
+	CAssemblingDoc* pDoc = GetDocument();
 	switch (detail) {
 	case ASSEMBLING: {
-		ConfigurePicture(ASSEMBLING);
-		ConfigureButton(ASSEMBLING);
+		ConfigurePicture(pDoc->imgPathForAssembling);
+		ConfigureButton(pDoc->btnTextForAssembling);
 		break;
 	}
 	case SEAL: {
-		ConfigurePicture(SEAL);
-		ConfigureButton(SEAL);
+		ConfigurePicture(pDoc->imgPathForSeal);
+		ConfigureButton(pDoc->btnTextForSeal);
 		break;
 	}
 	case SCREW: {
-		ConfigurePicture(SCREW);
-		ConfigureButton(SCREW);
+		ConfigurePicture(pDoc->imgPathForScrew);
+		ConfigureButton(pDoc->btnTextForScrew);
 		break;
 	}
-	case PUCK:{
-		ConfigurePicture(PUCK);
-		ConfigureButton(PUCK);
+	case PUCK: {
+		ConfigurePicture(pDoc->imgPathForPuck);
+		ConfigureButton(pDoc->btnTextForPuck);
 		break;
 	}
 	}

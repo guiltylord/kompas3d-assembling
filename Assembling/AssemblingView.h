@@ -35,8 +35,8 @@ public:
 
 // Operations
 public:
-	void ConfigureButton(int detail);
-	void ConfigurePicture(int detail);
+	void ConfigureButton(CString btnText);
+	void ConfigurePicture(CString imgPath);
 	void ConfigureWindow(const int detail);
 
 // Overrides

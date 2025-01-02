@@ -41,12 +41,19 @@ CAssemblingDoc::~CAssemblingDoc()
 {
 }
 
+void CAssemblingDoc::GetPaths()
+{
+	//evaluating paths to images in curr dir  or OTHER OPTION
+	int i;
+}
+
 BOOL CAssemblingDoc::OnNewDocument()
 {
 	if (!CDocument::OnNewDocument())
 		return FALSE;
 	m_bAssembling = m_bSeal = m_bScrew = m_bPuck = false;
-
+	
+	GetPaths();
 	m_pTree->m_pDoc = this;
 	m_pTree->FillTree();
 	m_pView->m_pAssembler = new Assembler();
