@@ -489,6 +489,7 @@ void Assembler::CreateScrew()
 	ksEntityCollectionPtr flFaces = pPart->EntityCollection(o3d_face);
 	auto t = 0;
 	auto c = flFaces->GetCount();
+	auto isFirst = true;
 	for (int i = 0; i < c; i++) {
 		ksEntityPtr face = flFaces->GetByIndex(i);
 		ksFaceDefinitionPtr def = face->GetDefinition();
@@ -513,6 +514,12 @@ void Assembler::CreateScrew()
 					int n = int(j);
 					if (n == 3 && cEdges == 6) {
 						t++;
+					}
+
+					if (cEdges == 4 && isFirst == true) {
+						face->Putname("Face4Assembly21");
+						face->Update();
+						isFirst = false;
 					}
 				}
 				if (t == 6) {
@@ -604,8 +611,6 @@ void Assembler::CreateScrew()
 	//}
 	//pChamfer->Create();
 	//fl->Clear();
-
-
 
 	flFaces = pPart->EntityCollection(o3d_face);
 	t = 0;
@@ -741,23 +746,6 @@ void Assembler::CreatePuck()
 	}
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 	string path = "C:\\Users\\desxz\\source\\repos\\Assembling\\Details\\";
 	string name = "Шайба";
 	path += name + ".m3d";
@@ -769,6 +757,7 @@ void Assembler::CreatePuck()
 void Assembler::ass()
 {
 	ksDocument3DPtr p3DDoc;
+
 	CComPtr<IUnknown> pKompasAppUnk = nullptr;
 
 	if (!pKompasApp5)
@@ -807,45 +796,51 @@ void Assembler::ass()
 	p3DDoc = pKompasApp5->Document3D();
 	p3DDoc->Create(false, false);
 	p3DDoc = pKompasApp5->ActiveDocument3D();
-	ksPartPtr pPart = p3DDoc->GetPart(pTop_Part);
+	ksPartPtr pAssemble = p3DDoc->GetPart(pTop_Part);
 	ksDocument2DPtr p2DDoc;
 
 	ksPartPtr pSeal, pScrew, pPuck;
-	p3DDoc->SetPartFromFile("C:\\Users\\desxz\\source\\repos\\Assembling\\Details\\Гнездо сальника.m3d", pPart, true);
-	p3DDoc->SetPartFromFile("C:\\Users\\desxz\\source\\repos\\Assembling\\Details\\Гайка нажимная.m3d", pPart, true);
-	p3DDoc->SetPartFromFile("C:\\Users\\desxz\\source\\repos\\Assembling\\Details\\Шайба.m3d", pPart, true);
-	//p3DDoc->SetPartFromFile("D:\\KompasAssembly\\Gear.m3d", pPart, true);
+	p3DDoc->SetPartFromFile("C:\\Users\\desxz\\source\\repos\\Assembling\\Details\\Гнездо сальника.m3d", pAssemble, true);
+	p3DDoc->SetPartFromFile("C:\\Users\\desxz\\source\\repos\\Assembling\\Details\\Гайка нажимная.m3d", pAssemble, true);
+	p3DDoc->SetPartFromFile("C:\\Users\\desxz\\source\\repos\\Assembling\\Details\\Шайба.m3d", pAssemble, true);
 
 	pSeal = p3DDoc->GetPart(0);
 	pScrew = p3DDoc->GetPart(1);
 	pPuck = p3DDoc->GetPart(2);
 
-
 	ksEntityCollectionPtr colSeal = pSeal->EntityCollection(o3d_face);
 	ksEntityCollectionPtr colScrew = pScrew->EntityCollection(o3d_face);
 	ksEntityCollectionPtr colPuck = pPuck->EntityCollection(o3d_face);
 
+	ksEntityPtr pSealPlaneZY = pSeal->GetDefaultEntity(o3d_planeYOZ);
+	ksEntityPtr pAssemblePlaneZY = pAssemble->GetDefaultEntity(o3d_planeYOZ);
+	
 	ksEntityPtr BossFace4Assemly0 = colSeal->GetByName("Face4Assembly0", true, true);
 	ksEntityPtr BossFace4Assemly1 = colSeal->GetByName("Face4Assembly1", true, true);
 	ksEntityPtr Cylinder4Assembly1 = colSeal->GetByName("Cylinder4Assembly1", true, true);
 
 	ksEntityPtr BossFace4Assemly2 = colScrew->GetByName("Face4Assembly2", true, true);
+	ksEntityPtr BossFace4Assemly21 = colScrew->GetByName("Face4Assembly21", true, true);
 	ksEntityPtr Cylinder4Assembly2 = colScrew->GetByName("Cylinder4Assembly2", true, true);
 	
 	ksEntityPtr BossFace4Assemly3 = colPuck->GetByName("Face4Assembly3", true, true);
 	ksEntityPtr Cylinder4Assembly3 = colPuck->GetByName("Cylinder4Assembly3", true, true);
 
-
-
+	ksPlacementPtr pl = pSeal->GetPlacement();
+	pl->SetOrigin(0, 0, 0);
+	pl->SetAxes(1, 0, 0, 0, 1, 0);
+	pSeal->SetPlacement(pl);
+	pSeal->UpdatePlacement();
 
 	p3DDoc->AddMateConstraint(mc_Coincidence, BossFace4Assemly1, BossFace4Assemly3, -1, 1, 0);
 	p3DDoc->AddMateConstraint(mc_Concentric, Cylinder4Assembly1, Cylinder4Assembly3, 0, 1, 0);
 
-	p3DDoc->AddMateConstraint(mc_Coincidence, BossFace4Assemly0, BossFace4Assemly2, -1, 1, 0);//want to plus green and red details
+	p3DDoc->AddMateConstraint(mc_Coincidence, BossFace4Assemly0, BossFace4Assemly2, -1, 1, 0);
 	p3DDoc->AddMateConstraint(mc_Concentric, Cylinder4Assembly1, Cylinder4Assembly2, 0, 1, 0);
 
-
-
+	p3DDoc->AddMateConstraint(mc_Parallel, BossFace4Assemly21, pSealPlaneZY, 0, 1, 0);
+	p3DDoc->AddMateConstraint(mc_Parallel, pAssemblePlaneZY, pSealPlaneZY, 0, 1, 0);
+	
 	p3DDoc->RebuildDocument();
 	//pBoss->PutfixedComponent(TRUE);
 
