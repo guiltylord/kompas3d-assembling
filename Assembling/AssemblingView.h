@@ -31,10 +31,13 @@ public:
 public:
 	CAssemblingDoc* GetDocument() const;
 	Assembler* m_pAssembler;
+	int currImgHeight;
 
 // Operations
 public:
-	void ConfigurePictures(int detail);
+	void ConfigureButton(int detail);
+	void ConfigurePicture(int detail);
+	void ConfigureWindow(const int detail);
 
 // Overrides
 public:
@@ -60,6 +63,7 @@ public:
 	afx_msg void OnBnClickedButton1();
 	CStatic m_sketchPic;
 	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
+	CButton btn_Build;
 };
 
 #ifndef _DEBUG  // debug version in AssemblingView.cpp

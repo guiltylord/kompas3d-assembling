@@ -98,21 +98,22 @@ void CTreeDetails::OnLButtonDown(UINT nFlags, CPoint point)
 	if (selTreeItem==m_hAssembling) {
 		m_pDoc->m_bAssembling = true;
 		m_pDoc->m_bSeal = m_pDoc->m_bScrew = m_pDoc->m_bPuck = false;
-		m_pDoc->m_pView->ConfigurePictures(ASSEMBLING);
+		m_pDoc->m_pView->ConfigureWindow(ASSEMBLING);
 	}
 	if (selTreeItem==m_hSeal) {
 		m_pDoc->m_bSeal = true; 
 		m_pDoc->m_bAssembling = m_pDoc->m_bScrew = m_pDoc->m_bPuck  = false;
-		m_pDoc->m_pView->ConfigurePictures(SEAL);
+		m_pDoc->m_pView->ConfigureWindow(SEAL);
+
 	}
 	if (selTreeItem==m_hScrew) {
 		m_pDoc->m_bScrew = true;
 		m_pDoc->m_bAssembling = m_pDoc->m_bSeal =  m_pDoc->m_bPuck = false;
-		m_pDoc->m_pView->ConfigurePictures(SCREW);
+		m_pDoc->m_pView->ConfigureWindow(SCREW);
 	}
 	if (selTreeItem == m_hPuck) {
 		m_pDoc->m_bPuck = true;
 		m_pDoc->m_bAssembling = m_pDoc->m_bSeal = m_pDoc->m_bScrew = false;
-		m_pDoc->m_pView->ConfigurePictures(PUCK);
+		m_pDoc->m_pView->ConfigureWindow(PUCK);
 	}
 }

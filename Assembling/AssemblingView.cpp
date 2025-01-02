@@ -52,18 +52,51 @@ void CAssemblingView::DoDataExchange(CDataExchange* pDX)
 {
 	CFormView::DoDataExchange(pDX);
 	DDX_Control(pDX, ID_SKETCH1, m_sketchPic);
+	DDX_Control(pDX, IDC_BUTTON1, btn_Build);
 }
 
-void CAssemblingView::ConfigurePictures(int detail)
+void CAssemblingView::ConfigureButton(int detail)
+{
+	auto width = GetSystemMetrics(SM_CXSCREEN);
+	auto height = GetSystemMetrics(SM_CYSCREEN);
+
+	btn_Build.MoveWindow(0, currImgHeight, 125, 30);
+	CString btnText;
+	switch (detail) {
+	case SEAL: {
+		btnText = L"Build seal";
+		//ConfigurePicture(SEAL);
+		break;
+	}
+	case SCREW: {
+		btnText = L"Build screw";
+		//ConfigurePicture(SCREW);
+		break;
+	}
+	case PUCK: {
+		btnText = L"Build puck";
+		break;
+	}
+	case ASSEMBLING: {
+		btnText = L"Made assembling";
+		break;
+	}
+	}
+	
+	btn_Build.SetWindowTextW(btnText);
+}
+
+void CAssemblingView::ConfigurePicture(int i)
 {
 	CImage img = CImage();
 
-	switch (detail) {
+	switch (i) {
 	case SEAL: {
 		img.Load(L"C:\\Users\\desxz\\source\\repos\\kompas3d-assembling\\kompas3d-assembling\\res\\1.bmp");
 		break;
 	}
 	case SCREW: {
+		img.Load(L"C:\\Users\\desxz\\source\\repos\\Assembling\\Assembling\\res\\Toolbar.bmp");
 		break;
 	}
 	case PUCK: {
@@ -79,9 +112,45 @@ void CAssemblingView::ConfigurePictures(int detail)
 		return;
 	}
 
+	//Ширина картинки
+	currImgHeight = img.GetHeight();
+
 	HBITMAP bitmap = img.Detach();
 	m_sketchPic.SetBitmap(bitmap);
 }
+
+void CAssemblingView::ConfigureWindow(const int detail)
+{
+	switch (detail) {
+	case ASSEMBLING: {
+		ConfigurePicture(ASSEMBLING);
+		ConfigureButton(ASSEMBLING);
+		break;
+	}
+	case SEAL: {
+		ConfigurePicture(SEAL);
+		ConfigureButton(SEAL);
+		break;
+	}
+	case SCREW: {
+		ConfigurePicture(SCREW);
+		ConfigureButton(SCREW);
+		break;
+	}
+	case PUCK:{
+		ConfigurePicture(PUCK);
+		ConfigureButton(PUCK);
+		break;
+	}
+	}
+}
+
+//void CAssemblingView::ConfigureWindow()
+//{
+//
+//	if()
+//
+//}
 
 
 
