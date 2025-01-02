@@ -3,8 +3,9 @@
 //
 
 
-
 #pragma once
+#include <filesystem>
+#include <string>
 
 class CTreeDetails;
 class CAssemblingView;
@@ -24,11 +25,10 @@ public:
 	CString btnTextForScrew = L"Build screw";
 	CString btnTextForPuck = L"Build puck";
 
-	CString imgPathForAssembling = L"C:\\Users\\desxz\\source\\repos\\Assembling\\Assembling\\res\\Toolbar.bmp";
-	CString imgPathForSeal = L"C:\\Users\\desxz\\source\\repos\\kompas3d-assembling\\kompas3d-assembling\\res\\1.bmp";
-	CString imgPathForScrew = L"C:\\Users\\desxz\\source\\repos\\Assembling\\Assembling\\res\\Toolbar.bmp";
-	CString imgPathForPuck = L"C:\\Users\\desxz\\source\\repos\\kompas3d-assembling\\kompas3d-assembling\\res\\1.bmp";
-
+	CString imgPathForAssembling;
+	CString imgPathForSeal;
+	CString imgPathForScrew;
+	CString imgPathForPuck;
 
 	CTreeDetails* m_pTree;
 	CAssemblingView* m_pView;

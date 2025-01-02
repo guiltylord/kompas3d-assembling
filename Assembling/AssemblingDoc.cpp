@@ -31,6 +31,8 @@ END_MESSAGE_MAP()
 // CAssemblingDoc construction/destruction
 class Assembler;
 class CAssemblingView;
+
+using namespace std;
 CAssemblingDoc::CAssemblingDoc() noexcept
 {
 	// TODO: add one-time construction code here
@@ -43,8 +45,11 @@ CAssemblingDoc::~CAssemblingDoc()
 
 void CAssemblingDoc::GetPaths()
 {
-	//evaluating paths to images in curr dir  or OTHER OPTION
-	int i;
+	string cwd = filesystem::current_path().string() + "\\res\\";
+	imgPathForAssembling = string(cwd + "Assembling.bmp").c_str();
+	imgPathForSeal = string(cwd + "Seal.bmp").c_str();
+	imgPathForScrew = string(cwd + "Screw.bmp").c_str();
+	imgPathForPuck = string(cwd + "Puck.bmp").c_str();
 }
 
 BOOL CAssemblingDoc::OnNewDocument()

@@ -75,7 +75,6 @@ void CAssemblingView::ConfigurePicture(CString imgPath)
 		return;
 	}
 
-	//Ширина картинки
 	currImgHeight = img.GetHeight();
 
 	HBITMAP bitmap = img.Detach();
