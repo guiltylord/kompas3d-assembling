@@ -130,7 +130,7 @@ void Assembler::CreateSeal()
 
 	SealData Seal = GetSeal(1);
 
-	//эскиз дно Hexagon Bottom
+	//эскиз Base
 	ksEntityPtr pBaseSketch = pPart->NewEntity(o3d_sketch);
 	ksSketchDefinitionPtr pBaseSketchDef = pBaseSketch->GetDefinition();
 	pBaseSketchDef->SetPlane(pPart->GetDefaultEntity(o3d_planeXOY));
@@ -165,6 +165,47 @@ void Assembler::CreateSeal()
 	pBaseBossExtrusionDef->SetSketch(pBaseSketch);
 	pBaseBossExtrusionDef->SetSideParam(true, 0, Seal.BaseDepth, 0, false);
 	pBaseExtrude->Create();
+
+	ksEntityCollectionPtr flFaces = pPart->EntityCollection(o3d_face);
+	auto t = 0;
+	auto c = flFaces->GetCount();
+	for (int i = 0; i < c; i++) {
+		ksEntityPtr face = flFaces->GetByIndex(i);
+		ksFaceDefinitionPtr def = face->GetDefinition();
+		if (def->GetOwnerEntity() == pBaseExtrude) {
+			if (def->IsPlanar()) {
+				//ksEntityPtr* OldFace = (ksEntityPtr *&)face;
+				ksEdgeCollectionPtr col = def->EdgeCollection();
+				int cEdges = col->GetCount();
+				for (int k = 0; k < cEdges; k++) {
+
+					ksEdgeDefinitionPtr d = col->GetByIndex(k);
+					ksVertexDefinitionPtr p1 = d->GetVertex(true);
+					ksVertexDefinitionPtr p2 = d->GetVertex(false);
+
+
+					double x1, y1, z1;
+					p1->GetPoint(&x1, &y1, &z1);
+
+					double x2, y2, z2;
+					p2->GetPoint(&x2, &y2, &z2);
+
+					if (z1 == 3.f && cEdges == 6) {
+						t++;
+					}
+				}
+				if (t == 6) {
+					face->Putname("Face4Assembly1");
+					face->Update();
+					//break;
+					t = 0;
+				}
+
+			}
+		}
+	}
+
+	flFaces->Clear();
 
 	//смещенная плоскость
 	ksEntityPtr pBasePlane = pPart->NewEntity(o3d_planeOffset);
@@ -299,8 +340,8 @@ void Assembler::CreateSeal()
 	//p3DDoc->hideInComponentsMode; //doesnt work
 	
 
-	ksEntityCollectionPtr flFaces = pPart->EntityCollection(o3d_face);
-	auto t = 0;
+	flFaces = pPart->EntityCollection(o3d_face);
+	t = 0;
 	for (int i = 0; i < flFaces->GetCount(); i++) {
 		ksEntityPtr face = flFaces->GetByIndex(i);
 		ksFaceDefinitionPtr def = face->GetDefinition();
@@ -309,7 +350,7 @@ void Assembler::CreateSeal()
 				double h, r;
 				def->GetCylinderParam(&h, &r);
 				if (r == Seal.AxHoleRad / 2) {
-					face->Putname("Cylinder4Assembly");
+					face->Putname("Cylinder4Assembly1");
 					face->Update();
 				}
 			}
@@ -412,7 +453,7 @@ void Assembler::CreateScrew()
 	ksPartPtr pPart = p3DDoc->GetPart(pTop_Part);
 	ksDocument2DPtr p2DDoc;
 
-	//эскиз дно Hexagon
+	//эскиз Hexagon
 	ksEntityPtr pHexSketch = pPart->NewEntity(o3d_sketch);
 	ksSketchDefinitionPtr pHexSketchDef = pHexSketch->GetDefinition();
 	pHexSketchDef->SetPlane(pPart->GetDefaultEntity(o3d_planeXOZ));
@@ -434,12 +475,53 @@ void Assembler::CreateScrew()
 	pHexSketchDef->EndEdit();
 
 	//выдавливание Hexagon
-	ksEntityPtr pBaseExtrude = pPart->NewEntity(o3d_bossExtrusion);
-	ksBossExtrusionDefinitionPtr pBaseBossExtrusionDef = pBaseExtrude->GetDefinition();
-	pBaseBossExtrusionDef->directionType = dtNormal;
-	pBaseBossExtrusionDef->SetSketch(pHexSketch);
-	pBaseBossExtrusionDef->SetSideParam(true, 0, Screw.HexDepth, 0, false);
-	pBaseExtrude->Create();
+	ksEntityPtr pHexExtrude = pPart->NewEntity(o3d_bossExtrusion);
+	ksBossExtrusionDefinitionPtr pHexExtrusionDef = pHexExtrude->GetDefinition();
+	pHexExtrusionDef->directionType = dtNormal;
+	pHexExtrusionDef->SetSketch(pHexSketch);
+	pHexExtrusionDef->SetSideParam(true, 0, Screw.HexDepth, 0, false);
+	pHexExtrude->Create();
+	
+	ksEntityCollectionPtr flFaces = pPart->EntityCollection(o3d_face);
+	auto t = 0;
+	auto c = flFaces->GetCount();
+	for (int i = 0; i < c; i++) {
+		ksEntityPtr face = flFaces->GetByIndex(i);
+		ksFaceDefinitionPtr def = face->GetDefinition();
+		if (def->GetOwnerEntity() == pHexExtrude) {
+			if (def->IsPlanar()) {
+				//ksEntityPtr* OldFace = (ksEntityPtr *&)face;
+				ksEdgeCollectionPtr col = def->EdgeCollection();
+				int cEdges = col->GetCount();
+				for (int k = 0; k < cEdges; k++) {
+
+					ksEdgeDefinitionPtr d = col->GetByIndex(k);
+					ksVertexDefinitionPtr p1 = d->GetVertex(true);
+					ksVertexDefinitionPtr p2 = d->GetVertex(false);
+
+
+					double x1, y1, z1;
+					p1->GetPoint(&x1, &y1, &z1);
+
+					double x2, y2, z2;
+					p2->GetPoint(&x2, &y2, &z2);
+
+					if (z1 == 3.f && cEdges == 6) {
+						t++;
+					}
+				}
+				if (t == 6) {
+					face->Putname("Face4Assembly2");
+					face->Update();
+					//break;
+					t = 0;
+				}
+
+			}
+		}
+	}
+
+	flFaces->Clear();
 
 	//в эттом эскизе потом сделать смену на втторрое исполнение. добавиь флаг так, чтобы выемки под сальникк не было и фаски тоже
 	//эскиз Leg
@@ -517,6 +599,25 @@ void Assembler::CreateScrew()
 	//}
 	//pChamfer->Create();
 	//fl->Clear();
+
+
+
+	flFaces = pPart->EntityCollection(o3d_face);
+	t = 0;
+	for (int i = 0; i < flFaces->GetCount(); i++) {
+		ksEntityPtr face = flFaces->GetByIndex(i);
+		ksFaceDefinitionPtr def = face->GetDefinition();
+		if (def->GetOwnerEntity() == pRotate) {
+			if (def->IsCylinder()) {
+				double h, r;
+				def->GetCylinderParam(&h, &r);
+				if (r == Screw.AxHoleRad + Screw.LegThick) {
+					face->Putname("Cylinder4Assembly2");
+					face->Update();
+				}
+			}
+		}
+	}
 
 
 	pPart->SetAdvancedColor(RGB(0, 150, 0), 1, 1, 1, 1, 1, 0.5);
@@ -619,9 +720,17 @@ void Assembler::CreatePuck()
 		ksFaceDefinitionPtr def = face->GetDefinition();
 		if (def->GetOwnerEntity() == pRot) {
 			if (def->IsPlanar()) {
-				face->Putname("Face4Assembly1");
+				face->Putname("Face4Assembly3");
 				face->Update();
 				//break;
+			}
+			if (def->IsCylinder()) {
+				double h, r;
+				def->GetCylinderParam(&h, &r);
+				if (r == Puck.Rad) {
+					face->Putname("Cylinder4Assembly3");
+					face->Update();
+				}
 			}
 		}
 	}
@@ -691,29 +800,54 @@ void Assembler::ass()
 	pKompasApp5->Visible = true;
 
 	p3DDoc = pKompasApp5->Document3D();
-	p3DDoc->Create(false, true);
+	p3DDoc->Create(false, false);
 	p3DDoc = pKompasApp5->ActiveDocument3D();
 	ksPartPtr pPart = p3DDoc->GetPart(pTop_Part);
 	ksDocument2DPtr p2DDoc;
 
-	ksPartPtr pBoss, pGear1, pGear2;
+	ksPartPtr pSeal, pScrew, pPuck;
 	p3DDoc->SetPartFromFile("C:\\Users\\desxz\\source\\repos\\Assembling\\Details\\Гнездо сальника.m3d", pPart, true);
+	p3DDoc->SetPartFromFile("C:\\Users\\desxz\\source\\repos\\Assembling\\Details\\Гайка нажимная.m3d", pPart, true);
 	p3DDoc->SetPartFromFile("C:\\Users\\desxz\\source\\repos\\Assembling\\Details\\Шайба.m3d", pPart, true);
 	//p3DDoc->SetPartFromFile("D:\\KompasAssembly\\Gear.m3d", pPart, true);
 
-	pBoss = p3DDoc->GetPart(0);
-	pGear1 = p3DDoc->GetPart(1);
+	pSeal = p3DDoc->GetPart(0);
+	pScrew = p3DDoc->GetPart(1);
+	pPuck = p3DDoc->GetPart(2);
 
 
-	ksEntityCollectionPtr col = pBoss->EntityCollection(o3d_face);
-	ksEntityCollectionPtr col2 = pGear1->EntityCollection(o3d_face);
+	ksEntityCollectionPtr colSeal = pSeal->EntityCollection(o3d_face);
+	ksEntityCollectionPtr colScrew = pScrew->EntityCollection(o3d_face);
+	ksEntityCollectionPtr colPuck = pPuck->EntityCollection(o3d_face);
 
-	ksEntityPtr BossFace4Assemly0 = col->GetByName("Face4Assembly0", true, true);
-	ksEntityPtr BossFace4Assemly1 = col2->GetByName("Face4Assembly1", true, true);
+	ksEntityPtr BossFace4Assemly0 = colSeal->GetByName("Face4Assembly0", true, true);
+	ksEntityPtr BossFace4Assemly1 = colSeal->GetByName("Face4Assembly1", true, true);
+	ksEntityPtr Cylinder4Assembly1 = colSeal->GetByName("Cylinder4Assembly1", true, true);
+
+	ksEntityPtr BossFace4Assemly2 = colScrew->GetByName("Face4Assembly2", true, true);
+	ksEntityPtr Cylinder4Assembly2 = colScrew->GetByName("Cylinder4Assembly2", true, true);
+	
+	ksEntityPtr BossFace4Assemly3 = colPuck->GetByName("Face4Assembly3", true, true);
+	ksEntityPtr Cylinder4Assembly3 = colPuck->GetByName("Cylinder4Assembly3", true, true);
 
 
 
-	p3DDoc->AddMateConstraint(mc_Coincidence, BossFace4Assemly0, BossFace4Assemly1, -1, 1, 0);
+
+	p3DDoc->AddMateConstraint(mc_Coincidence, BossFace4Assemly1, BossFace4Assemly3, -1, 1, 0);
+	p3DDoc->AddMateConstraint(mc_Concentric, Cylinder4Assembly1, Cylinder4Assembly3, -1, 1, 0);
+
+	p3DDoc->AddMateConstraint(mc_Coincidence, BossFace4Assemly0, BossFace4Assemly2, -1, 1, 0);//want to plus green and red details
+	p3DDoc->AddMateConstraint(mc_Concentric, Cylinder4Assembly1, Cylinder4Assembly2, -1, 1, 0);
+
+
 
 	p3DDoc->RebuildDocument();
+	//pBoss->PutfixedComponent(TRUE);
+
+	string path = "C:\\Users\\desxz\\source\\repos\\Assembling\\Details\\";
+	string name = "Сборка";
+	path += name + ".a3d";
+
+	p3DDoc->fileName = _bstr_t(CString(name.c_str()));
+	p3DDoc->SaveAs(_bstr_t(CString(path.c_str())));
 }
