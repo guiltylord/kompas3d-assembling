@@ -32,6 +32,7 @@ IMPLEMENT_DYNCREATE(CAssemblingView, CFormView)
 
 BEGIN_MESSAGE_MAP(CAssemblingView, CFormView)
 	ON_BN_CLICKED(IDC_BUTTON1, &CAssemblingView::OnBnClickedButton1)
+	ON_WM_CTLCOLOR()
 END_MESSAGE_MAP()
 
 // CAssemblingView construction/destruction
@@ -139,4 +140,12 @@ void CAssemblingView::OnBnClickedButton1()
 	if (pDoc->m_bAssembling) {
 		m_pAssembler->ass();
 	}
+}
+
+
+HBRUSH CAssemblingView::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
+{
+	HBRUSH hbr = CFormView::OnCtlColor(pDC, pWnd, nCtlColor);
+
+	return (HBRUSH)GetStockObject(WHITE_BRUSH);
 }

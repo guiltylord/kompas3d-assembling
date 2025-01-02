@@ -59,6 +59,7 @@ protected:
 public:
 	afx_msg void OnBnClickedButton1();
 	CStatic m_sketchPic;
+	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
 };
 
 #ifndef _DEBUG  // debug version in AssemblingView.cpp
