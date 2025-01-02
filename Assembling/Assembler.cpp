@@ -205,7 +205,7 @@ void Assembler::CreateSeal()
 		}
 	}
 
-	flFaces->Clear();
+	//flFaces->Clear();
 
 	//смещенная плоскость
 	ksEntityPtr pBasePlane = pPart->NewEntity(o3d_planeOffset);
@@ -359,13 +359,13 @@ void Assembler::CreateSeal()
 		}
 		if (def->GetOwnerEntity() == pHexExtrude) {
 			if (def->IsPlanar()) {
-				ksEdgeCollectionPtr col = def->EdgeCollection();
-				for (int k = 0; k < col->GetCount(); k++) {
+				ksEdgeCollectionPtr col = def->EdgeCollection(); 
+				int cEdges = col->GetCount();
+				for (int k = 0; k < cEdges; k++) {
 
 					ksEdgeDefinitionPtr d = col->GetByIndex(k);
 					ksVertexDefinitionPtr p1 = d->GetVertex(true);
 					ksVertexDefinitionPtr p2 = d->GetVertex(false);
-
 
 					double x1, y1, z1;
 					p1->GetPoint(&x1, &y1, &z1);
@@ -373,12 +373,16 @@ void Assembler::CreateSeal()
 					double x2, y2, z2;
 					p2->GetPoint(&x2, &y2, &z2);
 
-					if (z1==(Seal.HexDepth+Seal.BaseDepth) && x1 == 0 && y1 == 10.95f) {
+					if (z1 == 18.f && cEdges == 7) {
 						t++;
-						face->Putname("Face4Assembly0");
-						face->Update();
-						//break;
 					}
+				}
+				if (t == 7) {
+					face->Putname("Face4Assembly0");
+					face->Update();
+					//break;
+
+					t = 0;
 				}
 			}
 		}
@@ -505,8 +509,9 @@ void Assembler::CreateScrew()
 
 					double x2, y2, z2;
 					p2->GetPoint(&x2, &y2, &z2);
-
-					if (z1 == 3.f && cEdges == 6) {
+					auto j = round(y1);
+					int n = int(j);
+					if (n == 3 && cEdges == 6) {
 						t++;
 					}
 				}
@@ -834,10 +839,10 @@ void Assembler::ass()
 
 
 	p3DDoc->AddMateConstraint(mc_Coincidence, BossFace4Assemly1, BossFace4Assemly3, -1, 1, 0);
-	p3DDoc->AddMateConstraint(mc_Concentric, Cylinder4Assembly1, Cylinder4Assembly3, -1, 1, 0);
+	p3DDoc->AddMateConstraint(mc_Concentric, Cylinder4Assembly1, Cylinder4Assembly3, 0, 1, 0);
 
 	p3DDoc->AddMateConstraint(mc_Coincidence, BossFace4Assemly0, BossFace4Assemly2, -1, 1, 0);//want to plus green and red details
-	p3DDoc->AddMateConstraint(mc_Concentric, Cylinder4Assembly1, Cylinder4Assembly2, -1, 1, 0);
+	p3DDoc->AddMateConstraint(mc_Concentric, Cylinder4Assembly1, Cylinder4Assembly2, 0, 1, 0);
 
 
 
