@@ -720,9 +720,18 @@ void Assembler::CreatePuck()
 	pPart->Update();
 
 
-
-
-
+	//операция резьба
+	ksEntityPtr pTHread = pPart->NewEntity(o3d_thread);
+	ksThreadDefinitionPtr pTHreadDef = pTHread->GetDefinition();
+	pTHreadDef->length = 5;
+	pTHreadDef->dr = 8;
+	pTHreadDef->faceValue = true;
+	pTHreadDef->p = 1;
+	ksEntityCollectionPtr Collection = pPart->EntityCollection(o3d_face);
+	Collection->SelectByPoint(X1, 0.5, 0);
+	pTHreadDef->SetBaseObject(Collection->First());
+	pTHread->Create();
+	Collection->Clear();
 
 
 	ksEntityCollectionPtr flFaces = pPart->EntityCollection(o3d_face);
