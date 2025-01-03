@@ -39,8 +39,8 @@ SealData Assembler::GetSeal(int type)
 		seal.HexRad = 21.9 / 2;
 		seal.HexDepth = 15;
 
-		seal.AxHoleRad = 16 / 2;
-		seal.AxHoleThruRad = 8 / 2;
+		seal.AxHoleRad = 7;
+		seal.AxHoleThruRad = 4;
 
 		seal.X_Pin = 34/2;
 		seal.GrooveRad = 8 / 2;
@@ -56,7 +56,7 @@ ScrewData Assembler::GetScrew(int type)
 	auto screw = ScrewData();
 	switch (type) {
 	case 1:
-		screw.LegHeight = 15;
+		screw.FullHeight = 17;
 		screw.LegThick = 3;
 
 		screw.HexDepth = 3;
@@ -64,8 +64,8 @@ ScrewData Assembler::GetScrew(int type)
 
 		screw.AxHoleRad = 5;
 
-		screw.GasketHeight = 3 / 2;
-		screw.GasketWidth = 3 / 2;
+		screw.GasketHeight = 1;
+		screw.GasketWidth = 2;
 	}
 
 	return screw;
@@ -76,9 +76,9 @@ PuckData Assembler::GetPuck(int type)
 	auto puck = PuckData();
 	switch (type) {
 	case 1:
-		puck.Rad = 5;
+		puck.RadIn = 3.2;
+		puck.RadOut = 7;
 		puck.Height = 1;
-		puck.Width = 2.05;
 	}
 
 	return puck;
@@ -349,7 +349,8 @@ void Assembler::CreateSeal()
 			if (def->IsCylinder()) {
 				double h, r;
 				def->GetCylinderParam(&h, &r);
-				if (r == Seal.AxHoleRad / 2) {
+				//auto n = Seal.AxHoleThruRad / 2;
+				if (r == Seal.AxHoleThruRad) {
 					face->Putname("Cylinder4Assembly1");
 					face->Update();
 				}
@@ -544,7 +545,7 @@ void Assembler::CreateScrew()
 
 	auto X_ax = Screw.AxHoleRad;
 	auto Y1_ax = Screw.HexDepth;
-	auto Y2_ax = Screw.LegHeight;
+	auto Y2_ax = Screw.FullHeight;
 	auto X_out = X_ax + Screw.LegThick;
 	auto Y1_out = Y1_ax + Screw.GasketHeight;
 	auto X_in = X_ax + Screw.GasketWidth;
@@ -694,8 +695,8 @@ void Assembler::CreatePuck()
 	pSketchDef->SetPlane(pPart->GetDefaultEntity(o3d_planeXOY));
 	pSketch->Create();
 
-	auto X1 = Puck.Rad;
-	auto X2 = Puck.Rad + Puck.Width;
+	auto X1 = Puck.RadIn;
+	auto X2 = Puck.RadOut;
 	auto Y = Puck.Height;
 
 	p2DDoc = pSketchDef->BeginEdit();
@@ -737,7 +738,7 @@ void Assembler::CreatePuck()
 			if (def->IsCylinder()) {
 				double h, r;
 				def->GetCylinderParam(&h, &r);
-				if (r == Puck.Rad) {
+				if (r == Puck.RadIn) {
 					face->Putname("Cylinder4Assembly3");
 					face->Update();
 				}

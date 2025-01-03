@@ -19,7 +19,7 @@ struct SealData {
 };
 
 struct ScrewData {
-	float LegHeight;
+	float FullHeight;
 	float LegThick;
 
 	float HexRad;
@@ -32,9 +32,9 @@ struct ScrewData {
 };
 
 struct PuckData {
-	float Rad;
+	float RadIn;
 	float Height;
-	float Width;
+	float RadOut;
 };
 
 class Assembler
