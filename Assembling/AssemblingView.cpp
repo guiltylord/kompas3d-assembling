@@ -52,7 +52,9 @@ void CAssemblingView::DoDataExchange(CDataExchange* pDX)
 {
 	CFormView::DoDataExchange(pDX);
 	DDX_Control(pDX, ID_SKETCH1, m_sketchPic);
-	DDX_Control(pDX, IDC_BUTTON1, btn_Build);
+	DDX_Control(pDX, IDC_BUTTON1, m_btn);
+	DDX_Control(pDX, IDC_COMBOBOX, m_cBox);
+	DDX_Control(pDX, IDC_STATIC_TEXT, m_sText);
 }
 
 void CAssemblingView::ConfigureButton(CString btnText)
@@ -60,8 +62,8 @@ void CAssemblingView::ConfigureButton(CString btnText)
 	auto width = GetSystemMetrics(SM_CXSCREEN);
 	auto height = GetSystemMetrics(SM_CYSCREEN);
 
-	btn_Build.MoveWindow(0, currImgHeight, 125, 30);
-	btn_Build.SetWindowTextW(btnText);
+	m_btn.MoveWindow(0, currImgHeight, 125, 30);
+	m_btn.SetWindowTextW(btnText);
 }
 
 void CAssemblingView::ConfigurePicture(CString imgPath)
@@ -84,6 +86,9 @@ void CAssemblingView::ConfigurePicture(CString imgPath)
 void CAssemblingView::ConfigureWindow(const int detail)
 {
 	CAssemblingDoc* pDoc = GetDocument();
+	m_sText.ShowWindow(SW_NORMAL);
+	m_cBox.ShowWindow(SW_NORMAL);
+	m_btn.ShowWindow(SW_NORMAL);
 	switch (detail) {
 	case ASSEMBLING: {
 		ConfigurePicture(pDoc->imgPathForAssembling);
@@ -131,6 +136,17 @@ void CAssemblingView::OnInitialUpdate()
 	GetParentFrame()->RecalcLayout();
 	ResizeParentToFit();
 
+	CString str;
+	for (int i = 1; i <= 4; i++) {
+		str.Format(L"%i", i);
+		m_cBox.AddString(str);
+	}
+	m_cBox.SetCurSel(0);
+	//m_sText.back
+	m_sText.ShowWindow(SW_HIDE);
+	m_cBox.ShowWindow(SW_HIDE);
+	m_btn.ShowWindow(SW_HIDE);
+	
 }
 
 
@@ -159,22 +175,22 @@ CAssemblingDoc* CAssemblingView::GetDocument() const // non-debug version is inl
 
 void CAssemblingView::OnBnClickedButton1()
 {
+	int execution = m_cBox.GetCurSel();
 	auto pDoc = GetDocument();
 	if (pDoc->m_bSeal) {
-		pDoc->m_pAssembler->FillAssembler(1);
-		//pDoc->m_pAssembler->FillAssembler(radioBtn.Int);
+		pDoc->m_pAssembler->FillAssembler(execution);
 		pDoc->m_pAssembler->CreateSeal();
 	}
 	if (pDoc->m_bScrew) {
-		pDoc->m_pAssembler->FillAssembler(1);
+		pDoc->m_pAssembler->FillAssembler(execution);
 		pDoc->m_pAssembler->CreateScrew();
 	}
 	if (pDoc->m_bPuck) {
-		pDoc->m_pAssembler->FillAssembler(1);
+		pDoc->m_pAssembler->FillAssembler(execution);
 		pDoc->m_pAssembler->CreatePuck();
 	}
 	if (pDoc->m_bAssembling) {
-		pDoc->m_pAssembler->FillAssembler(1);
+		pDoc->m_pAssembler->FillAssembler(execution);
 		pDoc->m_pAssembler->MakeAssemble();
 	}
 }
@@ -182,7 +198,7 @@ void CAssemblingView::OnBnClickedButton1()
 
 HBRUSH CAssemblingView::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 {
+	pDC->SetTextColor(RGB(255, 0, 0));
 	HBRUSH hbr = CFormView::OnCtlColor(pDC, pWnd, nCtlColor);
-
 	return (HBRUSH)GetStockObject(WHITE_BRUSH);
 }

@@ -61,9 +61,11 @@ protected:
 	DECLARE_MESSAGE_MAP()
 public:
 	afx_msg void OnBnClickedButton1();
-	CStatic m_sketchPic;
 	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
-	CButton btn_Build;
+	CStatic m_sketchPic;
+	CButton m_btn;
+	CComboBox m_cBox;
+	CStatic m_sText;
 };
 
 #ifndef _DEBUG  // debug version in AssemblingView.cpp
