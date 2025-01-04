@@ -57,7 +57,7 @@ ScrewData Assembler::GetScrew(int type)
 	switch (type) {
 	case 1:
 		screw.FullHeight = 17;
-		screw.LegThick = 3;
+		screw.LegThick = 2.5;
 
 		screw.HexDepth = 3;
 		screw.HexRad = 21.9 / 2;
@@ -65,7 +65,7 @@ ScrewData Assembler::GetScrew(int type)
 		screw.AxHoleRad = 5;
 
 		screw.GasketHeight = 1;
-		screw.GasketWidth = 2;
+		screw.GasketWidth = 1;
 	}
 
 	return screw;
@@ -529,7 +529,6 @@ void Assembler::CreateScrew()
 					//break;
 					t = 0;
 				}
-
 			}
 		}
 	}
@@ -552,9 +551,10 @@ void Assembler::CreateScrew()
 
 	p2DDoc = pLegSketchDef->BeginEdit();
 	p2DDoc->ksLineSeg(0, Y1_ax, 0, Y2_ax, 1);
-	p2DDoc->ksLineSeg(0, Y2_ax, X_out-1, Y2_ax, 1); //-1 для фасочки
-	p2DDoc->ksLineSeg(X_out - 1, Y2_ax, X_out, Y2_ax-1, 1);
-	p2DDoc->ksLineSeg(X_out, Y2_ax-1, X_out, Y1_out, 1);
+	//p2DDoc->ksLineSeg(0, Y2_ax, X_out-1, Y2_ax, 1); //-1 для фасочки
+	//p2DDoc->ksLineSeg(X_out - 1, Y2_ax, X_out, Y2_ax-1, 1);
+	p2DDoc->ksLineSeg(0, Y2_ax, X_out, Y2_ax, 1);
+	p2DDoc->ksLineSeg(X_out, Y2_ax, X_out, Y1_out, 1);
 	p2DDoc->ksLineSeg(X_out, Y1_out, X_in, Y1_out, 1);
 	p2DDoc->ksLineSeg(X_in, Y1_out, X_in, Y1_ax, 1);
 	p2DDoc->ksLineSeg(X_in, Y1_ax, 0, Y1_ax, 1);
@@ -629,6 +629,31 @@ void Assembler::CreateScrew()
 			}
 		}
 	}
+
+
+
+	//операция резьба
+	ksEntityPtr pTHread = pPart->NewEntity(o3d_thread);
+	ksThreadDefinitionPtr pTHreadDef = pTHread->GetDefinition();
+	auto re = Y2_ax - Y1_ax - Screw.GasketHeight - 1; //-1 because chamfer
+	pTHreadDef->PutallLength(TRUE);
+	//pTHreadDef->Putlength(13);
+	//pThrDef->PutautoDefinDr(TRUE);
+	//pTHreadDef->PutfaceValue
+	//pTHreadDef->SetFaceBegin and END
+
+	//pTHreadDef->allLength=18;
+	pTHreadDef->dr = 16;
+	//pTHreadDef->faceValue = true;
+	pTHreadDef->p = 1;
+	auto r = (Y2_ax - Y1_out) / 2.f;
+	ksEntityCollectionPtr Collection = pPart->EntityCollection(o3d_face);
+
+	ksEntityPtr Cylinder4Assembly2 = Collection->GetByName("Cylinder4Assembly2", true, true);
+	//Collection->SelectByPoint(0, r, X_out);
+	pTHreadDef->SetBaseObject(Cylinder4Assembly2);
+	pTHread->Create();
+	Collection->Clear();
 
 
 	pPart->SetAdvancedColor(RGB(0, 150, 0), 1, 1, 1, 1, 1, 0.5);
@@ -723,8 +748,8 @@ void Assembler::CreatePuck()
 	//операция резьба
 	ksEntityPtr pTHread = pPart->NewEntity(o3d_thread);
 	ksThreadDefinitionPtr pTHreadDef = pTHread->GetDefinition();
-	pTHreadDef->length = 5;
-	pTHreadDef->dr = 8;
+	pTHreadDef->length = Y;
+	pTHreadDef->dr = X1*4;
 	pTHreadDef->faceValue = true;
 	pTHreadDef->p = 1;
 	ksEntityCollectionPtr Collection = pPart->EntityCollection(o3d_face);
