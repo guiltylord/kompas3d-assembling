@@ -175,7 +175,7 @@ CAssemblingDoc* CAssemblingView::GetDocument() const // non-debug version is inl
 
 void CAssemblingView::OnBnClickedButton1()
 {
-	int execution = m_cBox.GetCurSel();
+	int execution = m_cBox.GetCurSel()+1;
 	auto pDoc = GetDocument();
 	if (pDoc->m_bSeal) {
 		pDoc->m_pAssembler->FillAssembler(execution);
