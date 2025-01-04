@@ -66,6 +66,7 @@ public:
 	CButton m_btn;
 	CComboBox m_cBox;
 	CStatic m_sText;
+	afx_msg void OnKompasCloseall();
 };
 
 #ifndef _DEBUG  // debug version in AssemblingView.cpp

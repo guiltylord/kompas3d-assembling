@@ -65,5 +65,7 @@ public:
 	void MakeAssemble();
 
 	int currExec;
+
+	void CloseAll();
 };
 

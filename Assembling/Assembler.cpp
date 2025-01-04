@@ -900,6 +900,4 @@ void Assembler::CloseAll()
 	p3DDoc = pKompasApp5->ActiveDocument3D();
 	ksPartPtr pPart = p3DDoc->GetPart(pTop_Part);
 	ksDocument2DPtr p2DDoc;
-
-	;
 }

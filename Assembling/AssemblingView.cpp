@@ -33,6 +33,7 @@ IMPLEMENT_DYNCREATE(CAssemblingView, CFormView)
 BEGIN_MESSAGE_MAP(CAssemblingView, CFormView)
 	ON_BN_CLICKED(IDC_BUTTON1, &CAssemblingView::OnBnClickedButton1)
 	ON_WM_CTLCOLOR()
+	ON_COMMAND(ID_KOMPAS_CLOSEALL, &CAssemblingView::OnKompasCloseall)
 END_MESSAGE_MAP()
 
 // CAssemblingView construction/destruction
@@ -201,4 +202,11 @@ HBRUSH CAssemblingView::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 	pDC->SetTextColor(RGB(255, 0, 0));
 	HBRUSH hbr = CFormView::OnCtlColor(pDC, pWnd, nCtlColor);
 	return (HBRUSH)GetStockObject(WHITE_BRUSH);
+}
+
+
+void CAssemblingView::OnKompasCloseall()
+{
+	auto pDoc = GetDocument();
+	pDoc->m_pAssembler->CloseAll();
 }
