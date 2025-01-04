@@ -340,17 +340,45 @@ void Assembler::CreateSeal()
 	//p3DDoc->hideInComponentsMode; //doesnt work
 	
 
+	//операция резьба
+	//ksEntityPtr pTHread = pPart->NewEntity(o3d_thread);
+	//ksThreadDefinitionPtr pTHreadDef = pTHread->GetDefinition();
+	////auto re = Y2_ax - Y1_ax - Screw.GasketHeight - 1; //-1 because chamfer
+	////pTHreadDef->PutallLength(TRUE);
+	//pTHreadDef->Putlength(14);
+	////pThrDef->PutautoDefinDr(TRUE);
+	////pTHreadDef->PutfaceValue
+	////ksEntityPtr BossFace4Assemly0 = colSeal->GetByName("Face4Assembly0", true, true);
+	////ksEntityPtr Cylinder4Assembly1 = colSeal->GetByName("Cylinder4Assembly1", true, true);
+	////pTHreadDef->SetFaceBegin();
+
+	////pTHreadDef->allLength=18;
+	//pTHreadDef->dr = 16;
+	////pTHreadDef->faceValue = true;
+	//pTHreadDef->p = 1;
+	////pTHreadDef->SetBaseObject(face);
+	//pTHread->Create();
+	//auto r = (Y2_ax - Y1_out) / 2.f;
+	//ksEntityCollectionPtr Collection = pPart->EntityCollection(o3d_face);
+
+	//ksEntityPtr Cylinder4Assembly2 = Collection->GetByName("Cylinder4Assembly2", true, true);
+	//Collection->SelectByPoint(0, r, X_out);
+	//pTHread->Create();
+	//Collection->Clear();
+
+
+
 	flFaces = pPart->EntityCollection(o3d_face);
 	t = 0;
 	for (int i = 0; i < flFaces->GetCount(); i++) {
 		ksEntityPtr face = flFaces->GetByIndex(i);
 		ksFaceDefinitionPtr def = face->GetDefinition();
-		if (def->GetOwnerEntity() == pAxialHoleCutExtrude2) {
+		if (def->GetOwnerEntity() == pAxialHoleCutExtrude) {
 			if (def->IsCylinder()) {
 				double h, r;
 				def->GetCylinderParam(&h, &r);
 				//auto n = Seal.AxHoleThruRad / 2;
-				if (r == Seal.AxHoleThruRad) {
+				if (r == Seal.AxHoleRad) {
 					face->Putname("Cylinder4Assembly1");
 					face->Update();
 				}
@@ -389,6 +417,27 @@ void Assembler::CreateSeal()
 		}
 	}
 
+
+
+	//операция резьба
+
+	ksEntityPtr pTHread = pPart->NewEntity(o3d_thread);
+	ksThreadDefinitionPtr pTHreadDef = pTHread->GetDefinition();
+	//auto re = Y2_ax - Y1_ax - Screw.GasketHeight - 1; //-1 because chamfer
+	//pTHreadDef->PutallLength(TRUE);
+	pTHreadDef->Putlength(14);
+	//pThrDef->PutautoDefinDr(TRUE);
+	//pTHreadDef->PutfaceValue
+	ksEntityPtr BossFace4Assemly0 = flFaces->GetByName("Face4Assembly0", true, true);
+	ksEntityPtr Cylinder4Assembly1 = flFaces->GetByName("Cylinder4Assembly1", true, true);
+	pTHreadDef->SetFaceBegin(BossFace4Assemly0);
+
+	//pTHreadDef->allLength=18;
+	pTHreadDef->dr = 15;
+	//pTHreadDef->faceValue = true;
+	pTHreadDef->p = 1;
+	pTHreadDef->SetBaseObject(Cylinder4Assembly1);
+	pTHread->Create();
 
 
 
