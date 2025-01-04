@@ -30,7 +30,8 @@ SealData Assembler::GetSeal(int type)
 {
 	switch (type) {
 	case 1:
-		Seal.BaseRad = 23;
+		//l = 18
+		Seal.BaseRad = 46 / 2;
 		Seal.BaseAngleBig = 65 * M_PI / 180;
 		Seal.BaseAngleSmall = 55 * M_PI / 180;
 		Seal.BaseDepth = 3;
@@ -42,13 +43,34 @@ SealData Assembler::GetSeal(int type)
 		Seal.AxHoleThruRad = 4;
 
 		Seal.X_Pin = 34/2;
-		Seal.GrooveRad = 8 / 2;
-		Seal.GrooveDepth = 2;
-		Seal.PinRad = 4.5 / 2;
 
 		Seal.ThreadDR = 15;
 		Seal.ThreadP = 1;
+		break;
+	case 2:
+		//l = 26
+		Seal.BaseRad = 60 / 2;
+		Seal.BaseAngleBig = 65 * M_PI / 180;
+		Seal.BaseAngleSmall = 55 * M_PI / 180;
+		Seal.BaseDepth = 5;
+		
+		Seal.HexRad = 25.4 / 2;
+		Seal.HexDepth = 19;
+
+		Seal.AxHoleRad = 8;
+		Seal.AxHoleThruRad = 5;
+
+		Seal.X_Pin = 46/2;
+
+		Seal.ThreadDR = 20;
+		Seal.ThreadP = 1.5;
+		break;
 	}
+
+	Seal.GrooveRad = 8 / 2;
+	Seal.GrooveDepth = 2;
+	Seal.PinRad = 4.5 / 2;
+
 	return Seal;
 }
 
@@ -69,6 +91,22 @@ ScrewData Assembler::GetScrew(int type)
 
 		Screw.ThreadDR = 16;
 		Screw.ThreadP = 1;
+		break;
+	case 2:
+		Screw.FullHeight = 23;
+		Screw.LegThick = 2;
+
+		Screw.HexDepth = 5;
+		Screw.HexRad = 25.4 / 2;
+
+		Screw.AxHoleRad = 7;
+
+		Screw.GasketHeight = 2;
+		Screw.GasketWidth = 1;
+
+		Screw.ThreadDR = 16;
+		Screw.ThreadP = 1;
+		break;
 	}
 	return Screw;
 }
@@ -78,6 +116,10 @@ PuckData Assembler::GetPuck(int type)
 	auto puck = PuckData();
 	switch (type) {
 	case 1:
+		puck.RadIn = 3.2;
+		puck.RadOut = 7;
+		puck.Height = 1;
+	case 2:
 		puck.RadIn = 3.2;
 		puck.RadOut = 7;
 		puck.Height = 1;
@@ -812,4 +854,52 @@ void Assembler::MakeAssemble()
 
 	p3DDoc->fileName = _bstr_t(CString(name.c_str()));
 	p3DDoc->SaveAs(_bstr_t(CString(path.c_str())));
+}
+
+void Assembler::CloseAll()
+{
+
+	ksDocument3DPtr p3DDoc;
+	CComPtr<IUnknown> pKompasAppUnk = nullptr;
+
+	if (!pKompasApp5)
+	{
+		// Получаем CLSID для Компас
+		CLSID InvAppClsid;
+		HRESULT hRes = CLSIDFromProgID(L"Kompas.Application.5", &InvAppClsid);
+		if (FAILED(hRes)) {
+			pKompasApp5 = nullptr;
+			return;
+		}
+
+		// Проверяем есть ли запущенный экземпляр Компас
+		//если есть получаем IUnknown
+		hRes = ::GetActiveObject(InvAppClsid, NULL, &pKompasAppUnk);
+		if (FAILED(hRes)) {
+			// Приходится запускать Компас самим так как работающего нет
+			// Также получаем IUnknown для только что запущенного приложения Компас
+			TRACE(L"Could not get hold of an active Inventor, will start a new session\n");
+			hRes = CoCreateInstance(InvAppClsid, NULL, CLSCTX_LOCAL_SERVER, __uuidof(IUnknown), (void**)&pKompasAppUnk);
+			if (FAILED(hRes)) {
+				pKompasApp5 = nullptr;
+				return;
+			}
+		}
+
+		// Получаем интерфейс приложения Компас
+		hRes = pKompasAppUnk->QueryInterface(__uuidof(KompasObject), (void**)&pKompasApp5);
+		if (FAILED(hRes)) {
+			return;
+		}
+	}
+
+	pKompasApp5->Visible = true;
+
+	p3DDoc = pKompasApp5->Document3D();
+	p3DDoc->Create(false, true);
+	p3DDoc = pKompasApp5->ActiveDocument3D();
+	ksPartPtr pPart = p3DDoc->GetPart(pTop_Part);
+	ksDocument2DPtr p2DDoc;
+
+	;
 }
