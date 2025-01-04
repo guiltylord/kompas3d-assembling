@@ -30,7 +30,7 @@ public:
 // Attributes
 public:
 	CAssemblingDoc* GetDocument() const;
-	Assembler* m_pAssembler;
+	//Assembler* m_pAssembler;
 	int currImgHeight;
 
 // Operations

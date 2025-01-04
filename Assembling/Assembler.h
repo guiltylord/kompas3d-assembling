@@ -16,6 +16,9 @@ struct SealData {
 	float PinRad;
 	float GrooveRad;
 	float GrooveDepth;
+
+	int ThreadDR;
+	int ThreadP;
 };
 
 struct ScrewData {
@@ -29,6 +32,9 @@ struct ScrewData {
 
 	float GasketHeight;
 	float GasketWidth;
+
+	int ThreadDR;
+	int ThreadP;
 };
 
 struct PuckData {
@@ -43,14 +49,21 @@ public:
 	Assembler();
 	~Assembler();
 	
+	SealData Seal;
+	ScrewData Screw;
+	PuckData Puck;
+
 	SealData GetSeal(int type);
 	ScrewData GetScrew(int type);
 	PuckData GetPuck(int type);
+
+	void FillAssembler(int execution);
 
 	void CreateSeal();
 	void CreateScrew();
 	void CreatePuck();
 	void MakeAssemble();
 
+	int currExec;
 };
 

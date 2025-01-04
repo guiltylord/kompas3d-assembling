@@ -161,16 +161,21 @@ void CAssemblingView::OnBnClickedButton1()
 {
 	auto pDoc = GetDocument();
 	if (pDoc->m_bSeal) {
-		m_pAssembler->CreateSeal();
+		pDoc->m_pAssembler->FillAssembler(1);
+		//pDoc->m_pAssembler->FillAssembler(radioBtn.Int);
+		pDoc->m_pAssembler->CreateSeal();
 	}
 	if (pDoc->m_bScrew) {
-		m_pAssembler->CreateScrew();
+		pDoc->m_pAssembler->FillAssembler(1);
+		pDoc->m_pAssembler->CreateScrew();
 	}
 	if (pDoc->m_bPuck) {
-		m_pAssembler->CreatePuck();
+		pDoc->m_pAssembler->FillAssembler(1);
+		pDoc->m_pAssembler->CreatePuck();
 	}
 	if (pDoc->m_bAssembling) {
-		m_pAssembler->MakeAssemble();
+		pDoc->m_pAssembler->FillAssembler(1);
+		pDoc->m_pAssembler->MakeAssemble();
 	}
 }
 

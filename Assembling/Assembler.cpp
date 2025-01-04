@@ -28,46 +28,49 @@ Assembler::~Assembler()
 
 SealData Assembler::GetSeal(int type)
 {
-	auto seal = SealData();
 	switch (type) {
 	case 1:
-		seal.BaseRad = 23;
-		seal.BaseAngleBig = 65 * M_PI / 180;
-		seal.BaseAngleSmall = 55 * M_PI / 180;
-		seal.BaseDepth = 3;
+		Seal.BaseRad = 23;
+		Seal.BaseAngleBig = 65 * M_PI / 180;
+		Seal.BaseAngleSmall = 55 * M_PI / 180;
+		Seal.BaseDepth = 3;
 		
-		seal.HexRad = 21.9 / 2;
-		seal.HexDepth = 15;
+		Seal.HexRad = 21.9 / 2;
+		Seal.HexDepth = 15;
 
-		seal.AxHoleRad = 7;
-		seal.AxHoleThruRad = 4;
+		Seal.AxHoleRad = 7;
+		Seal.AxHoleThruRad = 4;
 
-		seal.X_Pin = 34/2;
-		seal.GrooveRad = 8 / 2;
-		seal.GrooveDepth = 2;
-		seal.PinRad = 4.5 / 2;
+		Seal.X_Pin = 34/2;
+		Seal.GrooveRad = 8 / 2;
+		Seal.GrooveDepth = 2;
+		Seal.PinRad = 4.5 / 2;
+
+		Seal.ThreadDR = 15;
+		Seal.ThreadP = 1;
 	}
-	return seal;
+	return Seal;
 }
 
 ScrewData Assembler::GetScrew(int type)
 {
-	auto screw = ScrewData();
 	switch (type) {
 	case 1:
-		screw.FullHeight = 17;
-		screw.LegThick = 2.5;
+		Screw.FullHeight = 17;
+		Screw.LegThick = 2.5;
 
-		screw.HexDepth = 3;
-		screw.HexRad = 21.9 / 2;
+		Screw.HexDepth = 3;
+		Screw.HexRad = 21.9 / 2;
 
-		screw.AxHoleRad = 5;
+		Screw.AxHoleRad = 5;
 
-		screw.GasketHeight = 1;
-		screw.GasketWidth = 1;
+		Screw.GasketHeight = 1;
+		Screw.GasketWidth = 1;
+
+		Screw.ThreadDR = 16;
+		Screw.ThreadP = 1;
 	}
-
-	return screw;
+	return Screw;
 }
 
 PuckData Assembler::GetPuck(int type)
@@ -81,6 +84,14 @@ PuckData Assembler::GetPuck(int type)
 	}
 
 	return puck;
+}
+
+void Assembler::FillAssembler(int execution)
+{
+	currExec = execution;
+	Seal = GetSeal(execution);
+	Screw = GetScrew(execution);
+	Puck = GetPuck(execution);
 }
 
 void Assembler::CreateSeal()
@@ -126,9 +137,7 @@ void Assembler::CreateSeal()
 	p3DDoc = pKompasApp5->ActiveDocument3D();
 	ksPartPtr pPart = p3DDoc->GetPart(pTop_Part);
 	ksDocument2DPtr p2DDoc;
-
-	SealData Seal = GetSeal(1);
-
+	
 	//эскиз Base
 	ksEntityPtr pBaseSketch = pPart->NewEntity(o3d_sketch);
 	ksSketchDefinitionPtr pBaseSketchDef = pBaseSketch->GetDefinition();
@@ -177,15 +186,10 @@ void Assembler::CreateSeal()
 				for (int k = 0; k < amountEdges; k++) {
 					ksEdgeDefinitionPtr d = col->GetByIndex(k);
 					ksVertexDefinitionPtr p1 = d->GetVertex(true);
-					ksVertexDefinitionPtr p2 = d->GetVertex(false);
 
 					double x1, y1, z1;
 					p1->GetPoint(&x1, &y1, &z1);
-
-					double x2, y2, z2;
-					p2->GetPoint(&x2, &y2, &z2);
-
-					if (z1 == 3.f && amountEdges == 6) {
+					if (z1 == float(Seal.HexDepth) && amountEdges == 6) {
 						counterEdges++;
 					}
 				}
@@ -348,18 +352,13 @@ void Assembler::CreateSeal()
 				ksEdgeCollectionPtr col = def->EdgeCollection(); 
 				int amountEdges = col->GetCount();
 				for (int k = 0; k < amountEdges; k++) {
-
 					ksEdgeDefinitionPtr d = col->GetByIndex(k);
 					ksVertexDefinitionPtr p1 = d->GetVertex(true);
-					ksVertexDefinitionPtr p2 = d->GetVertex(false);
 
 					double x1, y1, z1;
 					p1->GetPoint(&x1, &y1, &z1);
 
-					double x2, y2, z2;
-					p2->GetPoint(&x2, &y2, &z2);
-
-					if (z1 == 18.f && amountEdges == 7) {
+					if (z1 == float(Seal.BaseDepth + Seal.HexDepth) && amountEdges == 7) {
 						counterEdges++;
 					}
 				}
@@ -375,12 +374,12 @@ void Assembler::CreateSeal()
 	//резьба
 	ksEntityPtr pTHread = pPart->NewEntity(o3d_thread);
 	ksThreadDefinitionPtr pTHreadDef = pTHread->GetDefinition();
-	pTHreadDef->Putlength(14);
+	pTHreadDef->Putlength(Seal.HexDepth - Puck.Height );//( = 14) in 1 exec
 	ksEntityPtr BossFace4Assemly0 = flFaces->GetByName("Face4Assembly0", true, true);
 	ksEntityPtr Cylinder4Assembly1 = flFaces->GetByName("Cylinder4Assembly1", true, true);
 	pTHreadDef->SetFaceBegin(BossFace4Assemly0);
-	pTHreadDef->dr = 15;
-	pTHreadDef->p = 1;
+	pTHreadDef->dr = Seal.ThreadDR;// 15;
+	pTHreadDef->p = Seal.ThreadP; //1
 	pTHreadDef->SetBaseObject(Cylinder4Assembly1);
 	pTHread->Create();
 
@@ -439,8 +438,6 @@ void Assembler::CreateScrew()
 	ksPartPtr pPart = p3DDoc->GetPart(pTop_Part);
 	ksDocument2DPtr p2DDoc;
 
-	ScrewData Screw = GetScrew(1);
-
 	//эскиз Hexagon
 	ksEntityPtr pHexSketch = pPart->NewEntity(o3d_sketch);
 	ksSketchDefinitionPtr pHexSketchDef = pHexSketch->GetDefinition();
@@ -484,7 +481,7 @@ void Assembler::CreateScrew()
 					ksVertexDefinitionPtr p1 = d->GetVertex(true);
 					double x1, y1, z1;
 					p1->GetPoint(&x1, &y1, &z1);
-					if (round(y1) == 3 && amountEdges == 6) {
+					if (round(y1) == Screw.HexDepth && amountEdges == 6) {
 						counterEdges++;
 					}
 					if (amountEdges == 4 && isFirst == true) {
@@ -501,7 +498,6 @@ void Assembler::CreateScrew()
 			}
 		}
 	}
-
 	flFaces->Clear();
 
 	//в эттом эскизе потом сделать смену на втторрое исполнение. добавиь флаг так, чтобы выемки под сальникк не было и фаски тоже
@@ -586,8 +582,8 @@ void Assembler::CreateScrew()
 	ksEntityPtr pTHread = pPart->NewEntity(o3d_thread);
 	ksThreadDefinitionPtr pTHreadDef = pTHread->GetDefinition();
 	pTHreadDef->PutallLength(TRUE);
-	pTHreadDef->dr = 16;
-	pTHreadDef->p = 1;
+	pTHreadDef->dr = Screw.ThreadDR;
+	pTHreadDef->p = Screw.ThreadP;
 
 	flFaces = pPart->EntityCollection(o3d_face);
 	for (int i = 0; i < flFaces->GetCount(); i++) {
@@ -661,8 +657,6 @@ void Assembler::CreatePuck()
 	p3DDoc = pKompasApp5->ActiveDocument3D();
 	ksPartPtr pPart = p3DDoc->GetPart(pTop_Part);
 	ksDocument2DPtr p2DDoc;
-
-	PuckData Puck = GetPuck(1);
 
 	//эскиз
 	ksEntityPtr pSketch = pPart->NewEntity(o3d_sketch);

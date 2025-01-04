@@ -6,6 +6,7 @@
 #pragma once
 #include <filesystem>
 #include <string>
+#include "Assembler.h"
 
 class CTreeDetails;
 class CAssemblingView;
@@ -18,6 +19,8 @@ protected: // create from serialization only
 
 // Attributes
 public:
+	Assembler* m_pAssembler;
+
 	bool m_bAssembling, m_bSeal, m_bScrew, m_bPuck;
 
 	CString btnTextForAssembling = L"Made assembling";

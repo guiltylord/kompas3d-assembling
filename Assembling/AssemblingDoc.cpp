@@ -61,7 +61,7 @@ BOOL CAssemblingDoc::OnNewDocument()
 	GetPaths();
 	m_pTree->m_pDoc = this;
 	m_pTree->FillTree();
-	m_pView->m_pAssembler = new Assembler();
+	m_pAssembler = new Assembler();
 
 	return TRUE;
 }
