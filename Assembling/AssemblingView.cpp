@@ -170,7 +170,7 @@ void CAssemblingView::OnBnClickedButton1()
 		m_pAssembler->CreatePuck();
 	}
 	if (pDoc->m_bAssembling) {
-		m_pAssembler->ass();
+		m_pAssembler->MakeAssemble();
 	}
 }
 

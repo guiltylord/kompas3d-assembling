@@ -47,7 +47,6 @@ SealData Assembler::GetSeal(int type)
 		seal.GrooveDepth = 2;
 		seal.PinRad = 4.5 / 2;
 	}
-
 	return seal;
 }
 
@@ -167,22 +166,18 @@ void Assembler::CreateSeal()
 	pBaseExtrude->Create();
 
 	ksEntityCollectionPtr flFaces = pPart->EntityCollection(o3d_face);
-	auto t = 0;
-	auto c = flFaces->GetCount();
-	for (int i = 0; i < c; i++) {
+	auto counterEdges = 0;
+	for (int i = 0; i < flFaces->GetCount(); i++) {
 		ksEntityPtr face = flFaces->GetByIndex(i);
 		ksFaceDefinitionPtr def = face->GetDefinition();
 		if (def->GetOwnerEntity() == pBaseExtrude) {
 			if (def->IsPlanar()) {
-				//ksEntityPtr* OldFace = (ksEntityPtr *&)face;
 				ksEdgeCollectionPtr col = def->EdgeCollection();
-				int cEdges = col->GetCount();
-				for (int k = 0; k < cEdges; k++) {
-
+				int amountEdges = col->GetCount();
+				for (int k = 0; k < amountEdges; k++) {
 					ksEdgeDefinitionPtr d = col->GetByIndex(k);
 					ksVertexDefinitionPtr p1 = d->GetVertex(true);
 					ksVertexDefinitionPtr p2 = d->GetVertex(false);
-
 
 					double x1, y1, z1;
 					p1->GetPoint(&x1, &y1, &z1);
@@ -190,22 +185,19 @@ void Assembler::CreateSeal()
 					double x2, y2, z2;
 					p2->GetPoint(&x2, &y2, &z2);
 
-					if (z1 == 3.f && cEdges == 6) {
-						t++;
+					if (z1 == 3.f && amountEdges == 6) {
+						counterEdges++;
 					}
 				}
-				if (t == 6) {
+				if (counterEdges == 6) {
 					face->Putname("Face4Assembly1");
 					face->Update();
-					//break;
-					t = 0;
+					counterEdges = 0;
+					break;
 				}
-
 			}
 		}
 	}
-
-	//flFaces->Clear();
 
 	//смещенная плоскость
 	ksEntityPtr pBasePlane = pPart->NewEntity(o3d_planeOffset);
@@ -336,40 +328,8 @@ void Assembler::CreateSeal()
 	pAxialHoleCutExtrudeDef2->SetSideParam(true, etBlind, Seal.BaseDepth, 0, false);
 	pAxialHoleCutExtrude2->Create();
 
-	//p3DDoc->hideAllPlanes=true;	
-	//p3DDoc->hideInComponentsMode; //doesnt work
-	
-
-	//операция резьба
-	//ksEntityPtr pTHread = pPart->NewEntity(o3d_thread);
-	//ksThreadDefinitionPtr pTHreadDef = pTHread->GetDefinition();
-	////auto re = Y2_ax - Y1_ax - Screw.GasketHeight - 1; //-1 because chamfer
-	////pTHreadDef->PutallLength(TRUE);
-	//pTHreadDef->Putlength(14);
-	////pThrDef->PutautoDefinDr(TRUE);
-	////pTHreadDef->PutfaceValue
-	////ksEntityPtr BossFace4Assemly0 = colSeal->GetByName("Face4Assembly0", true, true);
-	////ksEntityPtr Cylinder4Assembly1 = colSeal->GetByName("Cylinder4Assembly1", true, true);
-	////pTHreadDef->SetFaceBegin();
-
-	////pTHreadDef->allLength=18;
-	//pTHreadDef->dr = 16;
-	////pTHreadDef->faceValue = true;
-	//pTHreadDef->p = 1;
-	////pTHreadDef->SetBaseObject(face);
-	//pTHread->Create();
-	//auto r = (Y2_ax - Y1_out) / 2.f;
-	//ksEntityCollectionPtr Collection = pPart->EntityCollection(o3d_face);
-
-	//ksEntityPtr Cylinder4Assembly2 = Collection->GetByName("Cylinder4Assembly2", true, true);
-	//Collection->SelectByPoint(0, r, X_out);
-	//pTHread->Create();
-	//Collection->Clear();
-
-
-
 	flFaces = pPart->EntityCollection(o3d_face);
-	t = 0;
+	counterEdges = 0;
 	for (int i = 0; i < flFaces->GetCount(); i++) {
 		ksEntityPtr face = flFaces->GetByIndex(i);
 		ksFaceDefinitionPtr def = face->GetDefinition();
@@ -377,20 +337,17 @@ void Assembler::CreateSeal()
 			if (def->IsCylinder()) {
 				double h, r;
 				def->GetCylinderParam(&h, &r);
-				//auto n = Seal.AxHoleThruRad / 2;
 				if (r == Seal.AxHoleRad) {
 					face->Putname("Cylinder4Assembly1");
 					face->Update();
 				}
 			}
-
-
 		}
 		if (def->GetOwnerEntity() == pHexExtrude) {
 			if (def->IsPlanar()) {
 				ksEdgeCollectionPtr col = def->EdgeCollection(); 
-				int cEdges = col->GetCount();
-				for (int k = 0; k < cEdges; k++) {
+				int amountEdges = col->GetCount();
+				for (int k = 0; k < amountEdges; k++) {
 
 					ksEdgeDefinitionPtr d = col->GetByIndex(k);
 					ksVertexDefinitionPtr p1 = d->GetVertex(true);
@@ -402,62 +359,37 @@ void Assembler::CreateSeal()
 					double x2, y2, z2;
 					p2->GetPoint(&x2, &y2, &z2);
 
-					if (z1 == 18.f && cEdges == 7) {
-						t++;
+					if (z1 == 18.f && amountEdges == 7) {
+						counterEdges++;
 					}
 				}
-				if (t == 7) {
+				if (counterEdges == 7) {
 					face->Putname("Face4Assembly0");
 					face->Update();
-					//break;
-
-					t = 0;
+					counterEdges = 0;
 				}
 			}
 		}
 	}
 
-
-
-	//операция резьба
-
+	//резьба
 	ksEntityPtr pTHread = pPart->NewEntity(o3d_thread);
 	ksThreadDefinitionPtr pTHreadDef = pTHread->GetDefinition();
-	//auto re = Y2_ax - Y1_ax - Screw.GasketHeight - 1; //-1 because chamfer
-	//pTHreadDef->PutallLength(TRUE);
 	pTHreadDef->Putlength(14);
-	//pThrDef->PutautoDefinDr(TRUE);
-	//pTHreadDef->PutfaceValue
 	ksEntityPtr BossFace4Assemly0 = flFaces->GetByName("Face4Assembly0", true, true);
 	ksEntityPtr Cylinder4Assembly1 = flFaces->GetByName("Cylinder4Assembly1", true, true);
 	pTHreadDef->SetFaceBegin(BossFace4Assemly0);
-
-	//pTHreadDef->allLength=18;
 	pTHreadDef->dr = 15;
-	//pTHreadDef->faceValue = true;
 	pTHreadDef->p = 1;
 	pTHreadDef->SetBaseObject(Cylinder4Assembly1);
 	pTHread->Create();
 
-
-
-
-
-
-
-
-
-
-
-	//операция сохранения детали
 	string path = "C:\\Users\\desxz\\source\\repos\\Assembling\\Details\\";
 	string name = "Гнездо сальника";
 	path += name+".m3d";
 
-
 	pPart->SetAdvancedColor(RGB(150, 0, 0), 1, 1, 1, 1, 1, 0.5);
 	pPart->Update();
-
 
 	p3DDoc->fileName = _bstr_t(CString(name.c_str()));
 	p3DDoc->SaveAs(_bstr_t(CString(path.c_str())));
@@ -507,13 +439,14 @@ void Assembler::CreateScrew()
 	ksPartPtr pPart = p3DDoc->GetPart(pTop_Part);
 	ksDocument2DPtr p2DDoc;
 
+	ScrewData Screw = GetScrew(1);
+
 	//эскиз Hexagon
 	ksEntityPtr pHexSketch = pPart->NewEntity(o3d_sketch);
 	ksSketchDefinitionPtr pHexSketchDef = pHexSketch->GetDefinition();
 	pHexSketchDef->SetPlane(pPart->GetDefaultEntity(o3d_planeXOZ));
 	pHexSketch->Create();
 	
-	ScrewData Screw = GetScrew(1);
 	//описание вар
 	auto X_hex = Screw.HexRad * cos(30 * M_PI / 180);
 	auto Y_hex = Screw.HexRad / 2;
@@ -537,46 +470,33 @@ void Assembler::CreateScrew()
 	pHexExtrude->Create();
 	
 	ksEntityCollectionPtr flFaces = pPart->EntityCollection(o3d_face);
-	auto t = 0;
-	auto c = flFaces->GetCount();
+	auto counterEdges = 0;
 	auto isFirst = true;
-	for (int i = 0; i < c; i++) {
+	for (int i = 0; i < flFaces->GetCount(); i++) {
 		ksEntityPtr face = flFaces->GetByIndex(i);
 		ksFaceDefinitionPtr def = face->GetDefinition();
 		if (def->GetOwnerEntity() == pHexExtrude) {
 			if (def->IsPlanar()) {
-				//ksEntityPtr* OldFace = (ksEntityPtr *&)face;
 				ksEdgeCollectionPtr col = def->EdgeCollection();
-				int cEdges = col->GetCount();
-				for (int k = 0; k < cEdges; k++) {
-
+				auto amountEdges = col->GetCount();
+				for (int k = 0; k < amountEdges; k++) {
 					ksEdgeDefinitionPtr d = col->GetByIndex(k);
 					ksVertexDefinitionPtr p1 = d->GetVertex(true);
-					ksVertexDefinitionPtr p2 = d->GetVertex(false);
-
-
 					double x1, y1, z1;
 					p1->GetPoint(&x1, &y1, &z1);
-
-					double x2, y2, z2;
-					p2->GetPoint(&x2, &y2, &z2);
-					auto j = round(y1);
-					int n = int(j);
-					if (n == 3 && cEdges == 6) {
-						t++;
+					if (round(y1) == 3 && amountEdges == 6) {
+						counterEdges++;
 					}
-
-					if (cEdges == 4 && isFirst == true) {
+					if (amountEdges == 4 && isFirst == true) {
 						face->Putname("Face4Assembly21");
 						face->Update();
 						isFirst = false;
 					}
 				}
-				if (t == 6) {
+				if (counterEdges == 6) {
 					face->Putname("Face4Assembly2");
 					face->Update();
-					//break;
-					t = 0;
+					counterEdges = 0;
 				}
 			}
 		}
@@ -662,8 +582,14 @@ void Assembler::CreateScrew()
 	//pChamfer->Create();
 	//fl->Clear();
 
+	//резьба
+	ksEntityPtr pTHread = pPart->NewEntity(o3d_thread);
+	ksThreadDefinitionPtr pTHreadDef = pTHread->GetDefinition();
+	pTHreadDef->PutallLength(TRUE);
+	pTHreadDef->dr = 16;
+	pTHreadDef->p = 1;
+
 	flFaces = pPart->EntityCollection(o3d_face);
-	t = 0;
 	for (int i = 0; i < flFaces->GetCount(); i++) {
 		ksEntityPtr face = flFaces->GetByIndex(i);
 		ksFaceDefinitionPtr def = face->GetDefinition();
@@ -674,40 +600,15 @@ void Assembler::CreateScrew()
 				if (r == Screw.AxHoleRad + Screw.LegThick) {
 					face->Putname("Cylinder4Assembly2");
 					face->Update();
+
+					pTHreadDef->SetBaseObject(face);
+					pTHread->Create();
 				}
 			}
 		}
 	}
-
-
-
-	//операция резьба
-	ksEntityPtr pTHread = pPart->NewEntity(o3d_thread);
-	ksThreadDefinitionPtr pTHreadDef = pTHread->GetDefinition();
-	auto re = Y2_ax - Y1_ax - Screw.GasketHeight - 1; //-1 because chamfer
-	pTHreadDef->PutallLength(TRUE);
-	//pTHreadDef->Putlength(13);
-	//pThrDef->PutautoDefinDr(TRUE);
-	//pTHreadDef->PutfaceValue
-	//pTHreadDef->SetFaceBegin and END
-
-	//pTHreadDef->allLength=18;
-	pTHreadDef->dr = 16;
-	//pTHreadDef->faceValue = true;
-	pTHreadDef->p = 1;
-	auto r = (Y2_ax - Y1_out) / 2.f;
-	ksEntityCollectionPtr Collection = pPart->EntityCollection(o3d_face);
-
-	ksEntityPtr Cylinder4Assembly2 = Collection->GetByName("Cylinder4Assembly2", true, true);
-	//Collection->SelectByPoint(0, r, X_out);
-	pTHreadDef->SetBaseObject(Cylinder4Assembly2);
-	pTHread->Create();
-	Collection->Clear();
-
-
 	pPart->SetAdvancedColor(RGB(0, 150, 0), 1, 1, 1, 1, 1, 0.5);
 	pPart->Update();
-
 
 	string path = "C:\\Users\\desxz\\source\\repos\\Assembling\\Details\\";
 	string name = "Гайка нажимная";
@@ -761,7 +662,7 @@ void Assembler::CreatePuck()
 	ksPartPtr pPart = p3DDoc->GetPart(pTop_Part);
 	ksDocument2DPtr p2DDoc;
 
-	auto Puck = GetPuck(1);
+	PuckData Puck = GetPuck(1);
 
 	//эскиз
 	ksEntityPtr pSketch = pPart->NewEntity(o3d_sketch);
@@ -793,21 +694,6 @@ void Assembler::CreatePuck()
 	pPart->SetMaterial(L"СКФ-26 ГОСТ 18376-79", 1.83); //фторкаучук
 	pPart->Update();
 
-
-	//операция резьба
-	ksEntityPtr pTHread = pPart->NewEntity(o3d_thread);
-	ksThreadDefinitionPtr pTHreadDef = pTHread->GetDefinition();
-	pTHreadDef->length = Y;
-	pTHreadDef->dr = X1*4;
-	pTHreadDef->faceValue = true;
-	pTHreadDef->p = 1;
-	ksEntityCollectionPtr Collection = pPart->EntityCollection(o3d_face);
-	Collection->SelectByPoint(X1, 0.5, 0);
-	pTHreadDef->SetBaseObject(Collection->First());
-	pTHread->Create();
-	Collection->Clear();
-
-
 	ksEntityCollectionPtr flFaces = pPart->EntityCollection(o3d_face);
 	for (int i = 0; i < flFaces->GetCount(); i++) {
 		ksEntityPtr face = flFaces->GetByIndex(i);
@@ -816,7 +702,7 @@ void Assembler::CreatePuck()
 			if (def->IsPlanar()) {
 				face->Putname("Face4Assembly3");
 				face->Update();
-				//break;
+				continue;
 			}
 			if (def->IsCylinder()) {
 				double h, r;
@@ -829,7 +715,6 @@ void Assembler::CreatePuck()
 		}
 	}
 
-
 	string path = "C:\\Users\\desxz\\source\\repos\\Assembling\\Details\\";
 	string name = "Шайба";
 	path += name + ".m3d";
@@ -838,7 +723,7 @@ void Assembler::CreatePuck()
 	p3DDoc->SaveAs(_bstr_t(CString(path.c_str())));
 }
 
-void Assembler::ass()
+void Assembler::MakeAssemble()
 {
 	ksDocument3DPtr p3DDoc;
 
@@ -926,7 +811,6 @@ void Assembler::ass()
 	p3DDoc->AddMateConstraint(mc_Parallel, pAssemblePlaneZY, pSealPlaneZY, 0, 1, 0);
 	
 	p3DDoc->RebuildDocument();
-	//pBoss->PutfixedComponent(TRUE);
 
 	string path = "C:\\Users\\desxz\\source\\repos\\Assembling\\Details\\";
 	string name = "Сборка";
