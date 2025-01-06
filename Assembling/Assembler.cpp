@@ -860,7 +860,6 @@ void Assembler::MakeAssemble()
 
 void Assembler::CloseAll()
 {
-
 	ksDocument3DPtr p3DDoc;
 	CComPtr<IUnknown> pKompasAppUnk = nullptr;
 
@@ -897,9 +896,10 @@ void Assembler::CloseAll()
 
 	pKompasApp5->Visible = true;
 
-	p3DDoc = pKompasApp5->Document3D();
 	p3DDoc->Create(false, true);
 	p3DDoc = pKompasApp5->ActiveDocument3D();
 	ksPartPtr pPart = p3DDoc->GetPart(pTop_Part);
 	ksDocument2DPtr p2DDoc;
+
+	//https://help.ascon.ru/KOMPAS_SDK/22/ru-RU/iapplication_documents.html
 }
