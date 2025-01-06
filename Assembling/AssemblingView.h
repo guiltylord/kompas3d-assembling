@@ -33,10 +33,11 @@ public:
 	//Assembler* m_pAssembler;
 	int m_imgH;
 	int m_fieldL = 20;
+	bool m_godMode = false;
 
 // Operations
 public:
-	void ConfigureWidgets(CString btnText);
+	void ConfigureWidgets(CString btnText, bool godMode);
 	void ConfigurePicture(CString imgPath);
 	void ConfigureWindow(const int detail);
 
@@ -68,6 +69,11 @@ public:
 	CComboBox m_cBox;
 	CStatic m_sText;
 	afx_msg void OnKompasCloseall();
+	CButton m_btnGodMode;
+	afx_msg void OnBnClickedGodmode();
+	CEdit m_eL;
+	CEdit m_eRHole;
+	CEdit m_eRBase;
 };
 
 #ifndef _DEBUG  // debug version in AssemblingView.cpp

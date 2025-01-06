@@ -28,6 +28,7 @@ public:
 	CString btnTextForScrew = L"Build screw";
 	CString btnTextForPuck = L"Build puck";
 
+	CString imgPathForGod;
 	CString imgPathForAssembling;
 	CString imgPathForSeal;
 	CString imgPathForScrew;

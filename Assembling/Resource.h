@@ -12,6 +12,11 @@
 #define ID_SKETCH1                      1001
 #define IDC_COMBOBOX                    1002
 #define IDC_STATIC_TEXT                 1003
+#define IDC_GODMODE                     1004
+#define IDC_EDIT_                       1005
+#define IDC_EDIT_RAD_BASE               1005
+#define IDC_EDIT_RAD_HOLE               1006
+#define IDC_EDIT_L                      1007
 #define ID_KOMPAS_CLOSEALL              32771
 
 // Next default values for new objects
@@ -20,7 +25,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        315
 #define _APS_NEXT_COMMAND_VALUE         32772
-#define _APS_NEXT_CONTROL_VALUE         1004
+#define _APS_NEXT_CONTROL_VALUE         1008
 #define _APS_NEXT_SYMED_VALUE           310
 #endif
 #endif

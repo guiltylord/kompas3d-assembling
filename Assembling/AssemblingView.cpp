@@ -34,6 +34,7 @@ BEGIN_MESSAGE_MAP(CAssemblingView, CFormView)
 	ON_BN_CLICKED(IDC_BUTTON1, &CAssemblingView::OnBnClickedButton1)
 	ON_WM_CTLCOLOR()
 	ON_COMMAND(ID_KOMPAS_CLOSEALL, &CAssemblingView::OnKompasCloseall)
+	ON_BN_CLICKED(IDC_GODMODE, &CAssemblingView::OnBnClickedGodmode)
 END_MESSAGE_MAP()
 
 // CAssemblingView construction/destruction
@@ -56,10 +57,26 @@ void CAssemblingView::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_BUTTON1, m_btn);
 	DDX_Control(pDX, IDC_COMBOBOX, m_cBox);
 	DDX_Control(pDX, IDC_STATIC_TEXT, m_sText);
+	DDX_Control(pDX, IDC_GODMODE, m_btnGodMode);
+	DDX_Control(pDX, IDC_EDIT_L, m_eL);
+	DDX_Control(pDX, IDC_EDIT_RAD_HOLE, m_eRHole);
+	DDX_Control(pDX, IDC_EDIT_RAD_BASE, m_eRBase);
 }
 
-void CAssemblingView::ConfigureWidgets(CString btnText)
+void CAssemblingView::ConfigureWidgets(CString btnText, bool godMode)
 {
+	if (m_godMode) {
+		m_eL.ShowWindow(SW_NORMAL);
+		m_eRBase.ShowWindow(SW_NORMAL);
+		m_eRHole.ShowWindow(SW_NORMAL);
+
+		m_eL.MoveWindow(m_fieldL, m_imgH+30, 125, 30);
+		m_eRBase.MoveWindow(m_fieldL + 150, m_imgH+30, 125, 30);
+		m_eRHole.MoveWindow(m_fieldL+300, m_imgH+30, 125, 30);
+		m_btn.MoveWindow(m_fieldL, m_imgH+80, 125, 30);
+
+		return;
+	}
 	m_sText.MoveWindow(m_fieldL, m_imgH, 125, 20);
 	m_cBox.MoveWindow(m_fieldL, m_imgH + 20, 125, 30);
 	m_btn.MoveWindow(m_fieldL, m_imgH+50, 125, 30);
@@ -69,9 +86,7 @@ void CAssemblingView::ConfigureWidgets(CString btnText)
 void CAssemblingView::ConfigurePicture(CString imgPath)
 {
 	CImage img = CImage();
-
 	img.Load(imgPath);
-
 	if (img == nullptr) {
 		m_imgH = 0;
 		return;
@@ -85,29 +100,35 @@ void CAssemblingView::ConfigurePicture(CString imgPath)
 
 void CAssemblingView::ConfigureWindow(const int detail)
 {
+	m_godMode = false;
 	CAssemblingDoc* pDoc = GetDocument();
 	m_sText.ShowWindow(SW_NORMAL);
 	m_cBox.ShowWindow(SW_NORMAL);
 	m_btn.ShowWindow(SW_NORMAL);
+	m_btnGodMode.ShowWindow(SW_HIDE);
+	m_eL.ShowWindow(SW_HIDE);
+	m_eRBase.ShowWindow(SW_HIDE);
+	m_eRHole.ShowWindow(SW_HIDE);
 	switch (detail) {
 	case ASSEMBLING: {
+		m_btnGodMode.ShowWindow(SW_NORMAL);
 		ConfigurePicture(pDoc->imgPathForAssembling);
-		ConfigureWidgets(pDoc->btnTextForAssembling);
+		ConfigureWidgets(pDoc->btnTextForAssembling, false);
 		break;
 	}
 	case SEAL: {
 		ConfigurePicture(pDoc->imgPathForSeal);
-		ConfigureWidgets(pDoc->btnTextForSeal);
+		ConfigureWidgets(pDoc->btnTextForSeal, false);
 		break;
 	}
 	case SCREW: {
 		ConfigurePicture(pDoc->imgPathForScrew);
-		ConfigureWidgets(pDoc->btnTextForScrew);
+		ConfigureWidgets(pDoc->btnTextForScrew, false);
 		break;
 	}
 	case PUCK: {
 		ConfigurePicture(pDoc->imgPathForPuck);
-		ConfigureWidgets(pDoc->btnTextForPuck);
+		ConfigureWidgets(pDoc->btnTextForPuck, false);
 		break;
 	}
 	}
@@ -137,7 +158,10 @@ void CAssemblingView::OnInitialUpdate()
 	m_sText.ShowWindow(SW_HIDE);
 	m_cBox.ShowWindow(SW_HIDE);
 	m_btn.ShowWindow(SW_HIDE);
-	
+	m_btnGodMode.ShowWindow(SW_HIDE);
+	m_eL.ShowWindow(SW_HIDE);
+	m_eRBase.ShowWindow(SW_HIDE);
+	m_eRHole.ShowWindow(SW_HIDE);
 }
 
 
@@ -199,4 +223,17 @@ void CAssemblingView::OnKompasCloseall()
 {
 	auto pDoc = GetDocument();
 	pDoc->m_pAssembler->CloseAll();
+}
+
+
+void CAssemblingView::OnBnClickedGodmode()
+{
+	m_sText.ShowWindow(SW_HIDE);
+	m_cBox.ShowWindow(SW_HIDE);
+	m_godMode = true;
+	CAssemblingDoc* pDoc = GetDocument();
+
+	ConfigurePicture(pDoc->imgPathForGod);
+	ConfigureWidgets(pDoc->btnTextForAssembling, false);
+	// TODO: Add your control notification handler code here
 }
