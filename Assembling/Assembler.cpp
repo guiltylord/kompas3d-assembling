@@ -39,7 +39,7 @@ SealData Assembler::GetSeal(int type)
 		Seal.HexRad = 21.9 / 2;
 		Seal.HexDepth = 15;
 
-		Seal.AxHoleRad = 7;
+		Seal.AxHoleRad = 6;
 		Seal.AxHoleThruRad = 4;
 
 		Seal.X_Pin = 34/2;
@@ -62,7 +62,7 @@ SealData Assembler::GetSeal(int type)
 
 		Seal.X_Pin = 46/2;
 
-		Seal.ThreadDR = 20;
+		Seal.ThreadDR = 18;
 		Seal.ThreadP = 1.5;
 		break;
 	}
@@ -89,7 +89,7 @@ ScrewData Assembler::GetScrew(int type)
 		Screw.GasketHeight = 1;
 		Screw.GasketWidth = 1;
 
-		Screw.ThreadDR = 16;
+		Screw.ThreadDR = 13;
 		Screw.ThreadP = 1;
 		break;
 	case 2:
@@ -104,7 +104,7 @@ ScrewData Assembler::GetScrew(int type)
 		Screw.GasketHeight = 2;
 		Screw.GasketWidth = 1;
 
-		Screw.ThreadDR = 16;
+		Screw.ThreadDR = 17;
 		Screw.ThreadP = 1;
 		break;
 	}
@@ -117,12 +117,14 @@ PuckData Assembler::GetPuck(int type)
 	switch (type) {
 	case 1:
 		puck.RadIn = 3.2;
-		puck.RadOut = 7;
+		puck.RadOut = 6;
 		puck.Height = 1;
+		break;
 	case 2:
-		puck.RadIn = 3.2;
-		puck.RadOut = 7;
+		puck.RadIn = 4.5;
+		puck.RadOut = 8.05;
 		puck.Height = 1;
+		break;
 	}
 
 	return puck;
