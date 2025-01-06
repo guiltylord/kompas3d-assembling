@@ -58,12 +58,11 @@ void CAssemblingView::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_STATIC_TEXT, m_sText);
 }
 
-void CAssemblingView::ConfigureButton(CString btnText)
+void CAssemblingView::ConfigureWidgets(CString btnText)
 {
-	auto width = GetSystemMetrics(SM_CXSCREEN);
-	auto height = GetSystemMetrics(SM_CYSCREEN);
-
-	m_btn.MoveWindow(0, currImgHeight, 125, 30);
+	m_sText.MoveWindow(FieldLeft, ImgHeight, 125, 20);
+	m_cBox.MoveWindow(FieldLeft, ImgHeight + 20, 125, 30);
+	m_btn.MoveWindow(FieldLeft, ImgHeight+50, 125, 30);
 	m_btn.SetWindowTextW(btnText);
 }
 
@@ -74,11 +73,11 @@ void CAssemblingView::ConfigurePicture(CString imgPath)
 	img.Load(imgPath);
 
 	if (img == nullptr) {
-		currImgHeight = 0;
+		ImgHeight = 0;
 		return;
 	}
 
-	currImgHeight = img.GetHeight();
+	ImgHeight = img.GetHeight();
 
 	HBITMAP bitmap = img.Detach();
 	m_sketchPic.SetBitmap(bitmap);
@@ -93,22 +92,22 @@ void CAssemblingView::ConfigureWindow(const int detail)
 	switch (detail) {
 	case ASSEMBLING: {
 		ConfigurePicture(pDoc->imgPathForAssembling);
-		ConfigureButton(pDoc->btnTextForAssembling);
+		ConfigureWidgets(pDoc->btnTextForAssembling);
 		break;
 	}
 	case SEAL: {
 		ConfigurePicture(pDoc->imgPathForSeal);
-		ConfigureButton(pDoc->btnTextForSeal);
+		ConfigureWidgets(pDoc->btnTextForSeal);
 		break;
 	}
 	case SCREW: {
 		ConfigurePicture(pDoc->imgPathForScrew);
-		ConfigureButton(pDoc->btnTextForScrew);
+		ConfigureWidgets(pDoc->btnTextForScrew);
 		break;
 	}
 	case PUCK: {
 		ConfigurePicture(pDoc->imgPathForPuck);
-		ConfigureButton(pDoc->btnTextForPuck);
+		ConfigureWidgets(pDoc->btnTextForPuck);
 		break;
 	}
 	}

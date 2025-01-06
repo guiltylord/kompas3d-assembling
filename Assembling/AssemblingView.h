@@ -31,11 +31,12 @@ public:
 public:
 	CAssemblingDoc* GetDocument() const;
 	//Assembler* m_pAssembler;
-	int currImgHeight;
+	int ImgHeight;
+	int FieldLeft = 20;
 
 // Operations
 public:
-	void ConfigureButton(CString btnText);
+	void ConfigureWidgets(CString btnText);
 	void ConfigurePicture(CString imgPath);
 	void ConfigureWindow(const int detail);
 
