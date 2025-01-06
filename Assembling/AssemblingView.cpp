@@ -60,9 +60,9 @@ void CAssemblingView::DoDataExchange(CDataExchange* pDX)
 
 void CAssemblingView::ConfigureWidgets(CString btnText)
 {
-	m_sText.MoveWindow(FieldLeft, ImgHeight, 125, 20);
-	m_cBox.MoveWindow(FieldLeft, ImgHeight + 20, 125, 30);
-	m_btn.MoveWindow(FieldLeft, ImgHeight+50, 125, 30);
+	m_sText.MoveWindow(m_fieldL, m_imgH, 125, 20);
+	m_cBox.MoveWindow(m_fieldL, m_imgH + 20, 125, 30);
+	m_btn.MoveWindow(m_fieldL, m_imgH+50, 125, 30);
 	m_btn.SetWindowTextW(btnText);
 }
 
@@ -73,11 +73,11 @@ void CAssemblingView::ConfigurePicture(CString imgPath)
 	img.Load(imgPath);
 
 	if (img == nullptr) {
-		ImgHeight = 0;
+		m_imgH = 0;
 		return;
 	}
 
-	ImgHeight = img.GetHeight();
+	m_imgH = img.GetHeight();
 
 	HBITMAP bitmap = img.Detach();
 	m_sketchPic.SetBitmap(bitmap);
@@ -112,15 +112,6 @@ void CAssemblingView::ConfigureWindow(const int detail)
 	}
 	}
 }
-
-//void CAssemblingView::ConfigureWindow()
-//{
-//
-//	if()
-//
-//}
-
-
 
 BOOL CAssemblingView::PreCreateWindow(CREATESTRUCT& cs)
 {

@@ -31,8 +31,8 @@ public:
 public:
 	CAssemblingDoc* GetDocument() const;
 	//Assembler* m_pAssembler;
-	int ImgHeight;
-	int FieldLeft = 20;
+	int m_imgH;
+	int m_fieldL = 20;
 
 // Operations
 public:

@@ -49,9 +49,9 @@ public:
 	Assembler();
 	~Assembler();
 	
-	SealData Seal;
-	ScrewData Screw;
-	PuckData Puck;
+	SealData m_Seal;
+	ScrewData m_Screw;
+	PuckData m_Puck;
 
 	SealData GetSeal(int type);
 	ScrewData GetScrew(int type);
@@ -64,7 +64,7 @@ public:
 	void CreatePuck();
 	void MakeAssemble();
 
-	int currExec;
+	int m_currExec;
 
 	void CloseAll();
 };

@@ -31,117 +31,117 @@ SealData Assembler::GetSeal(int type)
 	switch (type) {
 	case 1:
 		//l = 18
-		Seal.BaseRad = 46 / 2;
-		Seal.BaseAngleBig = 65 * M_PI / 180;
-		Seal.BaseAngleSmall = 55 * M_PI / 180;
-		Seal.BaseDepth = 3;
+		m_Seal.BaseRad = 46 / 2;
+		m_Seal.BaseAngleBig = 65 * M_PI / 180;
+		m_Seal.BaseAngleSmall = 55 * M_PI / 180;
+		m_Seal.BaseDepth = 3;
 		
-		Seal.HexRad = 21.9 / 2;
-		Seal.HexDepth = 15;
+		m_Seal.HexRad = 21.9 / 2;
+		m_Seal.HexDepth = 15;
 
-		Seal.AxHoleRad = 6;
-		Seal.AxHoleThruRad = 4;
+		m_Seal.AxHoleRad = 6;
+		m_Seal.AxHoleThruRad = 4;
 
-		Seal.X_Pin = 34/2;
+		m_Seal.X_Pin = 34/2;
 
-		Seal.ThreadDR = 15;
-		Seal.ThreadP = 1;
+		m_Seal.ThreadDR = 15;
+		m_Seal.ThreadP = 1;
 		break;
 	case 2:
 		//l = 26
-		Seal.BaseRad = 60 / 2;
-		Seal.BaseAngleBig = 65 * M_PI / 180;
-		Seal.BaseAngleSmall = 55 * M_PI / 180;
-		Seal.BaseDepth = 5;
+		m_Seal.BaseRad = 60 / 2;
+		m_Seal.BaseAngleBig = 65 * M_PI / 180;
+		m_Seal.BaseAngleSmall = 55 * M_PI / 180;
+		m_Seal.BaseDepth = 5;
 		
-		Seal.HexRad = 25.4 / 2;
-		Seal.HexDepth = 19;
+		m_Seal.HexRad = 25.4 / 2;
+		m_Seal.HexDepth = 19;
 
-		Seal.AxHoleRad = 8;
-		Seal.AxHoleThruRad = 5;
+		m_Seal.AxHoleRad = 8;
+		m_Seal.AxHoleThruRad = 5;
 
-		Seal.X_Pin = 46/2;
+		m_Seal.X_Pin = 46/2;
 
-		Seal.ThreadDR = 18;
-		Seal.ThreadP = 1.5;
+		m_Seal.ThreadDR = 18;
+		m_Seal.ThreadP = 1.5;
 		break;
 	case 3:
 		//l = 35
-		Seal.BaseRad = 78 / 2;
-		Seal.BaseAngleBig = 65 * M_PI / 180;
-		Seal.BaseAngleSmall = 55 * M_PI / 180;
-		Seal.BaseDepth = 7;
+		m_Seal.BaseRad = 78 / 2;
+		m_Seal.BaseAngleBig = 65 * M_PI / 180;
+		m_Seal.BaseAngleSmall = 55 * M_PI / 180;
+		m_Seal.BaseDepth = 7;
 		
-		Seal.HexRad = 36.9 / 2;
-		Seal.HexDepth = 25;
+		m_Seal.HexRad = 36.9 / 2;
+		m_Seal.HexDepth = 25;
 
-		Seal.AxHoleRad = 11;
-		Seal.AxHoleThruRad = 6;
+		m_Seal.AxHoleRad = 11;
+		m_Seal.AxHoleThruRad = 6;
 
-		Seal.X_Pin = 62/2;
+		m_Seal.X_Pin = 62/2;
 
-		Seal.ThreadDR = 26;
-		Seal.ThreadP = 1.5;
+		m_Seal.ThreadDR = 26;
+		m_Seal.ThreadP = 1.5;
 		break;
 	}
 
-	Seal.GrooveRad = 8 / 2;
-	Seal.GrooveDepth = 2;
-	Seal.PinRad = 4.5 / 2;
+	m_Seal.GrooveRad = 8 / 2;
+	m_Seal.GrooveDepth = 2;
+	m_Seal.PinRad = 4.5 / 2;
 
-	return Seal;
+	return m_Seal;
 }
 
 ScrewData Assembler::GetScrew(int type)
 {
 	switch (type) {
 	case 1:
-		Screw.FullHeight = 17;
-		Screw.LegThick = 2.5;
+		m_Screw.FullHeight = 17;
+		m_Screw.LegThick = 2.5;
 
-		Screw.HexDepth = 3;
-		Screw.HexRad = 21.9 / 2;
+		m_Screw.HexDepth = 3;
+		m_Screw.HexRad = 21.9 / 2;
 
-		Screw.AxHoleRad = 5;
+		m_Screw.AxHoleRad = 5;
 
-		Screw.GasketHeight = 1;
-		Screw.GasketWidth = 1;
+		m_Screw.GasketHeight = 1;
+		m_Screw.GasketWidth = 1;
 
-		Screw.ThreadDR = 13;
-		Screw.ThreadP = 1;
+		m_Screw.ThreadDR = 13;
+		m_Screw.ThreadP = 1;
 		break;
 	case 2:
-		Screw.FullHeight = 23;
-		Screw.LegThick = 2;
+		m_Screw.FullHeight = 23;
+		m_Screw.LegThick = 2;
 
-		Screw.HexDepth = 5;
-		Screw.HexRad = 25.4 / 2;
+		m_Screw.HexDepth = 5;
+		m_Screw.HexRad = 25.4 / 2;
 
-		Screw.AxHoleRad = 7;
+		m_Screw.AxHoleRad = 7;
 
-		Screw.GasketHeight = 2;
-		Screw.GasketWidth = 1;
+		m_Screw.GasketHeight = 2;
+		m_Screw.GasketWidth = 1;
 
-		Screw.ThreadDR = 17;
-		Screw.ThreadP = 1;
+		m_Screw.ThreadDR = 17;
+		m_Screw.ThreadP = 1;
 		break;
 	case 3:
-		Screw.FullHeight = 31;
-		Screw.LegThick = 4;
+		m_Screw.FullHeight = 31;
+		m_Screw.LegThick = 4;
 
-		Screw.HexDepth = 7;
-		Screw.HexRad = 36.9 / 2;
+		m_Screw.HexDepth = 7;
+		m_Screw.HexRad = 36.9 / 2;
 
-		Screw.AxHoleRad = 9;
+		m_Screw.AxHoleRad = 9;
 
-		Screw.GasketHeight = 2;
-		Screw.GasketWidth = 2;
+		m_Screw.GasketHeight = 2;
+		m_Screw.GasketWidth = 2;
 
-		Screw.ThreadDR = 23;
-		Screw.ThreadP = 1;
+		m_Screw.ThreadDR = 23;
+		m_Screw.ThreadP = 1;
 		break;
 	}
-	return Screw;
+	return m_Screw;
 }
 
 PuckData Assembler::GetPuck(int type)
@@ -169,10 +169,10 @@ PuckData Assembler::GetPuck(int type)
 
 void Assembler::FillAssembler(const int execution)
 {
-	currExec = execution;
-	Seal = GetSeal(execution);
-	Screw = GetScrew(execution);
-	Puck = GetPuck(execution);
+	m_currExec = execution;
+	m_Seal = GetSeal(execution);
+	m_Screw = GetScrew(execution);
+	m_Puck = GetPuck(execution);
 }
 
 void Assembler::CreateSeal()
@@ -226,17 +226,17 @@ void Assembler::CreateSeal()
 	pBaseSketch->Create();
 	p2DDoc = pBaseSketchDef->BeginEdit();
 
-	auto cosBig = cos(Seal.BaseAngleBig);
-	auto sinBig = sin(Seal.BaseAngleBig);
-	auto cosSmall = cos(Seal.BaseAngleSmall);
-	auto sinSmall = sin(Seal.BaseAngleSmall);
+	auto cosBig = cos(m_Seal.BaseAngleBig);
+	auto sinBig = sin(m_Seal.BaseAngleBig);
+	auto cosSmall = cos(m_Seal.BaseAngleSmall);
+	auto sinSmall = sin(m_Seal.BaseAngleSmall);
 
-	auto X1 = Seal.BaseRad * cosBig;
-	auto Y1 = Seal.BaseRad * sinBig;
-	auto X2 = Seal.BaseRad * cosSmall;
-	auto Y2 = Seal.BaseRad * sinSmall;
-	auto X3 = Seal.BaseRad * cos(Seal.BaseAngleSmall+120*M_PI/180);
-	auto Y3 = Seal.BaseRad * sin(Seal.BaseAngleSmall+120*M_PI/180);
+	auto X1 = m_Seal.BaseRad * cosBig;
+	auto Y1 = m_Seal.BaseRad * sinBig;
+	auto X2 = m_Seal.BaseRad * cosSmall;
+	auto Y2 = m_Seal.BaseRad * sinSmall;
+	auto X3 = m_Seal.BaseRad * cos(m_Seal.BaseAngleSmall+120*M_PI/180);
+	auto Y3 = m_Seal.BaseRad * sin(m_Seal.BaseAngleSmall+120*M_PI/180);
 
 	p2DDoc->ksLineSeg(X1, Y1, X2, Y2, 1);
 	p2DDoc->ksLineSeg(X2, Y2, X2, -Y2, 1);
@@ -252,7 +252,7 @@ void Assembler::CreateSeal()
 	ksBossExtrusionDefinitionPtr pBaseBossExtrusionDef = pBaseExtrude->GetDefinition();
 	pBaseBossExtrusionDef->directionType = dtNormal;
 	pBaseBossExtrusionDef->SetSketch(pBaseSketch);
-	pBaseBossExtrusionDef->SetSideParam(true, 0, Seal.BaseDepth, 0, false);
+	pBaseBossExtrusionDef->SetSideParam(true, 0, m_Seal.BaseDepth, 0, false);
 	pBaseExtrude->Create();
 
 	ksEntityCollectionPtr flFaces = pPart->EntityCollection(o3d_face);
@@ -270,7 +270,7 @@ void Assembler::CreateSeal()
 
 					double x1, y1, z1;
 					p1->GetPoint(&x1, &y1, &z1);
-					if (z1 == float(Seal.HexDepth) && amountEdges == 6) {
+					if (z1 == float(m_Seal.HexDepth) && amountEdges == 6) {
 						counterEdges++;
 					}
 				}
@@ -288,7 +288,7 @@ void Assembler::CreateSeal()
 	ksEntityPtr pBasePlane = pPart->NewEntity(o3d_planeOffset);
 	ksPlaneOffsetDefinitionPtr pBaseOffsetPlane = pBasePlane->GetDefinition();
 	pBaseOffsetPlane->direction = true;
-	pBaseOffsetPlane->offset = Seal.BaseDepth;
+	pBaseOffsetPlane->offset = m_Seal.BaseDepth;
 	pBaseOffsetPlane->SetPlane(pPart->GetDefaultEntity(o3d_planeXOY));
 	pBasePlane->Create();
 
@@ -298,16 +298,16 @@ void Assembler::CreateSeal()
 	pHexSketchDef->SetPlane(pBasePlane);
 	pHexSketch->Create();
 
-	auto X_hex2 = Seal.HexRad * cos(30*M_PI/180);
-	auto Y_hex2 = Seal.HexRad / 2;
+	auto X_hex2 = m_Seal.HexRad * cos(30*M_PI/180);
+	auto Y_hex2 = m_Seal.HexRad / 2;
 
 	p2DDoc = pHexSketchDef->BeginEdit();
-	p2DDoc->ksLineSeg(0, Seal.HexRad, X_hex2, Y_hex2, 1);
+	p2DDoc->ksLineSeg(0, m_Seal.HexRad, X_hex2, Y_hex2, 1);
 	p2DDoc->ksLineSeg(X_hex2, Y_hex2, X_hex2, -Y_hex2, 1);
-	p2DDoc->ksLineSeg(X_hex2, -Y_hex2, 0, -Seal.HexRad, 1);
-	p2DDoc->ksLineSeg(0, -Seal.HexRad, -X_hex2, -Y_hex2, 1);
+	p2DDoc->ksLineSeg(X_hex2, -Y_hex2, 0, -m_Seal.HexRad, 1);
+	p2DDoc->ksLineSeg(0, -m_Seal.HexRad, -X_hex2, -Y_hex2, 1);
 	p2DDoc->ksLineSeg(-X_hex2, -Y_hex2, -X_hex2, Y_hex2, 1);
-	p2DDoc->ksLineSeg(-X_hex2, Y_hex2, 0, Seal.HexRad, 1);
+	p2DDoc->ksLineSeg(-X_hex2, Y_hex2, 0, m_Seal.HexRad, 1);
 
 	pHexSketchDef->EndEdit();
 
@@ -318,7 +318,7 @@ void Assembler::CreateSeal()
 	pGrooveSketch->Create();
 
 	p2DDoc = pGrooveSketchDef->BeginEdit();
-	p2DDoc->ksCircle(-Seal.X_Pin, 0, Seal.GrooveRad, 1);
+	p2DDoc->ksCircle(-m_Seal.X_Pin, 0, m_Seal.GrooveRad, 1);
 
 	pGrooveSketchDef->EndEdit();
 
@@ -329,7 +329,7 @@ void Assembler::CreateSeal()
 	pPinSketch->Create();
 
 	p2DDoc = pPinSketchDef->BeginEdit();
-	p2DDoc->ksCircle(-Seal.X_Pin, 0, Seal.PinRad, 1);
+	p2DDoc->ksCircle(-m_Seal.X_Pin, 0, m_Seal.PinRad, 1);
 
 	pPinSketchDef->EndEdit();
 
@@ -338,7 +338,7 @@ void Assembler::CreateSeal()
 	ksBossExtrusionDefinitionPtr pHexBossExtrusionDef = pHexExtrude->GetDefinition();
 	pHexBossExtrusionDef->directionType = dtNormal;
 	pHexBossExtrusionDef->SetSketch(pHexSketch);
-	pHexBossExtrusionDef->SetSideParam(true, 0, Seal.HexDepth, 0, false);
+	pHexBossExtrusionDef->SetSideParam(true, 0, m_Seal.HexDepth, 0, false);
 	pHexExtrude->Create();
 
 	//вырезание Groove
@@ -346,7 +346,7 @@ void Assembler::CreateSeal()
 	ksCutExtrusionDefinitionPtr pGrooveCutExtrudeDef = pGrooveCutExtrude->GetDefinition();
 	pGrooveCutExtrudeDef->directionType = dtNormal;
 	pGrooveCutExtrudeDef->SetSketch(pGrooveSketchDef);
-	pGrooveCutExtrudeDef->SetSideParam(true, etBlind, Seal.GrooveDepth, 0, false);
+	pGrooveCutExtrudeDef->SetSideParam(true, etBlind, m_Seal.GrooveDepth, 0, false);
 	pGrooveCutExtrude->Create();
 
 	//вырезание Pin
@@ -375,7 +375,7 @@ void Assembler::CreateSeal()
 	ksEntityPtr pTopPlane = pPart->NewEntity(o3d_planeOffset);
 	ksPlaneOffsetDefinitionPtr pTopPlaneDef = pTopPlane->GetDefinition();
 	pTopPlaneDef->direction = true;
-	pTopPlaneDef->offset = Seal.BaseDepth + Seal.HexDepth;
+	pTopPlaneDef->offset = m_Seal.BaseDepth + m_Seal.HexDepth;
 	pTopPlaneDef->SetPlane(pPart->GetDefaultEntity(o3d_planeXOY));
 	pTopPlane->Create();
 
@@ -385,7 +385,7 @@ void Assembler::CreateSeal()
 	pAxialHoleSketchDef->SetPlane(pTopPlane);
 	pAxialHoleSketch->Create();
 	p2DDoc = pAxialHoleSketchDef->BeginEdit();
-	p2DDoc->ksCircle(0, 0, Seal.AxHoleRad, 1);
+	p2DDoc->ksCircle(0, 0, m_Seal.AxHoleRad, 1);
 	pAxialHoleSketchDef->EndEdit();
 
 	//вырезание осевого отверсти€
@@ -393,7 +393,7 @@ void Assembler::CreateSeal()
 	ksCutExtrusionDefinitionPtr pAxialHoleCutExtrudeDef = pAxialHoleCutExtrude->GetDefinition();
 	pAxialHoleCutExtrudeDef->directionType = dtNormal;
 	pAxialHoleCutExtrudeDef->SetSketch(pAxialHoleSketchDef);
-	pAxialHoleCutExtrudeDef->SetSideParam(true, etBlind, Seal.HexDepth, 0, false);
+	pAxialHoleCutExtrudeDef->SetSideParam(true, etBlind, m_Seal.HexDepth, 0, false);
 	pAxialHoleCutExtrude->Create();
 
 	//эскиз осевого отверсти€ малого
@@ -402,7 +402,7 @@ void Assembler::CreateSeal()
 	pAxialHoleSketchDef2->SetPlane(pPart->GetDefaultEntity(o3d_planeXOY));
 	pAxialHoleSketch2->Create();
 	p2DDoc = pAxialHoleSketchDef2->BeginEdit();
-	p2DDoc->ksCircle(0, 0, Seal.AxHoleThruRad, 1);
+	p2DDoc->ksCircle(0, 0, m_Seal.AxHoleThruRad, 1);
 	pAxialHoleSketchDef2->EndEdit();
 
 	//вырезание осевого отверсти€
@@ -410,7 +410,7 @@ void Assembler::CreateSeal()
 	ksCutExtrusionDefinitionPtr pAxialHoleCutExtrudeDef2 = pAxialHoleCutExtrude2->GetDefinition();
 	pAxialHoleCutExtrudeDef2->directionType = dtReverse;
 	pAxialHoleCutExtrudeDef2->SetSketch(pAxialHoleSketchDef2);
-	pAxialHoleCutExtrudeDef2->SetSideParam(true, etBlind, Seal.BaseDepth, 0, false);
+	pAxialHoleCutExtrudeDef2->SetSideParam(true, etBlind, m_Seal.BaseDepth, 0, false);
 	pAxialHoleCutExtrude2->Create();
 
 	flFaces = pPart->EntityCollection(o3d_face);
@@ -422,7 +422,7 @@ void Assembler::CreateSeal()
 			if (def->IsCylinder()) {
 				double h, r;
 				def->GetCylinderParam(&h, &r);
-				if (r == Seal.AxHoleRad) {
+				if (r == m_Seal.AxHoleRad) {
 					face->Putname("Cylinder4Assembly1");
 					face->Update();
 				}
@@ -439,7 +439,7 @@ void Assembler::CreateSeal()
 					double x1, y1, z1;
 					p1->GetPoint(&x1, &y1, &z1);
 
-					if (z1 == float(Seal.BaseDepth + Seal.HexDepth) && amountEdges == 7) {
+					if (z1 == float(m_Seal.BaseDepth + m_Seal.HexDepth) && amountEdges == 7) {
 						counterEdges++;
 					}
 				}
@@ -455,12 +455,12 @@ void Assembler::CreateSeal()
 	//резьба
 	ksEntityPtr pTHread = pPart->NewEntity(o3d_thread);
 	ksThreadDefinitionPtr pTHreadDef = pTHread->GetDefinition();
-	pTHreadDef->Putlength(Seal.HexDepth - Puck.Height );//( = 14) in 1 exec
+	pTHreadDef->Putlength(m_Seal.HexDepth - m_Puck.Height );//( = 14) in 1 exec
 	ksEntityPtr BossFace4Assemly0 = flFaces->GetByName("Face4Assembly0", true, true);
 	ksEntityPtr Cylinder4Assembly1 = flFaces->GetByName("Cylinder4Assembly1", true, true);
 	pTHreadDef->SetFaceBegin(BossFace4Assemly0);
-	pTHreadDef->dr = Seal.ThreadDR;// 15;
-	pTHreadDef->p = Seal.ThreadP; //1
+	pTHreadDef->dr = m_Seal.ThreadDR;// 15;
+	pTHreadDef->p = m_Seal.ThreadP; //1
 	pTHreadDef->SetBaseObject(Cylinder4Assembly1);
 	pTHread->Create();
 
@@ -526,16 +526,16 @@ void Assembler::CreateScrew()
 	pHexSketch->Create();
 	
 	//описание вар
-	auto X_hex = Screw.HexRad * cos(30 * M_PI / 180);
-	auto Y_hex = Screw.HexRad / 2;
+	auto X_hex = m_Screw.HexRad * cos(30 * M_PI / 180);
+	auto Y_hex = m_Screw.HexRad / 2;
 
 	p2DDoc = pHexSketchDef->BeginEdit();
-	p2DDoc->ksLineSeg(0, Screw.HexRad, X_hex, Y_hex, 1);
+	p2DDoc->ksLineSeg(0, m_Screw.HexRad, X_hex, Y_hex, 1);
 	p2DDoc->ksLineSeg(X_hex, Y_hex, X_hex, -Y_hex, 1);
-	p2DDoc->ksLineSeg(X_hex, -Y_hex, 0, -Screw.HexRad, 1);
-	p2DDoc->ksLineSeg(0, -Screw.HexRad, -X_hex, -Y_hex, 1);
+	p2DDoc->ksLineSeg(X_hex, -Y_hex, 0, -m_Screw.HexRad, 1);
+	p2DDoc->ksLineSeg(0, -m_Screw.HexRad, -X_hex, -Y_hex, 1);
 	p2DDoc->ksLineSeg(-X_hex, -Y_hex, -X_hex, Y_hex, 1);
-	p2DDoc->ksLineSeg(-X_hex, Y_hex, 0, Screw.HexRad, 1);
+	p2DDoc->ksLineSeg(-X_hex, Y_hex, 0, m_Screw.HexRad, 1);
 
 	pHexSketchDef->EndEdit();
 
@@ -544,7 +544,7 @@ void Assembler::CreateScrew()
 	ksBossExtrusionDefinitionPtr pHexExtrusionDef = pHexExtrude->GetDefinition();
 	pHexExtrusionDef->directionType = dtNormal;
 	pHexExtrusionDef->SetSketch(pHexSketch);
-	pHexExtrusionDef->SetSideParam(true, 0, Screw.HexDepth, 0, false);
+	pHexExtrusionDef->SetSideParam(true, 0, m_Screw.HexDepth, 0, false);
 	pHexExtrude->Create();
 	
 	ksEntityCollectionPtr flFaces = pPart->EntityCollection(o3d_face);
@@ -562,7 +562,7 @@ void Assembler::CreateScrew()
 					ksVertexDefinitionPtr p1 = d->GetVertex(true);
 					double x1, y1, z1;
 					p1->GetPoint(&x1, &y1, &z1);
-					if (round(y1) == Screw.HexDepth && amountEdges == 6) {
+					if (round(y1) == m_Screw.HexDepth && amountEdges == 6) {
 						counterEdges++;
 					}
 					if (amountEdges == 4 && isFirst == true) {
@@ -588,12 +588,12 @@ void Assembler::CreateScrew()
 	pLegSketchDef->SetPlane(pPart->GetDefaultEntity(o3d_planeXOY));
 	pLegSketch->Create();
 
-	auto X_ax = Screw.AxHoleRad;
-	auto Y1_ax = Screw.HexDepth;
-	auto Y2_ax = Screw.FullHeight;
-	auto X_out = X_ax + Screw.LegThick;
-	auto Y1_out = Y1_ax + Screw.GasketHeight;
-	auto X_in = X_ax + Screw.GasketWidth;
+	auto X_ax = m_Screw.AxHoleRad;
+	auto Y1_ax = m_Screw.HexDepth;
+	auto Y2_ax = m_Screw.FullHeight;
+	auto X_out = X_ax + m_Screw.LegThick;
+	auto Y1_out = Y1_ax + m_Screw.GasketHeight;
+	auto X_in = X_ax + m_Screw.GasketWidth;
 
 	p2DDoc = pLegSketchDef->BeginEdit();
 	p2DDoc->ksLineSeg(0, Y1_ax, 0, Y2_ax, 1);
@@ -663,8 +663,8 @@ void Assembler::CreateScrew()
 	ksEntityPtr pTHread = pPart->NewEntity(o3d_thread);
 	ksThreadDefinitionPtr pTHreadDef = pTHread->GetDefinition();
 	pTHreadDef->PutallLength(TRUE);
-	pTHreadDef->dr = Screw.ThreadDR;
-	pTHreadDef->p = Screw.ThreadP;
+	pTHreadDef->dr = m_Screw.ThreadDR;
+	pTHreadDef->p = m_Screw.ThreadP;
 
 	flFaces = pPart->EntityCollection(o3d_face);
 	for (int i = 0; i < flFaces->GetCount(); i++) {
@@ -674,7 +674,7 @@ void Assembler::CreateScrew()
 			if (def->IsCylinder()) {
 				double h, r;
 				def->GetCylinderParam(&h, &r);
-				if (r == Screw.AxHoleRad + Screw.LegThick) {
+				if (r == m_Screw.AxHoleRad + m_Screw.LegThick) {
 					face->Putname("Cylinder4Assembly2");
 					face->Update();
 
@@ -745,9 +745,9 @@ void Assembler::CreatePuck()
 	pSketchDef->SetPlane(pPart->GetDefaultEntity(o3d_planeXOY));
 	pSketch->Create();
 
-	auto X1 = Puck.RadIn;
-	auto X2 = Puck.RadOut;
-	auto Y = Puck.Height;
+	auto X1 = m_Puck.RadIn;
+	auto X2 = m_Puck.RadOut;
+	auto Y = m_Puck.Height;
 
 	p2DDoc = pSketchDef->BeginEdit();
 	p2DDoc->ksLineSeg(X1, 0, X1, Y, 1);
@@ -782,7 +782,7 @@ void Assembler::CreatePuck()
 			if (def->IsCylinder()) {
 				double h, r;
 				def->GetCylinderParam(&h, &r);
-				if (r == Puck.RadIn) {
+				if (r == m_Puck.RadIn) {
 					face->Putname("Cylinder4Assembly3");
 					face->Update();
 				}
