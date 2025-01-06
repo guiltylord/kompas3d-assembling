@@ -96,12 +96,13 @@ ScrewData Assembler::GetScrew(int type)
 {
 	switch (type) {
 	case 1:
-		m_Screw.FullHeight = 17;
 		m_Screw.LegThick = 2.5;
 
+		m_Screw.FullHeight = 17;
 		m_Screw.HexDepth = 3;
-		m_Screw.HexRad = 21.9 / 2;
+		//LegHeight=FullHeight-HexDepth
 
+		m_Screw.HexRad = 21.9 / 2;
 		m_Screw.AxHoleRad = 5;
 
 		m_Screw.GasketHeight = 1;
@@ -893,6 +894,29 @@ void Assembler::MakeAssemble()
 
 	p3DDoc->fileName = _bstr_t(CString(name.c_str()));
 	p3DDoc->SaveAs(_bstr_t(CString(path.c_str())));
+}
+
+void Assembler::GodAssemble(float RBase, float RHole, float L)
+{
+	m_Seal.BaseRad = RBase;
+
+	m_Seal.HexDepth = L;
+	m_Screw.FullHeight = L - 1;
+
+	m_Seal.AxHoleRad = RHole;
+	m_Seal.HexRad = RHole + 4;
+	//m_Seal.ThreadDR = 2*(RHole + m_Screw.LegThick);
+	m_Seal.ThreadDR = RHole + m_Screw.LegThick;
+	m_Screw.AxHoleRad = RHole - m_Screw.LegThick;
+	m_Screw.ThreadDR = m_Screw.AxHoleRad + m_Screw.GasketWidth;
+	//m_Screw.ThreadDR = 2 * (m_Screw.AxHoleRad + m_Screw.GasketWidth);
+
+	m_Puck.RadOut = RHole + 0.1;
+
+	CreateSeal();
+	CreateScrew();
+	CreatePuck();
+	MakeAssemble();
 }
 
 void Assembler::CloseAll()

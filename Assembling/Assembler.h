@@ -63,6 +63,7 @@ public:
 	void CreateScrew();
 	void CreatePuck();
 	void MakeAssemble();
+	void GodAssemble(float RBase, float RHole, float L);
 
 	int m_currExec;
 

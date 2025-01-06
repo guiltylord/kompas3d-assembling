@@ -69,8 +69,12 @@ void CAssemblingView::DoDataExchange(CDataExchange* pDX)
 void CAssemblingView::ConfigureWidgets(CString btnText, bool godMode)
 {
 	if (m_godMode) {
-		m_sText.ShowWindow(SW_HIDE);
-		m_cBox.ShowWindow(SW_HIDE);
+
+		//поменять текст но оставить комбушку
+		//m_sText.ShowWindow(SW_HIDE); //на основе исполнения будет сделано:
+		m_sText.SetWindowTextW(L"Based on THAT execution:");
+		//m_cBox.ShowWindow(SW_HIDE);
+		//m_cBox.MoveWindow(m_fieldL, m_imgH + 20, 125, 30);
 
 		m_eL.ShowWindow(SW_NORMAL);
 		m_eRBase.ShowWindow(SW_NORMAL);
@@ -78,12 +82,17 @@ void CAssemblingView::ConfigureWidgets(CString btnText, bool godMode)
 		m_tL.ShowWindow(SW_NORMAL);
 		m_tRHole.ShowWindow(SW_NORMAL);
 		m_tRBase.ShowWindow(SW_NORMAL);
-		
 
-		m_eL.MoveWindow(m_fieldL, m_imgH+30, 125, 30);
-		m_eRBase.MoveWindow(m_fieldL + 150, m_imgH+30, 125, 30);
-		m_eRHole.MoveWindow(m_fieldL+300, m_imgH+30, 125, 30);
-		m_btn.MoveWindow(m_fieldL, m_imgH+80, 125, 30);
+		m_sText.MoveWindow(m_fieldL, m_imgH, 200, 30);
+		m_cBox.MoveWindow(m_fieldL, m_imgH+30, 125, 30);
+
+		m_tL.MoveWindow(m_fieldL, m_imgH+80, 125, 20);
+		m_tRBase.MoveWindow(m_fieldL + 150, m_imgH+80, 125, 20);
+		m_tRHole.MoveWindow(m_fieldL+300, m_imgH+80, 125, 20);
+		m_eL.MoveWindow(m_fieldL, m_imgH+100, 125, 30);
+		m_eRBase.MoveWindow(m_fieldL + 150, m_imgH+100, 125, 30);
+		m_eRHole.MoveWindow(m_fieldL+300, m_imgH+100, 125, 30);
+		m_btn.MoveWindow(m_fieldL, m_imgH+150, 125, 30);
 
 		return;
 	}
@@ -113,6 +122,7 @@ void CAssemblingView::ConfigureWindow(const int detail)
 	m_godMode = false;
 	CAssemblingDoc* pDoc = GetDocument();
 	m_sText.ShowWindow(SW_NORMAL);
+	m_sText.SetWindowTextW(L"Choose execution:");
 	m_cBox.ShowWindow(SW_NORMAL);
 	m_btn.ShowWindow(SW_NORMAL);
 	m_btnGodMode.ShowWindow(SW_HIDE);
@@ -159,11 +169,12 @@ void CAssemblingView::OnInitialUpdate()
 	ResizeParentToFit();
 
 	CString str;
-	for (int i = 1; i <= 4; i++) {
+	for (int i = 1; i <= 3; i++) {
 		str.Format(L"%i", i);
 		m_cBox.AddString(str);
 	}
 	m_cBox.SetCurSel(0);
+
 	m_sText.ShowWindow(SW_HIDE);
 	m_cBox.ShowWindow(SW_HIDE);
 	m_btn.ShowWindow(SW_HIDE);
@@ -218,6 +229,22 @@ void CAssemblingView::OnBnClickedButton1()
 	}
 	if (pDoc->m_bAssembling) {
 		pDoc->m_pAssembler->FillAssembler(execution);
+		if (m_godMode) {
+			CString RBase;
+			m_eRBase.GetWindowText(RBase);
+
+			CString RHole;
+			m_eRHole.GetWindowText(RHole);
+
+			CString L;
+			m_eL.GetWindowText(L);
+
+			pDoc->m_pAssembler->GodAssemble(
+				atoi(CT2A(RBase)), 
+				atoi(CT2A(RHole)), 
+				atoi(CT2A(L)));
+			return;							
+		}									
 		pDoc->m_pAssembler->MakeAssemble();
 	}
 }
