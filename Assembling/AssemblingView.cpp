@@ -70,18 +70,26 @@ void CAssemblingView::ConfigureButton(CString btnText)
 void CAssemblingView::ConfigurePicture(CString imgPath)
 {
 	CImage img = CImage();
-
 	img.Load(imgPath);
-
 	if (img == nullptr) {
 		currImgHeight = 0;
 		return;
 	}
 
-	currImgHeight = img.GetHeight();
+	int newWidth = img.GetWidth(); // Задайте нужную ширину
+	int newHeight = img.GetHeight(); // Задайте нужную высоту
 
-	HBITMAP bitmap = img.Detach();
+	CImage newImg;
+	newImg.Create(newWidth, newHeight, img.GetBPP());
+
+	img.StretchBlt(newImg.GetDC(), 0, 0, newWidth, newHeight, SRCCOPY);
+	newImg.ReleaseDC();
+
+	currImgHeight = newImg.GetHeight();
+
+	HBITMAP bitmap = newImg.Detach();
 	m_sketchPic.SetBitmap(bitmap);
+	m_sketchPic.Invalidate();
 }
 
 void CAssemblingView::ConfigureWindow(const int detail)
