@@ -74,6 +74,9 @@ public:
 	CEdit m_eL;
 	CEdit m_eRHole;
 	CEdit m_eRBase;
+	CStatic m_tRBase;
+	CStatic m_tRHole;
+	CStatic m_tL;
 };
 
 #ifndef _DEBUG  // debug version in AssemblingView.cpp

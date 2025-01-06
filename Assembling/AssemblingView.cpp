@@ -56,19 +56,29 @@ void CAssemblingView::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, ID_SKETCH1, m_sketchPic);
 	DDX_Control(pDX, IDC_BUTTON1, m_btn);
 	DDX_Control(pDX, IDC_COMBOBOX, m_cBox);
-	DDX_Control(pDX, IDC_STATIC_TEXT, m_sText);
+	DDX_Control(pDX, IDC_TEXT_CHOICE, m_sText);
 	DDX_Control(pDX, IDC_GODMODE, m_btnGodMode);
 	DDX_Control(pDX, IDC_EDIT_L, m_eL);
-	DDX_Control(pDX, IDC_EDIT_RAD_HOLE, m_eRHole);
-	DDX_Control(pDX, IDC_EDIT_RAD_BASE, m_eRBase);
+	DDX_Control(pDX, IDC_EDIT_R_HOLE, m_eRHole);
+	DDX_Control(pDX, IDC_EDIT_R_BASE, m_eRBase);
+	DDX_Control(pDX, IDC_TEXT_R_BASE, m_tRBase);
+	DDX_Control(pDX, IDC_TEXT_R_HOLE, m_tRHole);
+	DDX_Control(pDX, IDC_TEXT_L, m_tL);
 }
 
 void CAssemblingView::ConfigureWidgets(CString btnText, bool godMode)
 {
 	if (m_godMode) {
+		m_sText.ShowWindow(SW_HIDE);
+		m_cBox.ShowWindow(SW_HIDE);
+
 		m_eL.ShowWindow(SW_NORMAL);
 		m_eRBase.ShowWindow(SW_NORMAL);
 		m_eRHole.ShowWindow(SW_NORMAL);
+		m_tL.ShowWindow(SW_NORMAL);
+		m_tRHole.ShowWindow(SW_NORMAL);
+		m_tRBase.ShowWindow(SW_NORMAL);
+		
 
 		m_eL.MoveWindow(m_fieldL, m_imgH+30, 125, 30);
 		m_eRBase.MoveWindow(m_fieldL + 150, m_imgH+30, 125, 30);
@@ -154,7 +164,6 @@ void CAssemblingView::OnInitialUpdate()
 		m_cBox.AddString(str);
 	}
 	m_cBox.SetCurSel(0);
-	//m_sText.back
 	m_sText.ShowWindow(SW_HIDE);
 	m_cBox.ShowWindow(SW_HIDE);
 	m_btn.ShowWindow(SW_HIDE);
@@ -162,6 +171,9 @@ void CAssemblingView::OnInitialUpdate()
 	m_eL.ShowWindow(SW_HIDE);
 	m_eRBase.ShowWindow(SW_HIDE);
 	m_eRHole.ShowWindow(SW_HIDE);
+	m_tL.ShowWindow(SW_HIDE);
+	m_tRHole.ShowWindow(SW_HIDE);
+	m_tRBase.ShowWindow(SW_HIDE);
 }
 
 
@@ -228,8 +240,6 @@ void CAssemblingView::OnKompasCloseall()
 
 void CAssemblingView::OnBnClickedGodmode()
 {
-	m_sText.ShowWindow(SW_HIDE);
-	m_cBox.ShowWindow(SW_HIDE);
 	m_godMode = true;
 	CAssemblingDoc* pDoc = GetDocument();
 
