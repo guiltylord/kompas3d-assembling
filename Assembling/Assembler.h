@@ -57,7 +57,7 @@ public:
 	ScrewData GetScrew(int type);
 	PuckData GetPuck(int type);
 
-	void FillAssembler(int execution);
+	void FillAssembler(const int execution);
 
 	void CreateSeal();
 	void CreateScrew();

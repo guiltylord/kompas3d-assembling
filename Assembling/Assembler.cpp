@@ -130,7 +130,7 @@ PuckData Assembler::GetPuck(int type)
 	return puck;
 }
 
-void Assembler::FillAssembler(int execution)
+void Assembler::FillAssembler(const int execution)
 {
 	currExec = execution;
 	Seal = GetSeal(execution);
