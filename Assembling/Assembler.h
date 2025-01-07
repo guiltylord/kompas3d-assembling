@@ -58,6 +58,7 @@ public:
 	PuckData GetPuck(int type);
 
 	void FillAssembler(const int execution);
+	bool CheckValues(float RBase, float RHole, float L);
 
 	void CreateSeal();
 	void CreateScrew();

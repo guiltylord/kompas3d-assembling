@@ -176,6 +176,18 @@ void Assembler::FillAssembler(const int execution)
 	m_Puck = GetPuck(execution);
 }
 
+bool Assembler::CheckValues(float RBase, float RHole, float L)
+{
+	if (RHole * sqrt(3) / 2 >= sin(35 / M_PI * 180) * RBase) {
+		CString str;
+		str.Format(L"R2 cant be more than %f", sin(35 * M_PI / 180) * RBase);
+		AfxMessageBox(str);
+		return false;
+	}
+
+	return true;
+}
+
 void Assembler::CreateSeal()
 {
 	ksDocument3DPtr p3DDoc;
@@ -897,12 +909,8 @@ void Assembler::MakeAssemble()
 
 void Assembler::GodAssemble(float RBase, float RHole, float L)
 {
-	if (RHole * sqrt(3) / 2 >= sin(35 / M_PI * 180) * RBase) {
-		CString str;
-		str.Format(L"R2 cant be more than %f", sin(35 * M_PI / 180) * RBase);
-		AfxMessageBox(str);
+	if (!CheckValues(RBase, RHole, L)) 
 		return;
-	}
 
 	m_Seal.BaseRad = RBase;
 	m_Seal.AxHoleThruRad = RHole / 2;
@@ -920,7 +928,6 @@ void Assembler::GodAssemble(float RBase, float RHole, float L)
 
 	m_Screw.AxHoleRad = RHole - m_Screw.GasketWidth;
 	m_Screw.ThreadDR = 2*RHole + m_Screw.GasketWidth;
-	//m_Screw.ThreadDR = 2 * (m_Screw.AxHoleRad + m_Screw.GasketWidth);
 	m_Screw.HexRad = m_Seal.HexRad;
 	m_Puck.RadOut = RHole + 0.1;
 	m_Puck.RadIn = m_Seal.AxHoleThruRad * 0.9;
