@@ -35,7 +35,8 @@ public:
 	int m_imgH;
 	int m_fieldL = 20;
 	bool m_godMode = false;
-
+	int m_curDetail;
+	int m_curW;
 // Operations
 public:
 	void ConfigureWidgets(CString btnText, bool godMode);

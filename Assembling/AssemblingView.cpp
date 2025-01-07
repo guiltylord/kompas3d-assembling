@@ -110,6 +110,11 @@ void CAssemblingView::ConfigureWidgets(CString btnText, bool godMode)
 
 	m_btnGodMode.ShowWindow(SW_HIDE);
 
+	if (m_curDetail == ASSEMBLING && m_curW > 564) {
+		m_btnGodMode.ShowWindow(SW_NORMAL);
+		m_btnGodMode.MoveWindow(m_curW - 75, 0, 75, 30);
+	}
+
 	m_sText.MoveWindow(m_fieldL, m_imgH, 125, 20);
 	m_cBox.MoveWindow(m_fieldL, m_imgH + 20, 125, 30);
 	m_btn.MoveWindow(m_fieldL, m_imgH+50, 125, 30);
@@ -134,11 +139,11 @@ void CAssemblingView::ConfigurePicture(CString imgPath)
 void CAssemblingView::ConfigureWindow(const int detail)
 {
 	CAssemblingDoc* pDoc = GetDocument();
+	m_curDetail = detail;
 	switch (detail) {
 	case ASSEMBLING: {
 		ConfigurePicture(pDoc->imgPathForAssembling);
 		ConfigureWidgets(pDoc->btnTextForAssembling, false);
-		m_btnGodMode.ShowWindow(SW_NORMAL);
 		break;
 	}
 	case SEAL: {
@@ -291,21 +296,27 @@ void CAssemblingView::OnBnClickedGodmode()
 	AfxMessageBox(L"You are now entering in creative mode. You can set more sizes but not all of them.");
 	m_godMode = true;
 	ConfigureWindow(GOD);
+	m_btnGodMode.ShowWindow(SW_HIDE);
 }
 
 
 void CAssemblingView::OnSize(UINT nType, int cx, int cy)
 {
 	CFormView::OnSize(nType, cx, cy);
+	m_curW = cx;
+	
 	if (!m_btnGodMode)
 		return;
-
-	if (cx <= 564 + 75) {
+	
+	if (cx <= 564) {
 		m_btnGodMode.ShowWindow(SW_HIDE);
 		return;
 	}
 
+	if (cx > 564 && m_curDetail == ASSEMBLING)
+	{
 	m_btnGodMode.ShowWindow(SW_NORMAL);
 	m_btnGodMode.MoveWindow(cx-75, 0, 75, 30);
+	}
 	// TODO: Add your message handler code here
 }
