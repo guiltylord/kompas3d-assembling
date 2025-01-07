@@ -13,9 +13,9 @@ struct SealData {
 	float AxHoleThruRad;
 
 	float X_Pin;
-	float PinRad;
-	float GrooveRad;
-	float GrooveDepth;
+	float PinRadSmall;
+	float PinRadBig;
+	float PinDepth;
 
 	int ThreadDR;
 	int ThreadP;

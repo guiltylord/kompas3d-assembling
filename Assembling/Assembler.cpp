@@ -85,9 +85,9 @@ SealData Assembler::GetSeal(int type)
 		break;
 	}
 
-	m_Seal.GrooveRad = 8 / 2;
-	m_Seal.GrooveDepth = 2;
-	m_Seal.PinRad = 4.5 / 2;
+	m_Seal.PinRadBig = 8 / 2;
+	m_Seal.PinDepth = 2;
+	m_Seal.PinRadSmall = 4.5 / 2;
 
 	return m_Seal;
 }
@@ -219,7 +219,7 @@ void Assembler::CreateSeal()
 	p3DDoc = pKompasApp5->ActiveDocument3D();
 	ksPartPtr pPart = p3DDoc->GetPart(pTop_Part);
 	ksDocument2DPtr p2DDoc;
-	
+
 	//эскиз Base
 	ksEntityPtr pBaseSketch = pPart->NewEntity(o3d_sketch);
 	ksSketchDefinitionPtr pBaseSketchDef = pBaseSketch->GetDefinition();
@@ -319,7 +319,7 @@ void Assembler::CreateSeal()
 	pGrooveSketch->Create();
 
 	p2DDoc = pGrooveSketchDef->BeginEdit();
-	p2DDoc->ksCircle(-m_Seal.X_Pin, 0, m_Seal.GrooveRad, 1);
+	p2DDoc->ksCircle(-m_Seal.X_Pin, 0, m_Seal.PinRadBig, 1);
 
 	pGrooveSketchDef->EndEdit();
 
@@ -330,7 +330,7 @@ void Assembler::CreateSeal()
 	pPinSketch->Create();
 
 	p2DDoc = pPinSketchDef->BeginEdit();
-	p2DDoc->ksCircle(-m_Seal.X_Pin, 0, m_Seal.PinRad, 1);
+	p2DDoc->ksCircle(-m_Seal.X_Pin, 0, m_Seal.PinRadSmall, 1);
 
 	pPinSketchDef->EndEdit();
 
@@ -347,7 +347,7 @@ void Assembler::CreateSeal()
 	ksCutExtrusionDefinitionPtr pGrooveCutExtrudeDef = pGrooveCutExtrude->GetDefinition();
 	pGrooveCutExtrudeDef->directionType = dtNormal;
 	pGrooveCutExtrudeDef->SetSketch(pGrooveSketchDef);
-	pGrooveCutExtrudeDef->SetSideParam(true, etBlind, m_Seal.GrooveDepth, 0, false);
+	pGrooveCutExtrudeDef->SetSideParam(true, etBlind, m_Seal.PinDepth, 0, false);
 	pGrooveCutExtrude->Create();
 
 	//вырезание Pin
@@ -519,7 +519,6 @@ void Assembler::CreateScrew()
 	p3DDoc = pKompasApp5->ActiveDocument3D();
 	ksPartPtr pPart = p3DDoc->GetPart(pTop_Part);
 	ksDocument2DPtr p2DDoc;
-
 	//эскиз Hexagon
 	ksEntityPtr pHexSketch = pPart->NewEntity(o3d_sketch);
 	ksSketchDefinitionPtr pHexSketchDef = pHexSketch->GetDefinition();
@@ -589,21 +588,20 @@ void Assembler::CreateScrew()
 	pLegSketchDef->SetPlane(pPart->GetDefaultEntity(o3d_planeXOY));
 	pLegSketch->Create();
 
-	auto X_ax = m_Screw.AxHoleRad;
 	auto Y1_ax = m_Screw.HexDepth;
 	auto Y2_ax = m_Screw.FullHeight;
-	auto X_out = X_ax + m_Screw.LegThick;
-	auto Y1_out = Y1_ax + m_Screw.GasketHeight;
-	auto X_in = X_ax + m_Screw.GasketWidth;
+	auto X_out = m_Screw.AxHoleRad + m_Screw.LegThick;
+	auto Y_out = m_Screw.HexDepth + m_Screw.GasketHeight;
+	auto X_in = m_Screw.AxHoleRad + m_Screw.GasketWidth;
 
 	p2DDoc = pLegSketchDef->BeginEdit();
 	p2DDoc->ksLineSeg(0, Y1_ax, 0, Y2_ax, 1);
 	//p2DDoc->ksLineSeg(0, Y2_ax, X_out-1, Y2_ax, 1); //-1 для фасочки
 	//p2DDoc->ksLineSeg(X_out - 1, Y2_ax, X_out, Y2_ax-1, 1);
 	p2DDoc->ksLineSeg(0, Y2_ax, X_out, Y2_ax, 1);
-	p2DDoc->ksLineSeg(X_out, Y2_ax, X_out, Y1_out, 1);
-	p2DDoc->ksLineSeg(X_out, Y1_out, X_in, Y1_out, 1);
-	p2DDoc->ksLineSeg(X_in, Y1_out, X_in, Y1_ax, 1);
+	p2DDoc->ksLineSeg(X_out, Y2_ax, X_out, Y_out, 1);
+	p2DDoc->ksLineSeg(X_out, Y_out, X_in, Y_out, 1);
+	p2DDoc->ksLineSeg(X_in, Y_out, X_in, Y1_ax, 1);
 	p2DDoc->ksLineSeg(X_in, Y1_ax, 0, Y1_ax, 1);
 
 	p2DDoc->ksLineSeg(0, 10, 0, 0, 3);
@@ -619,6 +617,7 @@ void Assembler::CreateScrew()
 	pRotate->Create();
 
 	//эскиз дырки Leg
+	auto X_ax = m_Screw.AxHoleRad;
 	ksEntityPtr pLegSketch1 = pPart->NewEntity(o3d_sketch);
 	ksSketchDefinitionPtr pLegSketchDef1 = pLegSketch1->GetDefinition();
 	pLegSketchDef1->SetPlane(pPart->GetDefaultEntity(o3d_planeXOY));
@@ -898,20 +897,33 @@ void Assembler::MakeAssemble()
 
 void Assembler::GodAssemble(float RBase, float RHole, float L)
 {
+	if (RHole * sqrt(3) / 2 >= sin(35 / M_PI * 180) * RBase) {
+		CString str;
+		str.Format(L"R2 cant be more than %f", sin(35 * M_PI / 180) * RBase);
+		AfxMessageBox(str);
+		return;
+	}
+
 	m_Seal.BaseRad = RBase;
+	m_Seal.AxHoleThruRad = RHole / 2;
 
 	m_Seal.HexDepth = L;
-	m_Screw.FullHeight = L - 1;
+	m_Screw.FullHeight = L - 1 + m_Screw.HexDepth;
 
+	m_Seal.ThreadDR = 2*(RHole + m_Screw.LegThick - m_Screw.GasketWidth);
+
+	m_Seal.X_Pin = RBase * 0.75;
+	m_Seal.PinRadBig = RBase * 0.15;
+	m_Seal.PinRadSmall = m_Seal.PinRadBig * 0.44;
 	m_Seal.AxHoleRad = RHole;
-	m_Seal.HexRad = RHole + 4;
-	//m_Seal.ThreadDR = 2*(RHole + m_Screw.LegThick);
-	m_Seal.ThreadDR = RHole + m_Screw.LegThick;
-	m_Screw.AxHoleRad = RHole - m_Screw.LegThick;
-	m_Screw.ThreadDR = m_Screw.AxHoleRad + m_Screw.GasketWidth;
-	//m_Screw.ThreadDR = 2 * (m_Screw.AxHoleRad + m_Screw.GasketWidth);
+	m_Seal.HexRad = (RHole / sqrt(3) * 2) * 1.5;
 
+	m_Screw.AxHoleRad = RHole - m_Screw.GasketWidth;
+	m_Screw.ThreadDR = 2*RHole + m_Screw.GasketWidth;
+	//m_Screw.ThreadDR = 2 * (m_Screw.AxHoleRad + m_Screw.GasketWidth);
+	m_Screw.HexRad = m_Seal.HexRad;
 	m_Puck.RadOut = RHole + 0.1;
+	m_Puck.RadIn = m_Seal.AxHoleThruRad * 0.9;
 
 	CreateSeal();
 	CreateScrew();
@@ -961,6 +973,6 @@ void Assembler::CloseAll()
 	p3DDoc = pKompasApp5->ActiveDocument3D();
 	ksPartPtr pPart = p3DDoc->GetPart(pTop_Part);
 	ksDocument2DPtr p2DDoc;
-
+	
 	//https://help.ascon.ru/KOMPAS_SDK/22/ru-RU/iapplication_documents.html
 }
