@@ -164,6 +164,14 @@ void CAssemblingView::ConfigureWindow(const int detail)
 	m_godMode = false;
 }
 
+bool CAssemblingView::CheckValues(CString RBase, CString RHole, CString L)
+{
+	if (L.IsEmpty() || RHole.IsEmpty() || RBase.IsEmpty()) {
+		AfxMessageBox(L"Values cant be empty");
+		return false;
+	}
+}
+
 BOOL CAssemblingView::PreCreateWindow(CREATESTRUCT& cs)
 {
 	// TODO: Modify the Window class or styles here by modifying
@@ -249,10 +257,12 @@ void CAssemblingView::OnBnClickedButton1()
 			CString L;
 			m_eL.GetWindowText(L);
 
-			pDoc->m_pAssembler->GodAssemble(
-				atoi(CT2A(RBase)), 
-				atoi(CT2A(RHole)), 
-				atoi(CT2A(L)));
+			if (CheckValues(RBase, RHole, L)) {
+				pDoc->m_pAssembler->GodAssemble(
+					atoi(CT2A(RBase)),
+					atoi(CT2A(RHole)),
+					atoi(CT2A(L)));
+			}
 			return;							
 		}									
 		pDoc->m_pAssembler->MakeAssemble();

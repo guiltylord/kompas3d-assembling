@@ -41,6 +41,7 @@ public:
 	void ConfigureWidgets(CString btnText, bool godMode);
 	void ConfigurePicture(CString imgPath);
 	void ConfigureWindow(const int detail);
+	bool CheckValues(CString RBase, CString RHole, CString L);
 
 // Overrides
 public:
