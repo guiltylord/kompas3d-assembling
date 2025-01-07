@@ -35,6 +35,7 @@ BEGIN_MESSAGE_MAP(CAssemblingView, CFormView)
 	ON_WM_CTLCOLOR()
 	ON_COMMAND(ID_KOMPAS_CLOSEALL, &CAssemblingView::OnKompasCloseall)
 	ON_BN_CLICKED(IDC_GODMODE, &CAssemblingView::OnBnClickedGodmode)
+	ON_WM_SIZE()
 END_MESSAGE_MAP()
 
 // CAssemblingView construction/destruction
@@ -287,6 +288,18 @@ void CAssemblingView::OnKompasCloseall()
 
 void CAssemblingView::OnBnClickedGodmode()
 {
+	AfxMessageBox(L"You are now entering in creative mode. You can set more sizes but not all of them.");
 	m_godMode = true;
 	ConfigureWindow(GOD);
+}
+
+
+void CAssemblingView::OnSize(UINT nType, int cx, int cy)
+{
+	CFormView::OnSize(nType, cx, cy);
+	if (!m_btnGodMode)
+		return;
+
+	m_btnGodMode.MoveWindow(cx-75, 0, 75, 30);
+	// TODO: Add your message handler code here
 }

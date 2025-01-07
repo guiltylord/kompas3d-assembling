@@ -79,6 +79,7 @@ public:
 	CStatic m_tRBase;
 	CStatic m_tRHole;
 	CStatic m_tL;
+	afx_msg void OnSize(UINT nType, int cx, int cy);
 };
 
 #ifndef _DEBUG  // debug version in AssemblingView.cpp
