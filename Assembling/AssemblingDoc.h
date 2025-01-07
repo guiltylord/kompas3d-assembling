@@ -23,6 +23,7 @@ public:
 
 	bool m_bAssembling, m_bSeal, m_bScrew, m_bPuck;
 
+	std::string m_cwd;
 	CString btnTextForAssembling = L"Made assembling";
 	CString btnTextForSeal = L"Build seal";
 	CString btnTextForScrew = L"Build screw";

@@ -45,7 +45,8 @@ CAssemblingDoc::~CAssemblingDoc()
 
 void CAssemblingDoc::GetPaths()
 {
-	string cwd = filesystem::current_path().string() + "\\res\\";
+	m_cwd = filesystem::current_path().string();
+	string cwd = m_cwd + "\\res\\";
 	imgPathForGod = string(cwd + "AssemblingGod.bmp").c_str();
 	imgPathForAssembling = string(cwd + "Assembling.bmp").c_str();
 	imgPathForSeal = string(cwd + "Seal.bmp").c_str();
