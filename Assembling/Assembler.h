@@ -59,6 +59,7 @@ public:
 
 	void FillDetailsData(const int execution);
 	bool CheckValues(float RBase, float RHole, float L);
+	void FillPathToDetails(const string cwd);
 
 	void CreateSeal();
 	void CreateScrew();
@@ -67,7 +68,7 @@ public:
 	void GodAssemble(float RBase, float RHole, float L);
 
 	int m_currExec;
-
+	string m_DetailsPath;
 	void CloseAll();
 };
 

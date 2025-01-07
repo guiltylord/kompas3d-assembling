@@ -31,8 +31,8 @@ END_MESSAGE_MAP()
 // CAssemblingDoc construction/destruction
 class Assembler;
 class CAssemblingView;
+class CAssemblingView;
 
-using namespace std;
 CAssemblingDoc::CAssemblingDoc() noexcept
 {
 	// TODO: add one-time construction code here
@@ -63,7 +63,9 @@ BOOL CAssemblingDoc::OnNewDocument()
 	GetPaths();
 	m_pTree->m_pDoc = this;
 	m_pTree->FillTree();
+
 	m_pAssembler = new Assembler();
+	m_pAssembler->FillPathToDetails(m_cwd);
 
 	return TRUE;
 }

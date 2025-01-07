@@ -14,8 +14,6 @@
 #include "AssemblingView.h"
 #include "Assembler.h"
 
-using namespace Kompas6API5;
-
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif

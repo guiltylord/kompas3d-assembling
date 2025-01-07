@@ -9,12 +9,9 @@
 
 #include "framework.h"
 
-#include <string>
 
 # define M_PI           3.14159265358979323846  /* pi */
 
-using namespace Kompas6API5;
-using namespace std;
 
 KompasObjectPtr pKompasApp5;
 
@@ -186,6 +183,14 @@ bool Assembler::CheckValues(float RBase, float RHole, float L)
 	}
 
 	return true;
+}
+
+void Assembler::FillPathToDetails(const string cwd)
+{
+	m_DetailsPath = cwd + "\\Details\\";
+
+	if(!filesystem::is_directory(m_DetailsPath))
+		filesystem::create_directory(m_DetailsPath);
 }
 
 void Assembler::CreateSeal()
@@ -477,8 +482,8 @@ void Assembler::CreateSeal()
 	pTHreadDef->SetBaseObject(Cylinder4Assembly1);
 	pTHread->Create();
 
-	string path = "C:\\Users\\desxz\\source\\repos\\Assembling\\Details\\";
-	string name = "Гнездо сальника";
+	string path = m_DetailsPath;
+	string name = "Seal";
 	path += name+".m3d";
 
 	pPart->SetAdvancedColor(RGB(150, 0, 0), 1, 1, 1, 1, 1, 0.5);
@@ -699,8 +704,8 @@ void Assembler::CreateScrew()
 	pPart->SetAdvancedColor(RGB(0, 150, 0), 1, 1, 1, 1, 1, 0.5);
 	pPart->Update();
 
-	string path = "C:\\Users\\desxz\\source\\repos\\Assembling\\Details\\";
-	string name = "Гайка нажимная";
+	string path = m_DetailsPath;
+	string name = "Screw";
 	path += name + ".m3d";
 
 	p3DDoc->fileName = _bstr_t(CString(name.c_str()));
@@ -802,8 +807,8 @@ void Assembler::CreatePuck()
 		}
 	}
 
-	string path = "C:\\Users\\desxz\\source\\repos\\Assembling\\Details\\";
-	string name = "Шайба";
+	string path = m_DetailsPath;
+	string name = "Puck";
 	path += name + ".m3d";
 
 	p3DDoc->fileName = _bstr_t(CString(name.c_str()));
@@ -856,9 +861,12 @@ void Assembler::MakeAssemble()
 	ksDocument2DPtr p2DDoc;
 
 	ksPartPtr pSeal, pScrew, pPuck;
-	p3DDoc->SetPartFromFile("C:\\Users\\desxz\\source\\repos\\Assembling\\Details\\Гнездо сальника.m3d", pAssemble, true);
-	p3DDoc->SetPartFromFile("C:\\Users\\desxz\\source\\repos\\Assembling\\Details\\Гайка нажимная.m3d", pAssemble, true);
-	p3DDoc->SetPartFromFile("C:\\Users\\desxz\\source\\repos\\Assembling\\Details\\Шайба.m3d", pAssemble, true);
+	string pathToSeal = m_DetailsPath + "\\Seal.m3d";
+	string pathToScrew = m_DetailsPath + "\\Screw.m3d";
+	string pathToPuck = m_DetailsPath + "\\Puck.m3d";
+	p3DDoc->SetPartFromFile(pathToSeal.c_str(), pAssemble, true);
+	p3DDoc->SetPartFromFile(pathToScrew.c_str(), pAssemble, true);
+	p3DDoc->SetPartFromFile(pathToPuck.c_str(), pAssemble, true);
 
 	pSeal = p3DDoc->GetPart(0);
 	pScrew = p3DDoc->GetPart(1);
@@ -899,8 +907,8 @@ void Assembler::MakeAssemble()
 	
 	p3DDoc->RebuildDocument();
 
-	string path = "C:\\Users\\desxz\\source\\repos\\Assembling\\Details\\";
-	string name = "Сборка";
+	string path = m_DetailsPath;
+	string name = "Assembling";
 	path += name + ".a3d";
 
 	p3DDoc->fileName = _bstr_t(CString(name.c_str()));
