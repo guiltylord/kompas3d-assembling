@@ -300,6 +300,12 @@ void CAssemblingView::OnSize(UINT nType, int cx, int cy)
 	if (!m_btnGodMode)
 		return;
 
+	if (cx <= 564 + 75) {
+		m_btnGodMode.ShowWindow(SW_HIDE);
+		return;
+	}
+
+	m_btnGodMode.ShowWindow(SW_NORMAL);
 	m_btnGodMode.MoveWindow(cx-75, 0, 75, 30);
 	// TODO: Add your message handler code here
 }
