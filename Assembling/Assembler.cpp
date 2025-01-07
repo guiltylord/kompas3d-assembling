@@ -168,7 +168,7 @@ PuckData Assembler::GetPuck(int type)
 	return puck;
 }
 
-void Assembler::FillAssembler(const int execution)
+void Assembler::FillDetailsData(const int execution)
 {
 	m_currExec = execution;
 	m_Seal = GetSeal(execution);

@@ -236,19 +236,19 @@ void CAssemblingView::OnBnClickedButton1()
 	int execution = m_cBox.GetCurSel()+1;
 	auto pDoc = GetDocument();
 	if (pDoc->m_bSeal) {
-		pDoc->m_pAssembler->FillAssembler(execution);
+		pDoc->m_pAssembler->FillDetailsData(execution);
 		pDoc->m_pAssembler->CreateSeal();
 	}
 	if (pDoc->m_bScrew) {
-		pDoc->m_pAssembler->FillAssembler(execution);
+		pDoc->m_pAssembler->FillDetailsData(execution);
 		pDoc->m_pAssembler->CreateScrew();
 	}
 	if (pDoc->m_bPuck) {
-		pDoc->m_pAssembler->FillAssembler(execution);
+		pDoc->m_pAssembler->FillDetailsData(execution);
 		pDoc->m_pAssembler->CreatePuck();
 	}
 	if (pDoc->m_bAssembling) {
-		pDoc->m_pAssembler->FillAssembler(execution);
+		pDoc->m_pAssembler->FillDetailsData(execution);
 		if (m_godMode) {
 			CString RBase;
 			m_eRBase.GetWindowText(RBase);
