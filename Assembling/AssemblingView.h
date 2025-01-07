@@ -12,6 +12,7 @@
 #define SCREW 2 
 #define PUCK 3 
 #define ASSEMBLING 0
+#define GOD 999
 
 
 

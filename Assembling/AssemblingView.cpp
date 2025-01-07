@@ -69,7 +69,6 @@ void CAssemblingView::DoDataExchange(CDataExchange* pDX)
 void CAssemblingView::ConfigureWidgets(CString btnText, bool godMode)
 {
 	if (m_godMode) {
-
 		//поменять текст но оставить комбушку
 		//m_sText.ShowWindow(SW_HIDE); //на основе исполнения будет сделано:
 		m_sText.SetWindowTextW(L"Based on THAT execution:");
@@ -96,6 +95,20 @@ void CAssemblingView::ConfigureWidgets(CString btnText, bool godMode)
 
 		return;
 	}
+	m_sText.SetWindowTextW(L"Choose execution:");
+	m_sText.ShowWindow(SW_NORMAL);
+	m_cBox.ShowWindow(SW_NORMAL);
+	m_btn.ShowWindow(SW_NORMAL);
+
+	m_eL.ShowWindow(SW_HIDE);
+	m_eRBase.ShowWindow(SW_HIDE);
+	m_eRHole.ShowWindow(SW_HIDE);
+	m_tL.ShowWindow(SW_HIDE);
+	m_tRHole.ShowWindow(SW_HIDE);
+	m_tRBase.ShowWindow(SW_HIDE);
+
+	m_btnGodMode.ShowWindow(SW_HIDE);
+
 	m_sText.MoveWindow(m_fieldL, m_imgH, 125, 20);
 	m_cBox.MoveWindow(m_fieldL, m_imgH + 20, 125, 30);
 	m_btn.MoveWindow(m_fieldL, m_imgH+50, 125, 30);
@@ -119,21 +132,12 @@ void CAssemblingView::ConfigurePicture(CString imgPath)
 
 void CAssemblingView::ConfigureWindow(const int detail)
 {
-	m_godMode = false;
 	CAssemblingDoc* pDoc = GetDocument();
-	m_sText.ShowWindow(SW_NORMAL);
-	m_sText.SetWindowTextW(L"Choose execution:");
-	m_cBox.ShowWindow(SW_NORMAL);
-	m_btn.ShowWindow(SW_NORMAL);
-	m_btnGodMode.ShowWindow(SW_HIDE);
-	m_eL.ShowWindow(SW_HIDE);
-	m_eRBase.ShowWindow(SW_HIDE);
-	m_eRHole.ShowWindow(SW_HIDE);
 	switch (detail) {
 	case ASSEMBLING: {
-		m_btnGodMode.ShowWindow(SW_NORMAL);
 		ConfigurePicture(pDoc->imgPathForAssembling);
 		ConfigureWidgets(pDoc->btnTextForAssembling, false);
+		m_btnGodMode.ShowWindow(SW_NORMAL);
 		break;
 	}
 	case SEAL: {
@@ -151,7 +155,13 @@ void CAssemblingView::ConfigureWindow(const int detail)
 		ConfigureWidgets(pDoc->btnTextForPuck, false);
 		break;
 	}
+	case GOD: {
+		ConfigurePicture(pDoc->imgPathForGod);
+		ConfigureWidgets(pDoc->btnTextForAssembling, false);
+		return;
 	}
+	}
+	m_godMode = false;
 }
 
 BOOL CAssemblingView::PreCreateWindow(CREATESTRUCT& cs)
@@ -175,10 +185,10 @@ void CAssemblingView::OnInitialUpdate()
 	}
 	m_cBox.SetCurSel(0);
 
+	m_btnGodMode.ShowWindow(SW_HIDE);
 	m_sText.ShowWindow(SW_HIDE);
 	m_cBox.ShowWindow(SW_HIDE);
 	m_btn.ShowWindow(SW_HIDE);
-	m_btnGodMode.ShowWindow(SW_HIDE);
 	m_eL.ShowWindow(SW_HIDE);
 	m_eRBase.ShowWindow(SW_HIDE);
 	m_eRHole.ShowWindow(SW_HIDE);
@@ -268,9 +278,5 @@ void CAssemblingView::OnKompasCloseall()
 void CAssemblingView::OnBnClickedGodmode()
 {
 	m_godMode = true;
-	CAssemblingDoc* pDoc = GetDocument();
-
-	ConfigurePicture(pDoc->imgPathForGod);
-	ConfigureWidgets(pDoc->btnTextForAssembling, false);
-	// TODO: Add your control notification handler code here
+	ConfigureWindow(GOD);
 }
