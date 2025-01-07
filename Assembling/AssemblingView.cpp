@@ -108,12 +108,13 @@ void CAssemblingView::ConfigureWidgets(CString btnText, bool godMode)
 	m_tRHole.ShowWindow(SW_HIDE);
 	m_tRBase.ShowWindow(SW_HIDE);
 
-	m_btnGodMode.ShowWindow(SW_HIDE);
 
 	if (m_curDetail == ASSEMBLING && m_curW > 564) {
-		m_btnGodMode.ShowWindow(SW_NORMAL);
+		m_btnGodMode.ShowWindow(SW_NORMAL); 
 		m_btnGodMode.MoveWindow(m_curW - 75, 0, 75, 30);
 	}
+	else
+		m_btnGodMode.ShowWindow(SW_HIDE);
 
 	m_sText.MoveWindow(m_fieldL, m_imgH, 125, 20);
 	m_cBox.MoveWindow(m_fieldL, m_imgH + 20, 125, 30);
