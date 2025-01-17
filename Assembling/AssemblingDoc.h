@@ -22,7 +22,7 @@ public:
 	bool m_bAssembling, m_bSeal, m_bScrew, m_bPuck;
 
 	string m_cwd;
-	CString btnTextForAssembling = L"Made assembling";
+	CString btnTextForAssembling = L"Собрать";
 	CString btnTextForSeal = L"Build seal";
 	CString btnTextForScrew = L"Build screw";
 	CString btnTextForPuck = L"Build puck";

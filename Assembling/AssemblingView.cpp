@@ -89,7 +89,7 @@ void CAssemblingView::ConfigureWidgets(CString btnText, bool godMode)
 
 		return;
 	}
-	m_sText.SetWindowTextW(L"Choose execution:");
+	m_sText.SetWindowTextW(L"Выберите исполнение:");
 	m_sText.ShowWindow(SW_NORMAL);
 	m_cBox.ShowWindow(SW_NORMAL);
 	m_btn.ShowWindow(SW_NORMAL);
@@ -109,10 +109,13 @@ void CAssemblingView::ConfigureWidgets(CString btnText, bool godMode)
 	else
 		m_btnGodMode.ShowWindow(SW_HIDE);
 
-	m_sText.MoveWindow(m_fieldL, m_imgH, 125, 20);
+	m_sText.MoveWindow(m_fieldL, m_imgH, 200, 20);
 	m_cBox.MoveWindow(m_fieldL, m_imgH + 20, 125, 30);
 	m_btn.MoveWindow(m_fieldL, m_imgH+50, 125, 30);
 	m_btn.SetWindowTextW(btnText);
+
+	Invalidate(TRUE);
+
 }
 
 void CAssemblingView::ConfigurePicture(CString imgPath)

@@ -198,7 +198,7 @@ void Assembler::CreateSeal()
 	ksDocument3DPtr p3DDoc;
 	CComPtr<IUnknown> pKompasAppUnk = nullptr;
 
-	if (!pKompasApp5)
+	if (!pKompasApp5) 
 	{
 		// Получаем CLSID для Компас
 		CLSID InvAppClsid;
@@ -486,7 +486,7 @@ void Assembler::CreateSeal()
 	string name = "Seal";
 	path += name+".m3d";
 
-	pPart->SetAdvancedColor(RGB(150, 0, 0), 1, 1, 1, 1, 1, 0.5);
+	//pPart->SetAdvancedColor(RGB(150, 0, 0), 1, 1, 1, 1, 1, 0.5);
 	pPart->Update();
 
 	p3DDoc->fileName = _bstr_t(CString(name.c_str()));
@@ -701,7 +701,7 @@ void Assembler::CreateScrew()
 			}
 		}
 	}
-	pPart->SetAdvancedColor(RGB(0, 150, 0), 1, 1, 1, 1, 1, 0.5);
+	//pPart->SetAdvancedColor(RGB(0, 150, 0), 1, 1, 1, 1, 1, 0.5);
 	pPart->Update();
 
 	string path = m_DetailsPath;
@@ -782,7 +782,7 @@ void Assembler::CreatePuck()
 	pRotDef->SetSideParam(FALSE, 360);
 	pRot->Create();
 
-	pPart->SetAdvancedColor(RGB(200, 150, 30), 1, 1, 1, 1, 1, 0.5);
+	pPart->SetAdvancedColor(RGB(32, 32, 32), 1, 1, 1, 1, 1, 0.5);
 	pPart->SetMaterial(L"СКФ-26 ГОСТ 18376-79", 1.83); //фторкаучук
 	pPart->Update();
 

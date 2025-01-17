@@ -35,11 +35,11 @@ void CTreeDetails::FillTree()
 
 	tree.DeleteAllItems();
 
-	m_hAssembling = tree.InsertItem(L"Objects", -1, -1, NULL, TVI_FIRST);
+	m_hAssembling = tree.InsertItem(L"Сборка", -1, -1, NULL, TVI_FIRST);
 
-	m_hSeal = tree.InsertItem(L"Seal", -1, -1, m_hAssembling, TVI_ROOT);
-	m_hScrew = tree.InsertItem(L"Screw", -1, -1, m_hAssembling, TVI_ROOT);
-	m_hPuck = tree.InsertItem(L"Puck", -1, -1, m_hAssembling, TVI_ROOT);
+	m_hSeal = tree.InsertItem(L"Гнездо", -1, -1, m_hAssembling, TVI_ROOT);
+	m_hScrew = tree.InsertItem(L"Нажимная гайка", -1, -1, m_hAssembling, TVI_ROOT);
+	m_hPuck = tree.InsertItem(L"Шайба", -1, -1, m_hAssembling, TVI_ROOT);
 
 	tree.Expand(m_hAssembling, TVE_EXPAND);
 
@@ -93,7 +93,6 @@ void CTreeDetails::OnLButtonDown(UINT nFlags, CPoint point)
 	if (selTreeItem == nullptr) {
 		return;
 	}
-	auto selTable = tree.GetItemText(selTreeItem);
 
 	if (selTreeItem==m_hAssembling) {
 		m_pDoc->m_bAssembling = true;
