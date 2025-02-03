@@ -486,7 +486,6 @@ void Assembler::CreateSeal()
 	string name = "Seal";
 	path += name+".m3d";
 
-	//pPart->SetAdvancedColor(RGB(150, 0, 0), 1, 1, 1, 1, 1, 0.5);
 	pPart->Update();
 
 	p3DDoc->fileName = _bstr_t(CString(name.c_str()));
@@ -598,7 +597,6 @@ void Assembler::CreateScrew()
 	}
 	flFaces->Clear();
 
-	//в эттом эскизе потом сделать смену на втторрое исполнение. добавиь флаг так, чтобы выемки под сальникк не было и фаски тоже
 	//эскиз Leg
 	ksEntityPtr pLegSketch = pPart->NewEntity(o3d_sketch);
 	ksSketchDefinitionPtr pLegSketchDef = pLegSketch->GetDefinition();
@@ -613,8 +611,6 @@ void Assembler::CreateScrew()
 
 	p2DDoc = pLegSketchDef->BeginEdit();
 	p2DDoc->ksLineSeg(0, Y1_ax, 0, Y2_ax, 1);
-	//p2DDoc->ksLineSeg(0, Y2_ax, X_out-1, Y2_ax, 1); //-1 для фасочки
-	//p2DDoc->ksLineSeg(X_out - 1, Y2_ax, X_out, Y2_ax-1, 1);
 	p2DDoc->ksLineSeg(0, Y2_ax, X_out, Y2_ax, 1);
 	p2DDoc->ksLineSeg(X_out, Y2_ax, X_out, Y_out, 1);
 	p2DDoc->ksLineSeg(X_out, Y_out, X_in, Y_out, 1);
@@ -630,7 +626,6 @@ void Assembler::CreateScrew()
 	ksBossRotatedDefinitionPtr pRotDef = pRotate->GetDefinition();
 	pRotDef->SetSketch(pLegSketch);
 	pRotDef->SetSideParam(FALSE, 360);
-	//ksEntityCollectionPtr fl = pRotDef->GetSketch(); //коллекция для фасок
 	pRotate->Create();
 
 	//эскиз дырки Leg
@@ -657,25 +652,6 @@ void Assembler::CreateScrew()
 	pRotDef2->SetSideParam(FALSE, 360);
 	pRotate2->Create();
 
-	//фасочки
-	//ksEntityPtr pChamfer = pPart->NewEntity(o3d_chamfer);
-	//ksChamferDefinitionPtr pChamferDef = pChamfer->GetDefinition();
-	//pChamferDef->SetChamferParam(true, 1, 1);
-	//fl = pChamferDef->array();
-	//fl->Clear();
-	//ksEntityCollectionPtr flEdges = pPart->EntityCollection(o3d_edge);
-	//for (int i = 0; i < flEdges->GetCount(); i++) {
-	//	ksEntityPtr ed = flEdges->GetByIndex(i);
-	//	ksEdgeDefinitionPtr def = ed->GetDefinition();
-	//	if (def->GetOwnerEntity() == pRotate2) { 
-	//		if (def->IsCircle()) {
-	//			fl->Add(ed);
-	//		}
-	//	}
-	//}
-	//pChamfer->Create();
-	//fl->Clear();
-
 	//резьба
 	ksEntityPtr pTHread = pPart->NewEntity(o3d_thread);
 	ksThreadDefinitionPtr pTHreadDef = pTHread->GetDefinition();
@@ -701,7 +677,6 @@ void Assembler::CreateScrew()
 			}
 		}
 	}
-	//pPart->SetAdvancedColor(RGB(0, 150, 0), 1, 1, 1, 1, 1, 0.5);
 	pPart->Update();
 
 	string path = m_DetailsPath;
@@ -988,6 +963,4 @@ void Assembler::CloseAll()
 	p3DDoc = pKompasApp5->ActiveDocument3D();
 	ksPartPtr pPart = p3DDoc->GetPart(pTop_Part);
 	ksDocument2DPtr p2DDoc;
-	
-	//https://help.ascon.ru/KOMPAS_SDK/22/ru-RU/iapplication_documents.html
 }
